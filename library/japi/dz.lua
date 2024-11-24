@@ -833,6 +833,13 @@ function japi.DZ_DoodadSetModel(doodad, path)
     japi.Exec("DzDoodadSetModel", doodad, path)
 end
 
+--- 删除装饰物
+---@param doodad number integer 地形装饰物
+---@return void
+function japi.DZ_DoodadRemove(doodad)
+    japi.Exec("DzDoodadRemove", doodad)
+end
+
 --- 让指定装饰物播放动画
 ---@param doodad number integer 地形装饰物
 ---@param animName string 动作名称
@@ -971,6 +978,15 @@ end
 ---@return number
 function japi.DZ_DoodadGetAnimationTime(doodad, index)
     return japi.Exec("DzDoodadGetAnimationTime", doodad, index)
+end
+
+--- 降低玩家科技等级
+---@param whichPlayer number 玩家
+---@param techId number integer 科技
+---@param removeLevels number integer 多少级
+---@return void
+function japi.DZ_RemovePlayerTechResearched(whichPlayer, techId, removeLevels)
+    japi.Exec("DzRemovePlayerTechResearched", whichPlayer, techId, removeLevels)
 end
 
 --- 替换单位类型
@@ -1260,6 +1276,14 @@ end
 ---@return void
 function japi.DZ_ItemSetAlpha(whichItem, alpha)
     japi.Exec("DzItemSetAlpha", whichItem, alpha)
+end
+
+--- 设置物品头像
+---@param whichItem number
+---@param modelPath string 模型路径
+---@return void
+function japi.DZ_ItemSetPortrait(whichItem, modelPath)
+    japi.Exec("DzItemSetPortrait", whichItem, modelPath)
 end
 
 --- 设置技能数据-字符串
@@ -1668,6 +1692,13 @@ function japi.DZ_UnlockOpCodeLimit(enable)
     japi.Exec("DzUnlockOpCodeLimit", enable)
 end
 
+--- 设置剪切板内容
+---@param content string
+---@return boolean
+function japi.DZ_SetClipboard(content)
+    return japi.Exec("DzSetClipboard", content)
+end
+
 --- 打开QQ群链接
 --- 调用后打开QQ群链接，必须以http://qm.qq.com开头，每分钟只会触发一次。
 ---@param url boolean
@@ -1807,6 +1838,42 @@ end
 ---@return void
 function japi.DZ_TriggerRegisterMallItemSyncData(trig)
     japi.DZ_TriggerRegisterSyncData(trig, "DZMIA", true)
+end
+
+--- 玩家消耗/使用商城道具事件
+--- 注册玩家消耗地图商城道具事件（实时）
+--- 玩家背包中消耗或使用商城道具的回调事件。
+--- 可在事件内配合[触发的商城道具事件的玩家]、[触发的商城道具]和[商城道具最后变动的数量]使用。
+---@param trig number
+---@return void
+function japi.DZ_TriggerRegisterMallItemConsumeEvent(trig)
+    japi.DZ_TriggerRegisterSyncData(trig, "DZMIC", true)
+end
+
+--- 玩家删除商城道具事件
+--- 注册玩家删除地图商城道具事件（实时）
+--- 玩家背包中删除地图商城道具的回调事件。
+--- 可在事件内配合[触发的商城道具事件的玩家]和[商城道具最后变动的数量]使用。（该事件一般不太可能用到，一般为商城商品被删除才会触发）
+---@param trig number
+---@return void
+function japi.DZ_TriggerRegisterMallItemRemoveEvent(trig)
+    japi.DZ_TriggerRegisterSyncData(trig, "DZMID", true)
+end
+
+--- 事件响应 - 实时获得地图商城道具的玩家
+--- 实时获得地图商城道具的玩家
+--- 获取是哪位玩家获得了平台道具。仅限在玩家实时获得地图商城道具事件内使用。
+---@return number player
+function japi.DZ_GetTriggerMallItemPlayer()
+    return japi.DZ_GetTriggerSyncPlayer()
+end
+
+--- 事件响应 - 实时获得的地图商城道具
+--- 实时获得的地图商城道具
+--- 获取实时购买的地图商城道具。仅限在玩家实时获得地图商城道具事件内使用。
+---@return string
+function japi.DZ_GetTriggerMallItem()
+    return japi.DZ_GetTriggerSyncData()
 end
 
 --- 全局存档变化事件
@@ -2166,7 +2233,7 @@ end
 --- 上报前需先在作者之家创建埋点。
 ---@param whichPlayer number
 ---@param evtKey string 作者之家创建埋点时所填写的Key
----@param evtKind string 预留参数，保持为空即可
+---@param eventType string 预留参数，保持为空即可
 ---@param value number int 事件发生次数
 function japi.DZ_Map_Statistics(whichPlayer, evtKey, eventType, value)
     return japi.DZ_RequestExtraBooleanData(34, whichPlayer, evtKey, eventType, false, value, 0, 0)
