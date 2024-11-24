@@ -11,7 +11,7 @@ pwd: "/yourWorkspace/xlik"
 
 # WE工具目录
 # WE tool catalogue
-we: "vendor/WE.v4"
+we: "vendor/WE"
 
 # w3x2lni工具目录
 # w3x2lni tools directory
