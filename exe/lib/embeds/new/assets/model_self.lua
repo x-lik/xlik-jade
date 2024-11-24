@@ -1,0 +1,1 @@
+assets_model("buff/Echo", "Echo")

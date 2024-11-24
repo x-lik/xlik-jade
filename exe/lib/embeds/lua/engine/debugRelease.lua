@@ -1,0 +1,10 @@
+LK_DEBUG = false
+J.Runtime['console'] = false
+J.Runtime['sleep'] = false
+J.Runtime['handle_level'] = 0
+function LK_ERROR() end
+function print() end
+function stack() end
+function logger() end
+function dump() end
+function must() end

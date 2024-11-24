@@ -1,0 +1,10 @@
+﻿logs
+.idea
+.fleet
+.vscode
+*.BridgeLabelsAndRatings
+/projects
+/temp
+/xlik.exe
+/verdor/*
+/exe/env.yaml

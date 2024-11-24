@@ -1,0 +1,1 @@
+assets_image("mask/rounded.blp")
