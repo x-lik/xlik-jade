@@ -4,14 +4,13 @@
 ---@class UINative
 local _index = { _type = "UI", _native = true }
 
---- handle
+--- 获取handle
 ---@return number
 function _index:handle()
     return self._handle
 end
 
---- UI key
---- cache key
+--- 获取UI的key
 ---@return any
 function _index:key()
     return self._key

@@ -89,7 +89,7 @@ function _index:tpl()
     return self._tpl
 end
 
---- handle
+--- 获取handle
 --- 如有数据则返回一个灵动型特效
 ---@return agileEffect
 function _index:handle()

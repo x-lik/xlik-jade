@@ -1,7 +1,7 @@
 --- 构造Vast型Object
 ---@param params table
 ---@vararg table
----@return Object
+---@return Object|Vast
 function oVast(params, ...)
     sync.must()
     local indexes = { ... }

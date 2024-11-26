@@ -1,5 +1,5 @@
 --- Assault，自定义攻击模式
----@class Assault
+---@class Assault:Meta
 local _index = Meta(AssaultClass, {
     _mode = "instant", -- 模式，默认的立刻模式（指单位攻击动作结束无需过程瞬间就击中目标的情形）
     _priority = 0, -- 优先级，越大优先级越高越会被视为单位的首选攻击模式
@@ -87,25 +87,25 @@ function _index:homing()
     return self._homing
 end
 
--- 获取加特林效果，默认0
+--- 获取加特林效果，默认0
 ---@return number
 function _index:gatling()
     return self._gatling
 end
 
--- 获取散射目标数量，默认0
+--- 获取散射目标数量，默认0
 ---@return number
 function _index:scatter()
     return self._scatter
 end
 
--- 获取散射范围，默认0
+--- 获取散射范围，默认0
 ---@return number
 function _index:radius()
     return self._radius
 end
 
--- 获取反弹目标数量，默认0
+--- 获取反弹目标数量，默认0
 ---@return number
 function _index:reflex()
     return self._reflex

@@ -1,5 +1,5 @@
 --- 群数据集，常用于区域内选取对象
----@class Group
+---@class Group:Meta
 local _index = Meta(GroupClass)
 
 ---@protected

@@ -4,7 +4,7 @@
 ---@class Ability:AbilityTpl
 local _index = Vast(AbilityClass)
 
----@private
+---@protected
 function _index:destruct()
     local bindUnit = self:bindUnit()
     if (class.isObject(bindUnit, UnitClass)) then
@@ -265,7 +265,7 @@ function _index:spell(evtData)
 end
 
 --- 进入施法流程
----@protected
+---@private
 ---@param evtData AbilitySpellEvtData
 ---@return void
 function _index:spellStart(evtData)
@@ -385,7 +385,7 @@ function _index:capture(kind, evtData, period, revert, call)
 end
 
 --- 进入吟唱过程
----@protected
+---@private
 ---@param evtData AbilitySpellEvtData
 ---@return void
 function _index:chanting(evtData)
@@ -429,7 +429,7 @@ function _index:chanting(evtData)
 end
 
 --- 停止施法过程
----@protected
+---@private
 ---@param evtData AbilitySpellEvtData
 ---@return void
 function _index:spellStop(evtData)
@@ -459,7 +459,7 @@ end
 
 --- 进入生效过程
 --- 冷却时间在此过程中开始计算
----@protected
+---@private
 ---@param evtData AbilitySpellEvtData
 ---@return void
 function _index:effective(evtData)
@@ -485,7 +485,7 @@ function _index:effective(evtData)
 end
 
 --- 进入持续过程
----@protected
+---@private
 ---@param evtData AbilitySpellEvtData
 ---@return void
 function _index:keeping(evtData)
@@ -520,6 +520,7 @@ function _index:keeping(evtData)
 end
 
 --- 进入冷却过程
+---@private
 ---@return void
 function _index:cooling()
     local cd = self:coolDown()
@@ -608,7 +609,7 @@ function _index:castPotCoolingRemain()
     return 0
 end
 
---- 冷却过程剩余时间
+--- 获取冷却过程剩余时间
 ---@return number
 function _index:coolingRemain()
     if (self:isCooling()) then

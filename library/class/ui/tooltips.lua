@@ -5,7 +5,7 @@ local _index = UI(UITooltipsClass, {
     _protect = true
 })
 
----- 内容设置
+--- 内容设置
 --[[
     -- 数据格式
     data:{

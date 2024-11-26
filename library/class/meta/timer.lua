@@ -1,5 +1,5 @@
 --- 计时器
----@class Timer
+---@class Timer:Meta
 local _index = Meta(TimerClass, {
     _fin = 0,
 })

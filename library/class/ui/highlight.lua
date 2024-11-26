@@ -2,7 +2,7 @@
 ---@class UIHighlight:UI
 local _index = UI(UIHighlightClass)
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIHighlightClass)[self._key] = nil
 end

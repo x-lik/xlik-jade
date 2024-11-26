@@ -22,7 +22,7 @@ function _index:construct()
     self._closer = closer
 end
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIPlateClass)[self._key] = nil
 end

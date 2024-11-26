@@ -1,5 +1,5 @@
 --- 池数据集，常用于数据整合归类读取
----@class Pool
+---@class Pool:Meta
 local _index = Meta(PoolClass)
 
 ---@protected

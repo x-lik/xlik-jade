@@ -1,5 +1,5 @@
 --- UI套件
----@class UIKit
+---@class UIKit:Meta
 local _index = Meta(UIKitClass, {
     _protect = true,
     _started = false,
@@ -19,7 +19,7 @@ function _index:onSetup()
     print("UIKitSetup:" .. self._kit)
 end
 
---- 套件名
+--- 获取套件的kit名
 ---@return string
 function _index:kit()
     return self._kit

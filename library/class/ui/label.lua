@@ -20,7 +20,7 @@ function _index:construct()
     end
 end
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UILabelClass)[self._key] = nil
 end

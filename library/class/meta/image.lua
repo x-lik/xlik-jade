@@ -1,15 +1,12 @@
 --- 地表图像
 --- 此图像将显示在地形地表上
----@class Image
+---@class Image:Meta
 local _index = Meta(ImageClass)
 
---- 毁灭一个图像
----@return void
-function _index:destroy()
-    async.must()
-    local h = self._handle
-    J.ShowImage(h, false)
-    J.DestroyImage(h)
+---@protected
+function _index:destruct()
+    J.ShowImage(self._handle, false)
+    J.DestroyImage(self._handle)
     self._handle = nil
 end
 

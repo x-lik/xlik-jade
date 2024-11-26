@@ -3,7 +3,7 @@
 ---@type Process 当前运行流程
 ProcessCurrent = ProcessCurrent or nil
 
----@class Process
+---@class Process:Meta
 local _index = Meta(ProcessClass)
 
 ---@protected
@@ -48,6 +48,7 @@ function _index:bubbleClear()
     self._bubble = {}
 end
 
+--- 开始进入此流程
 ---@type fun():void
 function _index:start()
     sync.must()
@@ -62,17 +63,20 @@ function _index:start()
     self:onStart()
 end
 
+--- 重新进入此流程
 ---@return void
 function _index:restart()
     self:over()
     self:start()
 end
 
+--- 获取此流程的上一个流程
 ---@return Process
 function _index:prev()
     return self._prev
 end
 
+--- 去往下一个流程
 ---@param nextStageName string
 ---@return void
 function _index:next(nextStageName)
@@ -86,6 +90,7 @@ function _index:next(nextStageName)
     end
 end
 
+--- 结束此流程
 ---@return void
 function _index:over()
     sync.must()

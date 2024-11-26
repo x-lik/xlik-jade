@@ -56,7 +56,7 @@ function _index:construct()
         :fontSize(10)
 end
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIButtonClass)[self._key] = nil
     class.destroy(self._borderTimer)

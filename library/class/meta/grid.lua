@@ -1,6 +1,6 @@
 --- 格数据集，常用于区域内选取对象
 --- 非常适用于不移动的对象。若对象移动，则需要及时刷新位置信息
----@class Grid
+---@class Grid:Meta
 local _index = Meta(GridClass, {
     ---@type number 计数
     _count = 0,

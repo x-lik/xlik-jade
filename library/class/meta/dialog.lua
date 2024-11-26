@@ -1,6 +1,6 @@
 --- 魔兽自带对话框
 --- 单人游戏时弹出此框会暂停游戏
----@class Dialog
+---@class Dialog:Meta
 local _index = Meta(DialogClass)
 
 local _evt = J.Condition(function()
@@ -18,6 +18,7 @@ local _evt = J.Condition(function()
     class.destroy(triggerDialog)
 end)
 
+---@protected
 function _index:destruct()
     ---@type Array
     local buttons = self._buttons

@@ -17,15 +17,14 @@ local _index = Vast(PlayerClass, {
     _pickMode = player.pickMode.itemWarehouse,
 })
 
---- handle
----@return number
+---@protected
 function _index:destruct()
     J.RemovePlayer(self._handle, PLAYER_GAME_RESULT_DEFEAT)
     J.HandleUnRef(self._handle)
     class.handle(self, nil)
 end
 
---- handle
+--- 获取handle
 ---@return number
 function _index:handle()
     return self._handle

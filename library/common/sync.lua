@@ -29,6 +29,7 @@ function sync.data(key, data)
     end
     return table.concat(table.merge({ key }, data), '|')
 end
+
 ---@private
 function sync.exec(syncKey, syncData, syncPlayer)
     if (type(sync._callback[syncKey]) ~= "function") then

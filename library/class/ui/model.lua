@@ -4,13 +4,13 @@ local _index = UI(UIModelClass, {
     _autoCast = true,
 })
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIModelClass)[self._key] = nil
 end
 
 --- 设置模型
----@param path string
+---@param path string 模型路径
 ---@return self
 function _index:model(path)
     if (nil ~= path and self._model ~= path) then
@@ -22,8 +22,8 @@ function _index:model(path)
 end
 
 --- 设置动画
----@param animateId string
----@param autoCast boolean
+---@param animateId string 动画ID
+---@param autoCast boolean 是否自动播放
 ---@return self
 function _index:animate(animateId, autoCast)
     if (type(animateId) == "string" and type(autoCast) == "boolean") then

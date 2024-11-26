@@ -2,7 +2,7 @@
 ---@class UITextarea:UIText
 local _index = UI(UITextareaClass):extend(UITextClass)
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UITextareaClass)[self._key] = nil
 end

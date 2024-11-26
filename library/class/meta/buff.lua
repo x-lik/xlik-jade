@@ -7,7 +7,7 @@ buffSignal = {
 }
 
 --- Buff对象
----@class Buff
+---@class Buff:Meta
 local _index = Meta(BuffClass, {
     ---@type string 凸显文本（一般用不到）
     _text = '',
@@ -19,7 +19,7 @@ local _index = Meta(BuffClass, {
     _running = false,
 })
 
----@private
+---@protected
 function _index:destruct()
     if (true == self._running) then
         self:rollback()

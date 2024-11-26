@@ -13,7 +13,7 @@ local _index = UI(UIDragClass, {
     _paddingRight = 0,
 }):extend(UIPlateClass)
 
----@private
+---@protected
 function _index:destruct()
     self:onEvent(eventKind.uiLeftClick, nil)
     self:onEvent(eventKind.uiLeftRelease, nil)

@@ -1,9 +1,9 @@
 --- 组队势力配置
 --- 同一个队伍可视为同一种势力
----@class Team
+---@class Team:Meta
 local _index = Meta(TeamClass)
 
----@private
+---@protected
 function _index:destruct()
     class.cache(TeamClass)[self._name] = nil
 end

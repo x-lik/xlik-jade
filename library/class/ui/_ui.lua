@@ -48,6 +48,8 @@ local _index = {
     _gradientTimer = nil,
 }
 
+--- 继承
+---@protected
 ---@param superName string
 ---@return self
 function _index:extend(superName)
@@ -61,7 +63,7 @@ function _index:extend(superName)
     return self
 end
 
----@private
+---@protected
 function _index:destruct()
     sync.must()
     japi.UISetAdaptive(self._id, nil)
@@ -131,6 +133,7 @@ function _index:id()
     return self._id
 end
 
+--- 获取UI的kit名
 --- 由:号(冒号)分割切段字符组时，自动对应kit，如 key 是 xlik_debug 或 xlik_debug:myBar 或 xlik_debug:myBar:3 ，这3种自动对应套件 kit 都是 xlik_debug
 --- tooltips的lik一般在content方法调用时动态设置
 ---@return number
@@ -140,6 +143,7 @@ end
 
 --- 重置UI的锚点数据
 --- 锚指的是一个UI的中心，相对于屏幕左下角的{RX,RY,W,H}
+---@private
 ---@alias anchorFourData number[]
 ---@return anchorFourData
 function _index:resetAnchor()

@@ -4,7 +4,7 @@
 --- 在damageFlow中执行伤害类型的判定，并支持附着
 
 --- 可模拟触发不同的元素反应
----@class Enchant
+---@class Enchant:Meta
 local _index = Meta(EnchantClass)
 
 ---@protected

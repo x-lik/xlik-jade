@@ -1,9 +1,9 @@
 --- 单位物品栏
 --- 自定义单位物品栏数据结构
----@class ItemSlot
+---@class ItemSlot:Meta
 local _index = Meta(ItemSlotClass)
 
----@private
+---@protected
 function _index:destruct()
     ---@type Item[]
     local s = self._storage
@@ -17,6 +17,7 @@ function _index:destruct()
     self._storage = nil
 end
 
+--- 获取绑定单位
 ---@return Unit
 function _index:bindUnit()
     return self._bindUnit
@@ -50,6 +51,7 @@ function _index:setVolume(vol)
     end
 end
 
+--- 获取存贮数据
 ---@return Item[]
 function _index:storage()
     return self._storage
@@ -99,6 +101,7 @@ function _index:has(whichTpl)
 end
 
 --- 触发变化
+---@protected
 ---@return void
 function _index:triggerChange()
     local tailAuto

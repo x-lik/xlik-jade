@@ -1,5 +1,5 @@
 --- 流执行，业务片段顺序执行定义
----@class Flow
+---@class Flow:Meta
 local _index = Meta(FlowClass)
 
 ---@protected
@@ -28,6 +28,8 @@ function _index:flux(key, func)
 end
 
 --- 伤害过程执行
+---@param data table 数据
+---@return void
 function _index:run(data)
     sync.must()
     local actions = self._actions
@@ -43,6 +45,7 @@ function _index:run(data)
     end
 end
 
+--- 流执行
 ---@param key string 唯一key
 ---@return Flow
 function Flow(key)

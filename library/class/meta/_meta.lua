@@ -3,6 +3,8 @@
 ---@class Meta
 local _index = { _type = "Meta" }
 
+--- 继承
+---@protected
 ---@param superName string
 ---@return self
 function _index:extend(superName)
@@ -16,6 +18,7 @@ function _index:extend(superName)
     return self
 end
 
+--- 构造Meta
 ---@param name string
 ---@param prototype table 原型数据
 ---@return Meta

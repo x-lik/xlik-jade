@@ -1,11 +1,11 @@
 --- 方/圆区域，用于划定范围及管理
----@class Region
+---@class Region:Meta
 local _index = Meta(RegionClass, {
     _eventMode = 2, --- 事件模式，默认为2。事件模式：[1]原生模式，挂载在原生的事件上[2]计时模式，需要控制间隔调节效果
     _eventPeriod = 0.5, --- 事件模式为2时的检测间隔
 })
 
----@private
+---@protected
 function _index:destruct()
     local ws = self._weathers
     if (type(ws) == "table" and #ws > 0) then
@@ -47,7 +47,7 @@ function _index:destruct()
     class.cache(RegionClass)[self._name] = nil
 end
 
---- handle
+--- 获取handle
 ---@return number
 function _index:handle()
     if (nil == self._handle) then

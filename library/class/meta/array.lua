@@ -1,5 +1,5 @@
 --- Array数据结构，常用于有序规整kv类型的遍历与取值
----@class Array
+---@class Array:Meta
 local _index = Meta(ArrayClass)
 
 --- 数据重置

@@ -5,13 +5,14 @@
 ---@class Vast
 local _index = { _type = "Vast" }
 
----@private
+---@protected
 function _index:destruct()
     sync.must()
     event.syncTrigger(self, eventKind.classDestruct, { triggerObject = self })
 end
 
 --- 继承
+---@protected
 ---@param superName string
 ---@return self
 function _index:extend(superName)
@@ -25,6 +26,7 @@ function _index:extend(superName)
     return self
 end
 
+--- 获取对象ID
 ---@return string
 function _index:id()
     return self._id

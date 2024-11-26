@@ -1,5 +1,5 @@
 --- 异步计帧器
----@class TimerAsync
+---@class TimerAsync:Meta
 local _index = Meta(TimerAsyncClass)
 
 ---@protected

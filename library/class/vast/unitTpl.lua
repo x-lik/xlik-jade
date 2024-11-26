@@ -245,6 +245,13 @@ function _index:material(variety)
     return self:modify("material", variety)
 end
 
+--- 预配置默认攻击模式
+---@param variety Assault
+---@return self|Assault
+function _index:assault(variety)
+    return self:modify("assault", variety)
+end
+
 --- 单位武器声音模式
 --- 默认1，可选2
 --- 1为击中时发声，2为攻击点动作时发声
@@ -371,12 +378,6 @@ end
 ---@return self|number
 function _index:corpse(variety)
     return self:modify("corpse", variety)
-end
---- 预配置默认攻击模式
----@param variety Assault
----@return self|Assault
-function _index:assault(variety)
-    return self:modify("assault", variety)
 end
 
 --- 单位Tpl

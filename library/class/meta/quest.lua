@@ -1,7 +1,8 @@
 --- 魔兽自带F9任务控制
----@class Quest
+---@class Quest:Meta
 local _index = Meta(QuestClass)
 
+---@protected
 function _index:destruct()
     J.DestroyQuest(self._handle)
     J.HandleUnRef(self._handle)
@@ -9,6 +10,7 @@ function _index:destruct()
     class.cache(QuestClass)[self._title] = nil
 end
 
+--- 设置图标
 ---@param icon string 图标路径
 ---@return self
 function _index:setIcon(icon)
@@ -65,6 +67,7 @@ function _index:flash()
     J.FlashQuestDialogButton()
 end
 
+--- 任务
 ---@param title string 唯一标题，F9内内容一般标题唯一，以此标准作为唯一键
 ---@return Quest
 function Quest(title)

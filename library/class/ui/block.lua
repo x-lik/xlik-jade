@@ -14,7 +14,7 @@ function _index:construct()
     end
 end
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIBlockClass)[self._key] = nil
     if (true == self._blocking) then

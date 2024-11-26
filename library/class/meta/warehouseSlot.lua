@@ -1,8 +1,8 @@
 --- 玩家仓库，自定义玩家仓库栏数据结构
----@class WarehouseSlot
+---@class WarehouseSlot:Meta
 local _index = Meta(WarehouseSlotClass)
 
----@private
+---@protected
 function _index:destruct()
     ---@type Item[]
     local s = self._storage
@@ -16,6 +16,7 @@ function _index:destruct()
     self._storage = nil
 end
 
+--- 获取绑定玩家
 ---@return Player
 function _index:bindPlayer()
     return self._bindPlayer
@@ -119,7 +120,7 @@ function _index:has(whichTpl)
 end
 
 --- 触发变化
----@private
+---@protected
 ---@return void
 function _index:triggerChange()
     event.syncTrigger(self._bindPlayer, eventKind.playerWarehouseChange, { triggerSlot = self })
@@ -280,6 +281,7 @@ function _index:drop(index, x, y)
     self:triggerChange()
 end
 
+--- 玩家仓库
 ---@param bindPlayer Player 绑定玩家
 ---@return WarehouseSlot
 function WarehouseSlot(bindPlayer)

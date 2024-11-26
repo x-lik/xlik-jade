@@ -50,7 +50,7 @@ function _index:construct()
     end
 end
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIBarClass)[self._key] = nil
 end

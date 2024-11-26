@@ -12,7 +12,7 @@ function _index:construct()
         :relation(UI_ALIGN_CENTER, self, UI_ALIGN_CENTER, 0, 0)
 end
 
----@private
+---@protected
 function _index:destruct()
     class.cache(UIBackdropClass)[self._key] = nil
 end

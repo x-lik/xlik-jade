@@ -1,5 +1,5 @@
 --- AI，自定义设定行为定义
----@class AI
+---@class AI:Meta
 local _index = Meta(AIClass, {
     _1st = "idle",
 })

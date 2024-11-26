@@ -1,6 +1,6 @@
 --- 任务执行
 --- 构建业务队列，按序执行
----@class Task
+---@class Task:Meta
 local _index = Meta(TaskClass)
 
 ---@protected
@@ -9,7 +9,6 @@ function _index:destruct()
 end
 
 --- 制定一个任务并加入队列中
----@param name string 任务队列名
 ---@param task function
 ---@return void
 function _index:develop(task)

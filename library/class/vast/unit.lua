@@ -4,7 +4,7 @@
 ---@class Unit:UnitTpl
 local _index = Vast(UnitClass)
 
----@private
+---@protected
 function _index:destruct()
     self:enchantSubtractAll()
     Group(UnitClass):remove(self)
@@ -55,7 +55,7 @@ function _index:tpl()
     return self._tpl
 end
 
---- handle
+--- 获取handle
 ---@return number
 function _index:handle()
     return self._handle

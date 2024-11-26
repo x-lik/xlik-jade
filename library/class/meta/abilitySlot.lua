@@ -1,12 +1,12 @@
 --- 单位技能栏
 --- 自定义单位技能栏数据结构
----@class AbilitySlot
+---@class AbilitySlot:Meta
 local _index = Meta(AbilitySlotClass, {
     _tail = 0, -- 技能最后位置索引
     _tailAuto = 0, -- 程序自动技能最后位置索引
 })
 
----@private
+---@protected
 function _index:destruct()
     ---@type Ability[]
     local s = self._storage
@@ -20,6 +20,7 @@ function _index:destruct()
     self._storage = nil
 end
 
+--- 获取绑定单位
 ---@return Unit
 function _index:bindUnit()
     return self._bindUnit
@@ -119,6 +120,7 @@ function _index:has(whichTpl)
 end
 
 --- 触发变化
+---@protected
 ---@return void
 function _index:triggerChange()
     local tailAuto
