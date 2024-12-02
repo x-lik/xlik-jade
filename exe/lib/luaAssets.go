@@ -624,10 +624,6 @@ func (app *App) asUI(data []string) []string {
 								p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
 								p = strings.Replace(path, ".mdx", ".mdl", -1)
 								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
-							//case ".wav", ".mp3":
-							//	p := strings.Replace(path, "/", "\\", -1)
-							//	p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
-							//	asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
 							default:
 								pterm.Warning.Println("【套件】不支持资源 " + asName)
 							}
