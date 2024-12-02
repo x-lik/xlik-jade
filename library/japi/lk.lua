@@ -183,19 +183,37 @@ function japi.AssetsSpeech(name)
 end
 
 --- 获取UI套件内的资源
---- 如要获取 xlik_plate/assets/bar/blue.tga 则 kit,alias='xlik_plate','assets/bar/blue'
+--- 如要获取 xlik_plate/assets/bar/blue.tga 则 kit='xlik_plate',alias='assets/bar/blue.tga' 或 'assets/bar/blue'
 ---@param kit string 如 xlik_plate
 ---@param alias string 如 attack/01 ; UI套件内的assets会自动引入到项目中而无需手动引入，以左斜杠的别称即可
 ---@param backup string ui资源不存在时的备用资源搜索策略，如 'image'|'model',常用最多只有image可自行拓展
 ---@return string
 function japi.AssetsUI(kit, alias, backup)
-    if (nil ~= japi._assets.ui and nil ~= japi._assets.ui[kit] and nil ~= japi._assets.ui[kit][alias]) then
-        return japi._assets.ui[kit][alias]
+    if (nil ~= japi._assets.ui and nil ~= japi._assets.ui[kit]) then
+        if (nil ~= japi._assets.ui[kit][alias]) then
+            return japi._assets.ui[kit][alias]
+        end
+        local ext = {
+            image = { ".tga", ".blp" },
+            model = { ".mdx" },
+        }
+        if (nil ~= ext[backup]) then
+            local path
+            for _, e in ipairs(ext[backup]) do
+                if (nil ~= japi._assets.ui[kit][alias .. e]) then
+                    path = japi._assets.ui[kit][alias .. e]
+                    break
+                end
+            end
+            if (nil ~= path) then
+                return path
+            end
+        end
     end
-    if backup == "image" then
-        alias = japi.AssetsImage(alias)
-    elseif backup == "model" then
-        alias = japi.AssetsModel(alias)
+    if (backup == "image") then
+        return japi.AssetsImage(alias)
+    elseif (backup == "model") then
+        return japi.AssetsModel(alias)
     end
     return alias
 end

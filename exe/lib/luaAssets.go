@@ -614,17 +614,20 @@ func (app *App) asUI(data []string) []string {
 							asName = asName[1:]
 							asName = strings.Replace(asName, "\\", "/", -1)
 							ext := filepath.Ext(path)
-							asAlias := strings.Replace(asName, ext, ``, 1)
 							switch ext {
-							case ".wav", ".mp3", ".blp", ".tga":
+							case ".blp", ".tga":
 								p := strings.Replace(path, "/", "\\", -1)
 								p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
-								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asAlias)+`,`+strconv.Quote(p)+`)`)
+								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
 							case ".mdx":
 								p := strings.Replace(path, "/", "\\", -1)
 								p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
 								p = strings.Replace(path, ".mdx", ".mdl", -1)
-								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asAlias)+`,`+strconv.Quote(p)+`)`)
+								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
+							//case ".wav", ".mp3":
+							//	p := strings.Replace(path, "/", "\\", -1)
+							//	p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
+							//	asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
 							default:
 								pterm.Warning.Println("【套件】不支持资源 " + asName)
 							}
