@@ -378,15 +378,6 @@ function japi.KK_MapOrderNum()
     return japi.DZ_RequestExtraIntegerData(109, nil, nil, nil, false, 0, 0, 0)
 end
 
---- 发送云脚本数据
----@param whichPlayer number 玩家
----@param eventName string 事件
----@param payload string 数据
----@return boolean
-function japi.KK_MlScriptEvent(whichPlayer, eventName, payload)
-    return japi.DZ_RequestExtraBooleanData(110, whichPlayer, eventName, payload, false, 0, 0, 0)
-end
-
 --- 获取商城道具最后变动的数量（新增/删除）
 --- 事件响应 - 商城道具最后变动的数量
 --- 获取的是当次玩家商城背包新增或消耗的数量，如果是时效型道具获取的是剩余时间
@@ -396,4 +387,13 @@ end
 ---@return number integer 最后更新的数量
 function japi.KK_GetMallItemUpdateCount(whichPlayer, key)
     return japi.DZ_RequestExtraIntegerData(110, whichPlayer, key, nil, false, 0, 0, 0)
+end
+
+--- 发送云脚本数据
+---@param whichPlayer number 玩家
+---@param eventName string 事件
+---@param payload string 数据
+---@return boolean
+function japi.KK_MlScriptEvent(whichPlayer, eventName, payload)
+    return japi.DZ_RequestExtraBooleanData(1009, whichPlayer, eventName, payload, false, 0, 0, 0)
 end
