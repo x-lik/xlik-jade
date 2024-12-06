@@ -229,7 +229,9 @@ end
 ---@param data string
 ---@return boolean
 function japi.KK_InitializeGameKey(whichPlayer, setIndex, k, data)
-    return japi.DZ_RequestExtraBooleanData(91, whichPlayer, '[{"name":"' .. data .. '","key":"' .. k .. '"}]', nil, false, setIndex, 0, 0)
+    local k1, v1 = '"' .. "name" .. '"', '"' .. data .. '"'
+    local k2, v2 = '"' .. "key" .. '"', '"' .. k .. '"'
+    return japi.DZ_RequestExtraBooleanData(91, whichPlayer, '[{' .. k1 .. ':' .. v1 .. ',' .. k2 .. ':' .. v2 .. '}]', nil, false, setIndex, 0, 0)
 end
 
 --- 获取当前玩家在平台的身份类型（主播/职业选手）
