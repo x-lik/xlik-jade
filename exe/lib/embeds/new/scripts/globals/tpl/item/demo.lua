@@ -1,6 +1,6 @@
 ---@param getData eventOnItemGet
 TPL_ITEM.DEMO = ItemTpl()
-    --:model("???") -- 默认就是物品宝箱
+--:model("???") -- 默认就是物品宝箱
     :name("勇气之剑")
     :description("就是一把剑")
     :bindAbilityTpl(TPL_ABILITY.DEMO)

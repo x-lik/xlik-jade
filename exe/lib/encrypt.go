@@ -46,7 +46,7 @@ func (app *App) encryptAnalysis() map[string][]string {
 				if rule[v] != `` {
 					rep := strings.Split(rule[v], `|`)
 					for _, re := range rep {
-						reg, _ := regexp.Compile(`(?m)` + re)
+						reg := regexp.MustCompile(`(?m)` + re)
 						match := reg.FindAllStringSubmatch(content, -1)
 						for _, m := range match {
 							if v == `self` && selfBan[m[1]] == true {
@@ -62,6 +62,7 @@ func (app *App) encryptAnalysis() map[string][]string {
 		replLua("embeds/lua/engine/engine.lua", map[string]string{`repl`: "^(J\\.\\w+) = "})
 		app.EncryptAnalysis[`del`] = append(app.EncryptAnalysis[`del`], `J = {}`)
 		replLua("embeds/lua/engine/pairx.lua", map[string]string{`repl`: "^function (pairx)\\("})
+		replLua("embeds/lua/slk/assets.lua", map[string]string{`repl`: "^function (\\w+)\\("})
 		replLua("embeds/lua/slk/slk.lua", map[string]string{`repl`: "^function (\\w+)\\("})
 		encryptFiles := []string{
 			app.Path.Library + `/encrypt.yaml`,
@@ -78,7 +79,7 @@ func (app *App) encryptAnalysis() map[string][]string {
 				}
 			}
 		}
-		reg, _ := regexp.Compile(`\bLK_[A-Z0-9_]+\b`)
+		reg := regexp.MustCompile(`\bLK_[A-Z0-9_]+\b`)
 		match := reg.FindAllStringSubmatch(codesContent(), -1)
 		for _, m := range match {
 			app.EncryptAnalysis[`force`] = append(app.EncryptAnalysis[`force`], m[0])

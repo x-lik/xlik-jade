@@ -100,7 +100,7 @@ func asExt(src string, set string) string {
 func asCheck(names map[string][]string) {
 	content := codesContent()
 	check := make(map[string]int)
-	reg, _ := regexp.Compile(`[一-龥，。！、（）【】；：“”《》？…]+`)
+	reg := regexp.MustCompile(`[一-龥，。！、（）【】；：“”《》？…]+`)
 	mcn := reg.FindAllString(content, -1)
 	if len(mcn) > 0 {
 		for _, s := range mcn {
@@ -111,7 +111,7 @@ func asCheck(names map[string][]string) {
 			}
 		}
 	}
-	reg, _ = regexp.Compile(`"[<>0-9A-Za-z._:!,/+\\-]{2,}"`)
+	reg = regexp.MustCompile(`"[<>0-9A-Za-z._:!,/+\\-]{2,}"`)
 	m := reg.FindAllString(content, -1)
 	if len(m) > 0 {
 		for _, s := range m {
@@ -448,7 +448,7 @@ func (app *App) asModel(data [][]string) {
 			mData, _ := fileutil.ReadFileToString(srcPath)
 			mData = strings.Replace(mData, "\r", "", -1)
 			mData = strings.Replace(mData, "\r", "", -1)
-			reg, _ := regexp.Compile("(?i)war3mapTextures(.*?)(.blp)")
+			reg := regexp.MustCompile("(?i)war3mapTextures(.*?)(.blp)")
 			textures := reg.FindAllString(mData, -1)
 			if len(textures) > 0 {
 				ti := 0

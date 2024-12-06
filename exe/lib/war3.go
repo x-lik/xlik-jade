@@ -109,12 +109,12 @@ func (app *App) War3map() {
 			execGlobals = lo.Shuffle[string](execGlobals)
 
 			reContent := strings.Join(execGlobals, "\r\n") + "\r\nendglobals"
-			reg, _ := regexp.Compile("endglobals")
+			reg := regexp.MustCompile("endglobals")
 			war3mapContent = reg.ReplaceAllString(war3mapContent, reContent)
 
 			reLua := "call Cheat(" + strings.Join(execLua, "+") + "+\"\\\"\"+" + strings.Join(execCheatSha1, "+") + "+\"\\\"\")"
 			reContent = "function InitGlobals takes nothing returns nothing\r\n    " + "set prevReadToken = CreateUnit(Player(15),'hfoo',0,0,0)\r\n    " + reLua
-			reg, _ = regexp.Compile("function InitGlobals takes nothing returns nothing")
+			reg = regexp.MustCompile("function InitGlobals takes nothing returns nothing")
 			war3mapContent = reg.ReplaceAllString(war3mapContent, reContent)
 
 			// merge

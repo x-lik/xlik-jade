@@ -64,13 +64,13 @@ func (app *App) WE() {
 				luaStr, _ := fileutil.ReadFileToString(path)
 				luaStr = strings.Replace(luaStr, "\r\n", "\n", -1)
 				luaStr = strings.Replace(luaStr, "\r", "\n", -1)
-				reg, _ := regexp.Compile("--(.*)\\[\\[[\\s\\S]*?\\]\\]")
+				reg := regexp.MustCompile("--(.*)\\[\\[[\\s\\S]*?\\]\\]")
 				luaStr = reg.ReplaceAllString(luaStr, "")
-				reg, _ = regexp.Compile("--(.*)")
+				reg = regexp.MustCompile("--(.*)")
 				luaStr = reg.ReplaceAllString(luaStr, "")
 				luaStrs := strings.Split(luaStr, "\n")
 				for _, ls := range luaStrs {
-					reg, _ = regexp.Compile(`(?ms)assets_terrain\(\"(.*?)\"`)
+					reg = regexp.MustCompile(`(?ms)assets_terrain\(\"(.*?)\"`)
 					luaMs := reg.FindStringSubmatch(ls)
 					if len(luaMs) >= 2 {
 						if terrain != "" {

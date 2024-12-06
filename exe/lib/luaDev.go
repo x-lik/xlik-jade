@@ -249,7 +249,7 @@ func (app *App) luaDev() string {
 	// 拼接 slk ini
 	iniKeys := []string{"ability", "unit", "item", "destructable", "doodad", "buff", "upgrade"}
 	iniF6 := make(map[string]string)
-	reg, _ := regexp.Compile("\\[[A-Za-z][A-Za-z\\d]{3}]")
+	reg := regexp.MustCompile("\\[[A-Za-z][A-Za-z\\d]{3}]")
 	var idIni []string
 	for _, k := range iniKeys {
 		iniF6[k] = slkIni(app.BuildDstPath + "/table/" + k + ".ini")
@@ -429,7 +429,7 @@ func (app *App) luaDev() string {
 	settingCode = strings.Replace(settingCode, "---lk:placeholder assets", asCodes, 1)
 	// map name
 	wj, _ := fileutil.ReadFileToString(app.BuildDstPath + "/map/war3map.j")
-	reg, _ = regexp.Compile("SetMapName\\(\"(.*)\"\\)")
+	reg = regexp.MustCompile("SetMapName\\(\"(.*)\"\\)")
 	sm := reg.FindAllStringSubmatch(wj, 1)
 	if len(sm) > 0 {
 		mapName := sm[0][1]

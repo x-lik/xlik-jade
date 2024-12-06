@@ -35,7 +35,7 @@ func (app *App) EncryptLua(data []LuaFile) {
 	content := codesContent()
 	//
 	spinner.UpdateText("中文汉字等效分析中...")
-	reg, _ := regexp.Compile(`[一-龥，。！、（）【】；：“”《》？…]+`)
+	reg := regexp.MustCompile(`[一-龥，。！、（）【】；：“”《》？…]+`)
 	mcn := reg.FindAllString(content, -1)
 	wcn := make(map[string]int)
 	wci := rand.Intn(33) + 3
@@ -69,7 +69,7 @@ func (app *App) EncryptLua(data []LuaFile) {
 	//
 	spinner.UpdateText("字串等效分析中...")
 	var strParse []string
-	reg, _ = regexp.Compile(`"[<>@\|0-9A-Za-z._:!,/+\\-]{2,}"`)
+	reg = regexp.MustCompile(`"[<>@\|0-9A-Za-z._:!,/+\\-]{2,}"`)
 	m := reg.FindAllString(content, -1)
 	if len(m) > 0 {
 		for _, s := range m {
@@ -150,7 +150,7 @@ func (app *App) EncryptLua(data []LuaFile) {
 
 	// 数学繁杂化
 	spinner.UpdateText("数学算术异化中...")
-	reg, _ = regexp.Compile(` ([1-9][0-9]*) `)
+	reg = regexp.MustCompile(` ([1-9][0-9]*) `)
 	nu := reg.FindAllStringSubmatch(content, -1)
 	var ns []int
 	for _, n := range nu {
@@ -222,7 +222,7 @@ func (app *App) EncryptLua(data []LuaFile) {
 	for _, w := range fun {
 		wn := NanoOL(Rand(11, 17))
 		app.EncryptResults["精准函数"][w] = wn
-		reg, _ = regexp.Compile(`\b` + w + `\(`)
+		reg = regexp.MustCompile(`\b` + w + `\(`)
 		content = reg.ReplaceAllString(content, wn+`(`)
 	}
 	pterm.Success.Println("【混淆】精准函数已处理 " + strconv.Itoa(len(fun)) + " 个数据")
@@ -238,7 +238,7 @@ func (app *App) EncryptLua(data []LuaFile) {
 	for _, w := range force {
 		wn := NanoOL(Rand(11, 17))
 		app.EncryptResults["强制词根"][w] = wn
-		reg, _ = regexp.Compile(`\b` + w + `\b`)
+		reg = regexp.MustCompile(`\b` + w + `\b`)
 		content = reg.ReplaceAllString(content, wn)
 	}
 	pterm.Success.Println("【混淆】强制词根已处理 " + strconv.Itoa(len(force)) + " 个数据")

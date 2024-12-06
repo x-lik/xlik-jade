@@ -49,9 +49,9 @@ func luaZip(src string) string {
 	}
 	content = strings.Replace(content, "\r\n", "\n", -1)
 	content = strings.Replace(content, "\r", "\n", -1)
-	reg, _ := regexp.Compile("\\s*--.*\\[\\[[\\s\\S]*?\\]\\]")
+	reg := regexp.MustCompile("\\s*--.*\\[\\[[\\s\\S]*?\\]\\]")
 	content = reg.ReplaceAllString(content, "")
-	reg, _ = regexp.Compile("\\s*--.*")
+	reg = regexp.MustCompile("\\s*--.*")
 	content = reg.ReplaceAllString(content, "")
 	cta := strings.Split(content, "\n")
 	var ctn []string
@@ -139,7 +139,7 @@ func (app *App) luaSetup() string {
 	}
 	// asyncRand
 	var asyncRandIn [][]string
-	reg, _ := regexp.Compile(`japi.AsyncRand\((.+?),(.+?)\)`)
+	reg := regexp.MustCompile(`japi.AsyncRand\((.+?),(.+?)\)`)
 	matches := reg.FindAllStringSubmatch(content, -1)
 	if len(matches) > 0 {
 		for _, a := range matches {
@@ -231,7 +231,7 @@ func (app *App) luaSetup() string {
 	l, _ = Embeds.ReadFile("embeds/lua/setup/keyboard.lua")
 	ls := string(l)
 	if !isSimplify {
-		reg, _ = regexp.Compile(`keyboard\.code\[(.*?)\]`)
+		reg = regexp.MustCompile(`keyboard\.code\[(.*?)\]`)
 		matches = reg.FindAllStringSubmatch(content, -1)
 		if len(matches) > 0 {
 			var keycodes []string

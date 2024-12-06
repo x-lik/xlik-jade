@@ -39,7 +39,7 @@ func stack() string {
 		pwd = strings.Replace(pwd, "\\", "/", -1)
 		p := strings.Split(pwd, "/")
 		tiny := strings.Join(p[len(p)-2:], "/")
-		reg, _ := regexp.Compile("(\\s+)(.*?)+/" + tiny)
+		reg := regexp.MustCompile("(\\s+)(.*?)+/" + tiny)
 		res = reg.ReplaceAllString(res, "$1/xlik")
 		pterm.Debug.Println(res)
 	}

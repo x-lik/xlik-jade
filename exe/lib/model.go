@@ -169,13 +169,13 @@ func (app *App) ModelMap(class string, filter string, page int) {
 						luaStr, _ := fileutil.ReadFileToString(path)
 						luaStr = strings.Replace(luaStr, "\r\n", "\n", -1)
 						luaStr = strings.Replace(luaStr, "\r", "\n", -1)
-						reg, _ := regexp.Compile("--(.*)\\[\\[[\\s\\S]*?\\]\\]")
+						reg := regexp.MustCompile("--(.*)\\[\\[[\\s\\S]*?\\]\\]")
 						luaStr = reg.ReplaceAllString(luaStr, "")
-						reg, _ = regexp.Compile("--(.*)")
+						reg = regexp.MustCompile("--(.*)")
 						luaStr = reg.ReplaceAllString(luaStr, "")
 						luaStrs := strings.Split(luaStr, "\n")
 						for _, ls := range luaStrs {
-							reg, _ = regexp.Compile(`(?ms)assets_model\(\"(.*?)\"`)
+							reg = regexp.MustCompile(`(?ms)assets_model\(\"(.*?)\"`)
 							luaMs := reg.FindStringSubmatch(ls)
 							if len(luaMs) >= 2 {
 								// 过滤
@@ -209,7 +209,7 @@ func (app *App) ModelMap(class string, filter string, page int) {
 								CopyFile(modelFile, dstPath+"/war3mapModel/"+name+".mdx")
 								modelStr, _ := fileutil.ReadFileToString(modelFile)
 								modelStr = strings.Replace(modelStr, "\r", "", -1)
-								reg, _ := regexp.Compile("(?i)war3mapTextures(.*?)(.blp)")
+								reg := regexp.MustCompile("(?i)war3mapTextures(.*?)(.blp)")
 								textures := reg.FindAllString(modelStr, -1)
 								if len(textures) > 0 {
 									for _, t := range textures {
