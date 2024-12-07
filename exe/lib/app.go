@@ -81,7 +81,7 @@ func (app *App) Init() {
 			app.Pwd, _ = os.Getwd()
 		} else {
 			if !fileutil.IsExist(y.Pwd + "/env.yaml") {
-				pterm.Info.Println("<env.yaml>当前配置参数" + envTxt("pwd") + "无效:" + y.Pwd)
+				pterm.Info.Println("<env.yaml>当前配置参数" + envTxt("pwd") + "无效:'" + y.Pwd + "'")
 				os.Exit(0)
 			}
 		}
@@ -90,12 +90,12 @@ func (app *App) Init() {
 		//
 		app.Path.Projects = app.Pwd + "/projects"
 		app.Path.Logs = app.Pwd + "/logs"
-		app.Path.Temp = app.Pwd + "/temp"
 		app.Path.Library = app.Pwd + "/library"
+		app.Path.Temp = app.Pwd + "/.tmp"
 		// war3
 		app.Path.War3 = app.absPath(y.War3)
 		if !fileutil.IsExist(app.Path.War3 + "/War3.exe") {
-			pterm.Error.Println("<env.yaml>当前配置" + envTxt("war3") + "无效:" + y.War3)
+			pterm.Error.Println("<env.yaml>当前配置" + envTxt("war3") + "无效:'" + y.War3 + "'")
 			pterm.Info.Println("可前往 https://www.hunzsig.com/download.html 获取war3客户端开发专用版")
 			os.Exit(0)
 		}
@@ -107,26 +107,26 @@ func (app *App) Init() {
 		// we
 		app.Path.WE = app.absPath(y.We)
 		if !fileutil.IsDir(app.Path.WE) {
-			pterm.Error.Println("<env.yaml>当前配置" + envTxt("we") + "无效:" + y.We)
+			pterm.Error.Println("<env.yaml>当前配置" + envTxt("we") + "无效:'" + y.We + "'")
 			pterm.Info.Println("可前往 https://github.com/x-lik-vendor 获取工具支持")
 			os.Exit(0)
 		}
 		if !fileutil.IsExist(app.Path.WE + "/bin/WEConfig.exe") {
-			pterm.Error.Println("<env.yaml>当前配置" + envTxt("we") + "无效:" + y.We)
+			pterm.Error.Println("<env.yaml>当前配置" + envTxt("we") + "无效:'" + y.We + "'")
 			pterm.Info.Println("可前往 https://github.com/x-lik-vendor 获取工具支持")
 			os.Exit(0)
 		}
 		// w3x2lni
 		app.Path.W3x2lni = app.absPath(y.W3x2lni)
 		if !fileutil.IsDir(app.Path.W3x2lni) {
-			pterm.Error.Println("<env.yaml>当前配置" + envTxt("w3x2lni") + "无效:" + y.W3x2lni)
+			pterm.Error.Println("<env.yaml>当前配置" + envTxt("w3x2lni") + "无效:'" + y.W3x2lni + "'")
 			pterm.Info.Println("可前往 https://github.com/x-lik-vendor 获取工具支持")
 			os.Exit(0)
 		}
 		// assets
 		app.Path.Assets = app.absPath(y.Assets)
 		if !fileutil.IsDir(app.Path.Assets) {
-			pterm.Error.Println("<env.yaml>当前配置" + envTxt("assets") + "无效:" + y.Assets)
+			pterm.Error.Println("<env.yaml>当前配置" + envTxt("assets") + "无效:'" + y.Assets + "'")
 			pterm.Info.Println("可前往 https://github.com/x-lik-vendor 获取工具支持")
 			os.Exit(0)
 		}

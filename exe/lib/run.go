@@ -41,8 +41,8 @@ func (app *App) Run() {
 		}
 	}
 	// 模式
-	isCache := false
-	isSemi := false
+	isCache := false // 额外模式，后面加符号[~]，如-l~  是否调用缓存启动（采用.tmp文件，常用于直接修改.tmp代码调试）
+	isSemi := false  // 额外模式，后面加符号[!]，如-l!  是否半构造（最后不启动，常用于看we生成结果调试）
 	mode := "-l"
 	app.BuildModeName = ""
 	modeLni := "slk"
@@ -103,6 +103,7 @@ func (app *App) Run() {
 			if app.BuildModeName == "_release" || app.BuildModeName == "_dist" {
 				_ = os.RemoveAll(app.BuildDstPath)
 			} else {
+				// 非release|dist采用非必要更替性覆盖（多余的资源文件将存留在.tmp中继续使用，除非有更新的同名文件覆盖它）
 				_ = os.Remove(app.BuildDstPath + "/.we")
 				_ = os.RemoveAll(app.BuildDstPath + "/map")
 				_ = os.RemoveAll(app.BuildDstPath + "/table")

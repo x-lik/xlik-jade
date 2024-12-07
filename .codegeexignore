@@ -1,0 +1,11 @@
+.tmp
+docs
+vendor/w3x2lni*
+vendor/WE*
+projects/*/w3x
+.gitignore
+env.yaml
+exbook.exe
+LICENSE
+README.md
+xlik.exe

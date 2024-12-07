@@ -27,7 +27,7 @@ func (app *App) Help() {
 	fmt.Println("┃     xlik.exe run [项目名] -b (构建模式)")
 	fmt.Println("┃     xlik.exe run [项目名] -d (发行模式)")
 	fmt.Println("┃     xlik.exe run [项目名] -r (成品模式)")
-	fmt.Println("┃     xlik.exe run [项目名] -l~ (各模式后加~号表示引用temp缓存打包开启测试)")
+	fmt.Println("┃     xlik.exe run [项目名] -l~ (各模式后加~号表示引用.tmp缓存打包开启测试)")
 	fmt.Println("┃     xlik.exe run [项目名] -l! (各模式后加!号表示只打包不开启测试)")
 	fmt.Println("┃")
 	fmt.Println("┃ - 清理缓存")
