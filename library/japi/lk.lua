@@ -23,8 +23,6 @@ japi._blackBordersInner = japi._blackBordersInner or 0.45
 ---@protected
 japi._blackBordersTop = japi._blackBordersTop or 0.020
 ---@protected
-japi._cameraLock = japi._cameraLock or nil
----@protected
 japi._cameraFieldDelay = japi._cameraFieldDelay or {}
 ---@protected
 japi._cameraField = japi._cameraField or {}
@@ -681,22 +679,6 @@ function japi.CameraGetField(key)
         japi._cameraField[key] = val
     end
     return japi._cameraField[key]
-end
-
---- 锁定镜头锁定某坐标
----@param x number
----@param y number
----@return void
-function japi.CameraLock(x, y)
-    if (type(x) == "number" and type(y) == "number") then
-        if japi.isSync() then
-            local tu = japi._cameraLock['0']
-            J.SetUnitPosition(tu, x, y)
-            J.SetCameraTargetController(tu, 0, 0, false)
-        else
-            sync.send("lk_cam_lok", { async._id, x, y })
-        end
-    end
 end
 
 --- X比例 转 像素

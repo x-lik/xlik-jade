@@ -33,8 +33,6 @@ J.TriggerAddAction(tgr, function()
         ---lk:placeholder start:asyncExecDelay
     end)
     
-    ---lk:placeholder start:cameraLock
-    
     --- sync同步处理
     local tgr2 = J.CreateTrigger()
     J.HandleRef(tgr2)

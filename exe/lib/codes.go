@@ -321,14 +321,6 @@ func (app *App) luaStart() string {
 		l, _ = Embeds.ReadFile("embeds/lua/start/asyncExecDelay.lua")
 		scripts = strings.Replace(scripts, "---lk:placeholder start:asyncExecDelay", string(l), 1)
 	}
-	// CameraLock
-	isCount = orCount(content, map[string]int{
-		"japi.CameraLock(": 2,
-	})
-	if isSimplify || isCount {
-		l, _ = Embeds.ReadFile("embeds/lua/start/cameraLock.lua")
-		scripts = strings.Replace(scripts, "---lk:placeholder start:cameraLock", string(l), 1)
-	}
 	// zInit
 	isCount = orCount(content, map[string]int{
 		"japi.Z(": 2,
