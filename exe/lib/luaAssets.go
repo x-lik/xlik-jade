@@ -111,7 +111,7 @@ func asCheck(names map[string][]string) {
 			}
 		}
 	}
-	reg = regexp.MustCompile(`"[<>0-9A-Za-z._:!,/+\\-]{2,}"`)
+	reg = regexp.MustCompile(`"[<>0-9A-Za-z._:!*,/+\\-]{2,}"`)
 	m := reg.FindAllString(content, -1)
 	if len(m) > 0 {
 		for _, s := range m {
@@ -162,10 +162,10 @@ func asDetect(kind string, path string, alias string, srcPath string) bool {
 // path 配置的第1个路径参数
 // alias 配置的别称参数
 // 返回: 标识值,资源路径,额外数据
-func (app *App) asPathAnalysis(kind string, path string, alias string) (bool, string, string) {
+func (app *App) asAnalysisFile(kind string, path string, alias string) (bool, string, string) {
 	support := asTypes[kind]
 	if len(support.Ext) < 1 {
-		Panic("asPathAnalysis:" + kind)
+		Panic("asAnalysisFile:" + kind)
 	}
 	analyser := strings.Replace(path, "/", "\\", -1)
 	ext := filepath.Ext(analyser)
@@ -185,7 +185,6 @@ func (app *App) asPathAnalysis(kind string, path string, alias string) (bool, st
 	}
 	// 资源来源，war3资源的优先级别是最低的
 	// assets优先级最高，再是project/resource，最后才是war3
-	// assets资源
 	aFile := app.Path.Assets + "\\" + support.Path + "\\" + analyser
 	if fileutil.IsExist(aFile) {
 		aTail := strings.Replace(asExt(alias, ext), "/", "\\", -1)
@@ -253,12 +252,77 @@ func (app *App) asPathAnalysis(kind string, path string, alias string) (bool, st
 		time.Sleep(time.Second)
 		return false, asPath, exData
 	}
-	if asDetect(kind, path, alias, asPath) {
-		if kind != "vwp-voice" {
-			asChecker[kind] = append(asChecker[kind], alias)
-		}
-	}
 	return true, asPath, exData
+}
+
+// kind 资源种类
+// path 配置的第1个路径参数
+// alias 配置的别称参数
+// 返回: 标识值,资源路径,额外数据
+func (app *App) asAnalysisPath(kind string, path string, alias string) (bool, string, string) {
+	support := asTypes[kind]
+	if len(support.Ext) < 1 {
+		Panic("asAnalysisPath:" + kind)
+	}
+	analyser := strings.Replace(path, "/", "\\", -1)
+	if analyser[len(analyser)-2:] == `\*` {
+		// 序列模式
+		analyser = analyser[:len(analyser)-2]
+		aRoot := app.Path.Assets + "\\" + support.Path + "\\"
+		seq := aRoot + analyser
+		if !fileutil.IsDir(seq) {
+			r := analyser
+			if 0 == strings.Index(analyser, "resource\\") {
+				r = strings.Replace(analyser, "resource\\", "", 1)
+			}
+			seq = app.Path.Projects + "\\" + app.ProjectName + "\\w3x\\resource\\" + r
+		}
+		if fileutil.IsDir(seq) {
+			var segList []string
+			err := filepath.Walk(seq, func(path string, info os.FileInfo, err error) error {
+				if err != nil {
+					return err
+				}
+				if !fileutil.IsDir(path) {
+					file := strings.Replace(path, aRoot, "", -1)
+					status, ap, _ := app.asAnalysisFile(kind, file, file)
+					if status {
+						segList = append(segList, ap)
+					}
+				}
+				return nil
+			})
+			if err != nil {
+				Panic(err)
+			}
+			if len(segList) > 0 {
+				for k, v := range segList {
+					segList[k] = strconv.Quote(v)
+				}
+				asPath := `{` + strings.Join(segList, `,`) + `}`
+				exData := strconv.Itoa(len(segList))
+				if asDetect(kind, path, alias, asPath) {
+					asChecker[kind] = append(asChecker[kind], alias)
+				}
+				return true, asPath, exData
+			}
+		}
+		pterm.Error.Println(support.Name + "：资源序列不存在 " + path)
+		time.Sleep(time.Second)
+		return false, ``, ``
+	} else {
+		// 单例模式
+		status, asp, ed := app.asAnalysisFile(kind, path, alias)
+		if !status {
+			return false, asp, ed
+		}
+		if asDetect(kind, path, alias, asp) {
+			if kind != "vwp-voice" {
+				asChecker[kind] = append(asChecker[kind], alias)
+			}
+		}
+		return true, asp, ed
+	}
 }
 
 // asSelection 选择圈
@@ -413,14 +477,26 @@ func (app *App) asImage(data [][]string) {
 		a := strconv.Quote(asPath)
 		asScripts = append(asScripts, `assets_load("image",`+strings.Join([]string{alias, a}, ",")+`)`)
 	}
+	_regs := func(alias string, asPath string) {
+		alias = strconv.Quote(alias)
+		asScripts = append(asScripts, `assets_load("image",`+alias+`,`+asPath+`)`)
+	}
 	count := 0
 	for _, i := range data {
-		status, asPath, _ := app.asPathAnalysis("image", i[0], i[1])
+		status, asPath, exData := app.asAnalysisPath("image", i[0], i[1])
 		if !status {
 			continue
 		}
-		_reg(i[1], asPath)
-		count += 1
+		if `` == exData {
+			_reg(i[1], asPath)
+			count += 1
+		} else {
+			n, err := strconv.Atoi(exData)
+			if err == nil {
+				_regs(i[1], asPath)
+				count += n
+			}
+		}
 	}
 	pterm.Info.Println(asTypes["image"].Name + " 引入：" + strconv.Itoa(count) + "个")
 }
@@ -436,7 +512,7 @@ func (app *App) asModel(data [][]string) {
 	count := 0
 	count2 := 0
 	for _, i := range data {
-		status, asPath, srcPath := app.asPathAnalysis("model", i[0], i[1])
+		status, asPath, srcPath := app.asAnalysisPath("model", i[0], i[1])
 		if !status {
 			continue
 		}
@@ -486,7 +562,7 @@ func (app *App) asBGM(data [][]string) {
 	}
 	count := 0
 	for _, i := range data {
-		status, asPath, dur := app.asPathAnalysis("bgm", i[0], i[1])
+		status, asPath, dur := app.asAnalysisPath("bgm", i[0], i[1])
 		if !status {
 			continue
 		}
@@ -509,7 +585,7 @@ func (app *App) asVcm(data [][]string) {
 	}
 	count := 0
 	for _, i := range data {
-		status, asPath, dur := app.asPathAnalysis("vcm", i[0], i[1])
+		status, asPath, dur := app.asAnalysisPath("vcm", i[0], i[1])
 		if !status {
 			continue
 		}
@@ -532,7 +608,7 @@ func (app *App) asV3d(data [][]string) {
 	}
 	count := 0
 	for _, i := range data {
-		status, asPath, dur := app.asPathAnalysis("v3d", i[0], i[1])
+		status, asPath, dur := app.asAnalysisPath("v3d", i[0], i[1])
 		if !status {
 			continue
 		}
@@ -547,7 +623,7 @@ func (app *App) asVwp(data []string) {
 	count := 0
 	for _, yf := range data {
 		yf = strings.Replace(yf, ".yaml", "", -1)
-		status, _, yamlPath := app.asPathAnalysis("vwp", yf, yf)
+		status, _, yamlPath := app.asAnalysisPath("vwp", yf, yf)
 		if !status {
 			continue
 		}
@@ -564,7 +640,7 @@ func (app *App) asVwp(data []string) {
 			for material, paths := range y {
 				var voices []string
 				for _, path := range paths {
-					status2, asPath, dur := app.asPathAnalysis("vwp-voice", path, path)
+					status2, asPath, dur := app.asAnalysisPath("vwp-voice", path, path)
 					if !status2 {
 						continue
 					}
