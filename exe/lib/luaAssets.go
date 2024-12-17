@@ -658,7 +658,8 @@ func (app *App) asVwp(data []string) {
 func (app *App) asUI(data []string) []string {
 	var fdfs []string
 	for _, i := range data {
-		uiPath := app.Path.Assets + "/war3mapUI/" + i
+		i2 := strings.Replace(i, "\\", "/", -1)
+		uiPath := app.Path.Assets + "/war3mapUI/" + i2
 		if fileutil.IsDir(uiPath) {
 			uiTips := "【套件】引入：" + i
 			mainLua := uiPath + "/main.lua"
@@ -669,8 +670,8 @@ func (app *App) asUI(data []string) []string {
 				fdf := uiPath + "/main.fdf"
 				uiTips += `，确认main`
 				if fileutil.IsExist(fdf) {
-					fdfs = append(fdfs, "UI\\"+i+".fdf")
-					CopyFile(fdf, app.BuildDstPath+"/map/UI/"+i+".fdf")
+					fdfs = append(fdfs, "UI\\"+strings.Replace(i2, "/", "\\", -1)+".fdf")
+					CopyFile(fdf, app.BuildDstPath+"/map/UI/"+i2+".fdf")
 					uiTips += `，已引入fdf`
 				}
 				uiAssets := uiPath + "/assets"
@@ -679,7 +680,8 @@ func (app *App) asUI(data []string) []string {
 					if err2 != nil {
 						Panic(err2)
 					}
-					dstDir := app.BuildDstPath + "/resource/war3mapUI/" + i + "/assets"
+					dstDir := app.BuildDstPath + "/resource/war3mapUI/" + i2 + "/assets"
+					asRepl := strings.Replace(app.Path.Assets, "/", "\\", -1) + "\\"
 					err := filepath.Walk(uiASrc, func(path string, info os.FileInfo, err error) error {
 						if err != nil {
 							return err
@@ -693,11 +695,11 @@ func (app *App) asUI(data []string) []string {
 							switch ext {
 							case ".blp", ".tga":
 								p := strings.Replace(path, "/", "\\", -1)
-								p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
+								p = strings.Replace(p, asRepl, "", -1)
 								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
 							case ".mdx":
 								p := strings.Replace(path, "/", "\\", -1)
-								p = strings.Replace(p, strings.Replace(app.Path.Assets, "/", "\\", -1)+"\\", "", -1)
+								p = strings.Replace(p, asRepl, "", -1)
 								p = strings.Replace(path, ".mdx", ".mdl", -1)
 								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
 							default:

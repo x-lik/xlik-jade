@@ -87,7 +87,7 @@ func (app *App) luaDev() string {
 		}
 		codesIn(m)
 		// 记录以下后续需要用到的索引
-		if v == `blizzard` || v == `setting` || v == `debugRelease` {
+		if v == `blizzard` || v == `setting` || v == `debug` || v == `debugRelease` {
 			_idxPt[v] = i
 		}
 	}
@@ -478,7 +478,7 @@ func (app *App) luaDev() string {
 		connect := []string{coreName}
 		for i := 0; i < len(_codes); i++ {
 			nano := Nano(23)
-			if i == _idxPt[`debugRelease`] {
+			if i == _idxPt[`debug`] || i == _idxPt[`debugRelease`] {
 				connect = append(connect, nano)
 			}
 			if i != _idxPt[`debugRelease`] {
