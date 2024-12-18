@@ -21,7 +21,7 @@ lightning.type = {
     manaChain = { value = "LEAS", label = "魔法镣铐", model = "Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl" },
 }
 
---- 精简闪电特效
+--- 创建精简闪电特效
 ---@see lightning#type
 ---@param lightningKind table 看上面 lightning.type
 ---@param x1 number

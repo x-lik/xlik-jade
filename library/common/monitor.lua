@@ -7,7 +7,7 @@ monitor = monitor or {}
 --- 数据缓存
 monitor._cache = monitor._cache or {}
 
---- 构建监听器
+--- 创建监听器
 ---@param key string 唯一键
 ---@param frq number 周期间隔(秒)，每个周期会把受监听对象回调
 ---@param action monitorActionFunc 监听操作

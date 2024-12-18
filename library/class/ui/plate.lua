@@ -65,7 +65,7 @@ function _index:closer(enable, size, side, texture)
     return self
 end
 
---- 创建 UI 面板
+--- 构造UI面板对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._fdfName][默认 'LK_BACKDROP'] 改用某个fdf模版
 --- [constructs._closerTexture][默认 'interfaces/iconClose'] 关闭按钮贴图

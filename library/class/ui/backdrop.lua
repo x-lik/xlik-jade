@@ -54,7 +54,7 @@ function _index:block(status)
     return self
 end
 
---- 创建 UI 背景图
+--- 构造UI背景图对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._fdfName][默认 'LK_BACKDROP'] 改用某个fdf模版
 ---@param key string 索引名

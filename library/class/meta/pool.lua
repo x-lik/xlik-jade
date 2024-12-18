@@ -120,6 +120,7 @@ function _index:randEach(action)
     end
 end
 
+--- 构造Pool对象
 ---@param scope string
 ---@return Pool
 function Pool(scope)

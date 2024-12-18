@@ -150,7 +150,7 @@ function _index:text(content)
     return self
 end
 
---- 创建 UI 标签
+--- 构造UI标签对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._autoSize][默认 false] 是否自动尺寸(以文本尺寸为准)
 ---@param key string 索引名

@@ -68,14 +68,13 @@ function _index:position(x, y)
     J.SetImagePosition(self._handle, x - self._width / 2, y - self._height / 2, 0)
 end
 
---- 创建一个图像
+--- 创建一个图像对象
 --- 图像的贴图影响显示效果，当边上有非alpha像素时，容易造成渲染溢出，所以建议图四边都留1像素的透明边
 ---@param texture string
 ---@param width number
 ---@param height number
 ---@return Image
 function Image(texture, width, height)
-    sync.must()
     local h = J.CreateImage(texture, width, height, 0, -width / 2, -height / 2, 0, 0, 0, 0, 3)
     J.SetImageAboveWater(h, true, true)
     J.SetImageRenderAlways(h, true)

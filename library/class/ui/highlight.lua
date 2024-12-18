@@ -7,7 +7,7 @@ function _index:destruct()
     class.cache(UIHighlightClass)[self._key] = nil
 end
 
---- 创建 UI 高亮
+--- 构造UI高亮对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._fdfName][默认 'LK_HIGHLIGHT_HUMAN_CONSOLE'] 改用某个fdf模版
 ---@param key string 索引名

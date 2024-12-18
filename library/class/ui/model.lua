@@ -34,6 +34,7 @@ function _index:animate(animateId, autoCast)
     return self
 end
 
+--- 构造UI模型对象
 ---@param key string 索引名
 ---@param parent UI|nil 默认 UI_Game
 ---@return UIModel

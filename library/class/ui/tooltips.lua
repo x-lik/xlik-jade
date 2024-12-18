@@ -157,7 +157,7 @@ function _index:content(options)
     return self
 end
 
---- 创建 UI Tooltips
+--- 构造UITooltips信息对象
 ---@param index number 序号0框架保留使用，请使用其他1-3号序号或缺省（默认1）
 ---@return UITooltips
 function UITooltips(index)

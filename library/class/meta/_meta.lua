@@ -18,7 +18,7 @@ function _index:extend(superName)
     return self
 end
 
---- 构造Meta
+--- 构造Meta对象
 ---@param name string
 ---@param prototype table 原型数据
 ---@return Meta

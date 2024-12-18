@@ -17,7 +17,7 @@ function _index:destruct()
     end
 end
 
---- 获取是否循环计时器
+--- 获取是否为循环计时器
 ---@return boolean
 function _index:isInterval()
     return self._interval
@@ -107,6 +107,7 @@ function _index:resume()
     end
 end
 
+--- 构造同步计时器对象
 ---@param interval boolean
 ---@param period number
 ---@param call fun(curTimer:Timer):Timer

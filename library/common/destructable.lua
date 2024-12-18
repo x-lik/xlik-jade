@@ -6,6 +6,7 @@ destructable = destructable or {}
 ---@type any
 destructable._deadTrigger = destructable._deadTrigger or nil
 
+--- 获取装饰物SLK数据
 ---@param id string
 ---@return table
 function destructable.slk(id)
@@ -20,6 +21,7 @@ function destructable.slk(id)
     return v
 end
 
+--- 创建装饰物
 ---@param slkId string 原生ID[如WTst夏季树木]
 ---@param x number X坐标
 ---@param y number Y坐标

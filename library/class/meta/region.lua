@@ -361,7 +361,7 @@ function _index:onLeave(callFunc)
     return self
 end
 
---- 区域
+--- 构造区域对象
 ---@param name string 唯一标识名
 ---@param shape string | "'square'" | "'circle'"
 ---@param x number

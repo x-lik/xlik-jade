@@ -100,7 +100,7 @@ function _index:setReaction(reactEnchantKey, reactFunc)
     end
 end
 
---- 附魔
+--- 构造附魔对象
 ---@param key string
 ---@param name string 设置label名称，只有初始化生效
 ---@param strengthen number 设置初始化时附带的该属性强化(%)，如5，默认0，只有初始化生效

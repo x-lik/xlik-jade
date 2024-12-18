@@ -38,7 +38,7 @@ function _index:block(status)
     return self
 end
 
---- 创建 UI 阻挡器
+--- 构造UI阻挡器对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._blocking][默认 true] 阻碍状态
 ---@param key string 索引名

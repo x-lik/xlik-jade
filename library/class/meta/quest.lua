@@ -67,7 +67,7 @@ function _index:flash()
     J.FlashQuestDialogButton()
 end
 
---- 任务
+--- 构造F9任务对象
 ---@param title string 唯一标题，F9内内容一般标题唯一，以此标准作为唯一键
 ---@return Quest
 function Quest(title)

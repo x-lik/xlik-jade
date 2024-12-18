@@ -179,6 +179,7 @@ function _index:closest(options)
     return closer
 end
 
+--- 构造Group对象
 ---@param scope string
 ---@return Group
 function Group(scope)

@@ -45,7 +45,7 @@ function _index:run(data)
     end
 end
 
---- 流执行
+--- 构造流执行对象
 ---@param key string 唯一key
 ---@return Flow
 function Flow(key)

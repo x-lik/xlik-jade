@@ -101,8 +101,8 @@ function _index:over()
     end
 end
 
+--- 构造流程管理对象
 --[[
-    流程管理
     为流程定义onStart、onOver可绑定进入流程
     例子：(默认自带组方法，会打印流程的进出)
     local p = Process("test")

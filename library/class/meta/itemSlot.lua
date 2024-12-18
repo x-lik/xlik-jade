@@ -271,6 +271,7 @@ function _index:dropAll(x, y)
     end
 end
 
+--- 构造物品栏对象
 ---@param bindUnit Unit 绑定单位
 ---@return ItemSlot
 function ItemSlot(bindUnit)

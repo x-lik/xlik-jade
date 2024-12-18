@@ -442,6 +442,7 @@ function _index:onEvent(evt, ...)
     return self
 end
 
+--- 构造UI对象
 ---@param name string
 ---@param prototype table 原型数据
 ---@return UI

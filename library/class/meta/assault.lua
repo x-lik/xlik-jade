@@ -117,7 +117,7 @@ function _index:focus()
     return self._focus
 end
 
---- 攻击模式
+--- 构造攻击模式对象
 --- instant 立刻模式（指单位攻击动作结束无需过程瞬间就击中目标的情形）[默认]
 --- missile 弹道模式
 --- lightning 电链模式

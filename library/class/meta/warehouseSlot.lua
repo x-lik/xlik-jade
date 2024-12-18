@@ -281,7 +281,7 @@ function _index:drop(index, x, y)
     self:triggerChange()
 end
 
---- 玩家仓库
+--- 构造玩家仓库对象
 ---@param bindPlayer Player 绑定玩家
 ---@return WarehouseSlot
 function WarehouseSlot(bindPlayer)

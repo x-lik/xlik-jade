@@ -291,7 +291,7 @@ function _index:hotkeyRelation(point, upperPoint, x, y)
     return self
 end
 
---- 创建 UI 按钮
+--- 构造UI按钮对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._fdfName][默认 'LK_BACKDROP'] 改用某个fdf模版（按钮）
 --- [constructs._highlightFdfName][默认 'LK_HIGHLIGHT_HUMAN_CONSOLE'] 改用某个高亮fdf模版，可设为false关闭高亮

@@ -196,11 +196,13 @@ function _index:sort()
     return sa
 end
 
+--- 构造数组对象
 ---@return Array
 function Array()
     return oMeta({ _key = {}, _k2v = {} }, _index)
 end
 
+--- 是否为数组
 ---@param arr any
 ---@return boolean
 function isArray(arr)

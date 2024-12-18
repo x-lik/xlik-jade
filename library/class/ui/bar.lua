@@ -139,7 +139,7 @@ function _index:text(layout, content)
     return self
 end
 
---- 创建 UI 条
+--- 构造UI条对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._fdfName][默认 'LK_BACKDROP'] 模版边框(可选) 启用边框时，边框也会算进整体宽高里，自行设置borderOffset调整
 --- [constructs._borderOffset][默认 0] 边框模式下的内置位置调整值

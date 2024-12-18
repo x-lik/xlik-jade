@@ -7,7 +7,7 @@ function _index:destruct()
     class.cache(UITextareaClass)[self._key] = nil
 end
 
---- 创建 UI 文本域
+--- 构造UI文本域对象
 ---@param key string 索引名
 ---@param parent UI|nil 默认 UI_Game
 ---@return UITextarea

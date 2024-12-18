@@ -109,6 +109,7 @@ function _index:unlink(linkUnit)
     end
 end
 
+--- 构造AI对象
 ---@param key string 唯一key
 ---@return AI
 function AI(key)

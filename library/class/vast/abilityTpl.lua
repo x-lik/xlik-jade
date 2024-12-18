@@ -389,7 +389,7 @@ function _index:cursorCond(variety)
     return self:modify("cursorCond", variety)
 end
 
---- 技能Tpl
+--- 构造技能Tpl对象
 --- 构建模版数据供Ability方法使用
 --- Tpl数据修改时会影响引用的上层对象，但无法触发对象的modifier执行
 --- 可手动执行VastModifierAct，额外补充执行

@@ -92,7 +92,7 @@ function _index:show(status)
     japi.DZ_FrameShow(self._handle, status)
 end
 
---- UI 原生接管
+--- UI原生接管
 ---@param name string 唯一UI名
 ---@param handle number
 ---@return UINative
@@ -106,7 +106,7 @@ function UINative(name, handle)
     return cache[name]
 end
 
---- 游戏UI
+--- 游戏UI对象
 UIGame = UINative("Game", japi.DZ_GetGameUI())
 UIGame._children = {} -- 子UI
 UIGame._lowNodes = {} -- 子节点
@@ -115,6 +115,7 @@ UIGame._width = 0.8 -- 宽
 UIGame._height = 0.6 -- 高
 UIGame._anchor = { 0.4, 0.3, 0.8, 0.6 } -- 主屏锚点
 
+--- 是否游戏UI对象
 ---@param whichUI UINative
 ---@return boolean
 function isUIGame(whichUI)

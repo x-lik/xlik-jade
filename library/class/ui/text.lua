@@ -89,7 +89,7 @@ function _index:text(content)
     return self
 end
 
---- 创建 UI 文本
+--- 构造UI文本对象
 --- 支持 constructs 为初始化可选参数（只会在创建时有效，不会在创建后使用此方法以key获取时生效）
 --- [constructs._fdfName][默认 'LK_TEXT'] 改用某个fdf模版
 ---@param key string 索引名

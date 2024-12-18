@@ -380,7 +380,7 @@ function _index:corpse(variety)
     return self:modify("corpse", variety)
 end
 
---- 单位Tpl
+--- 构造单位Tpl对象
 --- 构建模版数据供Unit方法使用
 --- Tpl数据修改时会影响引用的上层对象，但无法触发对象的modifier执行
 --- 可手动执行VastModifierAct，额外补充执行

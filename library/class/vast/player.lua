@@ -268,6 +268,7 @@ function _index:quit(reason)
     end
 end
 
+--- 构造玩家对象
 ---@param index number integer
 ---@return Player
 function Player(index)
@@ -338,7 +339,7 @@ function Player(index)
     return cache[index]
 end
 
---- 最上位玩家
+--- 最上位玩家对象
 ---@return Player
 function Player1st()
     local cache = class.cache(PlayerClass)
@@ -352,14 +353,14 @@ function Player1st()
     return cache[i]
 end
 
---- 本地玩家
+--- 本地玩家对象
 ---@return Player
 function PlayerLocal()
     local cache = class.cache(PlayerClass)
     return cache[player.localIndex]
 end
 
---- 玩家遍历
+--- 玩家对象遍历
 ---@param call fun(enumPlayer:Player)
 ---@return void
 function PlayersForeach(call)

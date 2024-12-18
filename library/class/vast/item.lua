@@ -371,7 +371,7 @@ function _index:spell(evtData)
     end
 end
 
---- 物品对象
+--- 构造物品对象
 --- 继承tpl创建物品
 ---@param tpl ItemTpl
 ---@return Item

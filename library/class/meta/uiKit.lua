@@ -63,7 +63,7 @@ function _index:reload()
     end
 end
 
---- 构建一个UIKit
+--- 构建UIKit对象
 --[[
     可为UIKit定义方法 onSetup、onStart
     定义的方法将在init过程中自动引用

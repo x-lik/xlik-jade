@@ -243,6 +243,7 @@ function _index:remove(index)
     end
 end
 
+--- 构造技能栏对象
 ---@param bindUnit Unit 绑定单位
 ---@return AbilitySlot
 function AbilitySlot(bindUnit)

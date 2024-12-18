@@ -117,6 +117,7 @@ function _index:conditionPass(variety)
     return self:modify("conditionPass", variety)
 end
 
+--- 构造Tpl对象
 ---@return Tpl
 function Tpl()
     return oVast({}, _index)

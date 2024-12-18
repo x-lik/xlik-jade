@@ -632,7 +632,7 @@ function _index:isCooling()
     return nil ~= self._abCap and nil ~= self._abCap.cool
 end
 
---- 技能对象
+--- 构造技能对象
 --- 继承tpl创建技能
 ---@param tpl AbilityTpl
 ---@return Ability

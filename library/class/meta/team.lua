@@ -104,7 +104,7 @@ function _index:is(whichOne)
     return false
 end
 
---- 队伍势力
+--- 构造队伍势力对象
 ---@param name string
 ---@param color number 队伍颜色 0-12，可参考 PLAYER_COLOR_* 的颜色对应值
 ---@param nameSync boolean 是否队名同步，设为true后，成员的名称会同步跟随队伍的名称（一般用于通用共同敌人）

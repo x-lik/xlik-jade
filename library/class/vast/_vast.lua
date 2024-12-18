@@ -305,6 +305,7 @@ function _index:ampl(name, variety, duration)
     return self:modify(name, variety, duration, SYMBOL_AMP)
 end
 
+--- 构造Vast对象
 ---@param name string
 ---@param prototype table 原型数据
 ---@return Vast

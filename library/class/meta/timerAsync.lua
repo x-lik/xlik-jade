@@ -9,7 +9,7 @@ function _index:destruct()
     self._fin = -1
 end
 
---- 获取是否循环计帧器
+--- 获取是否为循环计帧器
 ---@return boolean
 function _index:isInterval()
     return self._interval
@@ -82,6 +82,7 @@ function _index:resume()
     end
 end
 
+--- 构造异步计帧器对象
 ---@param interval boolean
 ---@param frame number integer 帧值
 ---@param call fun(curTimer:TimerAsync):TimerAsync

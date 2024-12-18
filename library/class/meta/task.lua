@@ -43,7 +43,7 @@ function _index:clear()
     self._queue = nil
 end
 
---- 任务
+--- 构造任务对象
 ---@param obj Player|Unit|Item|Ability 执行对象
 ---@return Task
 function Task(obj)

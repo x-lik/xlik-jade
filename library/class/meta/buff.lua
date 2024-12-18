@@ -136,7 +136,7 @@ function _index:rollback()
     class.destroy(self)
 end
 
---- 生成一个Buff对象
+--- 构造Buff对象
 ---@alias BuffDescription string|string[]|fun(obj:Buff):string[]
 ---@alias BuffFunc fun(buffObj:Object):void
 ---@alias BuffInfos {name:string,duration:number,signal:string,icon:string,description:BuffDescription,visible:boolean,text:string}
@@ -203,7 +203,7 @@ function Buff(params)
     return o
 end
 
---- buff提取器
+--- Buff提取器
 ---@alias BuffCatchFilter {forward:boolean,key:string,name:string,signal:string,limit:number,filter:fun(enumBuff:Buff)}
 ---@param object Object|Unit
 ---@param filter BuffCatchFilter filter.forward boolean类型，正序(true)，反序(false)
@@ -268,7 +268,7 @@ function BuffCatch(object, filter)
     return catch
 end
 
---- 某条件统计buff数量
+--- 某条件统计Buff数量
 ---@param object Object|Unit
 ---@param filter string
 ---@return number

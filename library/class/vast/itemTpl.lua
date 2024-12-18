@@ -161,7 +161,7 @@ function _index:charges(variety)
     return self:modify("charges", variety)
 end
 
---- 构造物品Tpl
+--- 构造物品Tpl对象
 --- 构建模版数据供Item方法使用
 --- Tpl数据修改时会影响引用的上层对象，但无法触发对象的modifier执行
 --- 可手动执行VastModifierAct，额外补充执行

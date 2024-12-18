@@ -46,8 +46,8 @@ function _index:display(whichPlayer)
     end
 end
 
+--- 构造对话框对象
 --[[
-    对话框
     buttons = {
         "第1个",
         "第2个",

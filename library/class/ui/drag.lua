@@ -48,6 +48,7 @@ function _index:releaseXY(x, y)
     end
 end
 
+--- 构造 UI拖拽对象
 ---@param key string 索引名
 ---@param parent UI|nil 默认 UI_Game
 ---@return UIDrag
