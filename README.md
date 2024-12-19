@@ -69,3 +69,7 @@ xlik.exe run my_project -b // build
 xlik.exe run my_project -d // dist
 xlik.exe run my_project -r // publish released
 ```
+
+### Management and Maintenance
+
+Developing the project requires a huge development cost, in order to ensure the stability of the project, this repository will be maintained and updated only every once in a while. If you have a bug fix discovery, you can choose to [create a PR](https://help.github.com/articles/creating-a-pull-request/) to contribute to the project, and you can also [sponsor author](https://afdian.com/a/hunzsig) to make the maintenance activities more active.
