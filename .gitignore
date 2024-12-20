@@ -4,7 +4,8 @@
 .vscode
 *.BridgeLabelsAndRatings
 /projects
-/temp
+/.tmp/*
 /xlik.exe
-/verdor/*
+/vendor/*
+/env.yaml
 /exe/env.yaml
