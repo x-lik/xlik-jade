@@ -201,6 +201,7 @@ func (app *App) luaDev() string {
 	if err != nil {
 		Panic(err)
 	}
+	asCodes, asFdfs := app.luaAssets(ga)
 
 	//-------------- SLK ----------------
 
@@ -364,6 +365,7 @@ func (app *App) luaDev() string {
 			sbr.WriteString("\n\n")
 		}
 	}
+
 	// 合并 slk ini
 	csTableDir := app.BuildDstPath + "/table"
 	for k, v := range slkIniBuilder {
@@ -424,8 +426,7 @@ func (app *App) luaDev() string {
 		}
 		settingCode = strings.Replace(settingCode, "---lk:placeholder go_ids", "LK_GO_IDS = {"+strings.Join(slkIdCli, ",")+"}", 1)
 	}
-	// assets codes
-	asCodes, fdfs := app.luaAssets(ga)
+	// import assets codes
 	settingCode = strings.Replace(settingCode, "---lk:placeholder assets", asCodes, 1)
 	// map name
 	wj, _ := fileutil.ReadFileToString(app.BuildDstPath + "/map/war3map.j")
@@ -446,8 +447,8 @@ func (app *App) luaDev() string {
 	if err2 != nil {
 		Panic(err2)
 	}
-	if len(fdfs) > 0 {
-		toc += "\r\n" + strings.Join(fdfs, "\r\n")
+	if len(asFdfs) > 0 {
+		toc += "\r\n" + strings.Join(asFdfs, "\r\n")
 	}
 	err = FilePutContents(tocFile, toc+"\r\n", fs.ModePerm)
 	if err != nil {
