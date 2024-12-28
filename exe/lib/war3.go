@@ -16,6 +16,7 @@ var war3sound map[string]int
 var war3soundNil map[string]bool
 
 func init() {
+	// war3 sounds
 	data, _ := Embeds.ReadFile("embeds/war3sounds.yaml")
 	y := map[string][]YamlSound{}
 	err2 := yaml.Unmarshal(data, &y)
@@ -25,13 +26,15 @@ func init() {
 	war3sound = make(map[string]int)
 	war3soundNil = make(map[string]bool)
 	for _, v := range y["sounds"] {
-		war3sound[v.Path] = v.Duration
-		war3soundNil[v.Path] = true
+		p := strings.ToLower(v.Path)
+		war3sound[p] = v.Duration
+		war3soundNil[p] = true
 	}
 }
 
 // War3soundDur 获取war原生音频资源持续时间（毫秒），没有找到音频则返回-1
 func War3soundDur(src string) int {
+	src = strings.ToLower(src)
 	if !war3soundNil[src] {
 		return -1
 	}

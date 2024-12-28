@@ -509,7 +509,7 @@ func (app *App) luaDev() string {
 	codesIn(coreMap)
 
 	// assets check
-	asCheck(asChecker)
+	asCheck()
 
 	if app.BuildModeName == "_build" || app.BuildModeName == "_dist" {
 		app.EncryptLua(_codes)

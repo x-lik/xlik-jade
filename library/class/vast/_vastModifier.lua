@@ -394,6 +394,7 @@ local modifier = {
                 obj._nsight = obj._sightBase - obj._sightDiff
                 obj._turnSpeed = tonumber(newData.slk.turnRate)
                 obj._corpse = tonumber(newData.slk.death or 3)
+                obj._file = newData.slk.file
                 local spd = math.round(newData.slk.spd or 0)
                 if (spd <= 0) then
                     spd = 0
@@ -478,6 +479,7 @@ local modifier = {
                         obj._turnSpeed = tonumber(newData.slk.turnRate)
                         obj._corpse = tonumber(newData.slk.death or 3)
                         obj._attackSpaceBase = math.round(newData.slk.cool1 or 0)
+                        obj._file = newData.slk.file
                         local spd = math.round(newData.slk.spd or 0)
                         if (spd <= 0) then
                             spd = 0
@@ -564,7 +566,8 @@ local modifier = {
         ---@param newVal string
         _model = function(obj, _, newVal)
             local m = japi.AssetsModel(newVal)
-            if (type(m) == "string") then
+            if (type(m) == "string" and obj._file ~= m) then
+                obj._file = m
                 japi.DZ_SetUnitModel(obj._handle, m)
             end
         end,

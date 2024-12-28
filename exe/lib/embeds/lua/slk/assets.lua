@@ -1,3 +1,6 @@
+--- 资源数据
+local _assets = { speech = {}, font = '', image = {}, model = {}, bgm = {}, vcm = {}, v3d = {}, vwp = {}, ui = {} }
+
 --- 选择圈
 --- 只支持组件包
 ---@param typeName string
@@ -121,7 +124,7 @@ function assets_speech(name, extra)
     if (nil ~= name) then
         name = string.trim(name)
         slk_unit({})
-        LK_SPEECH[name] = true
+        _assets.speech[name] = true
         if (type(extra) == "table") then
             for _, e in pairx(extra) do
                 if (type(e) == "table") then
@@ -136,51 +139,40 @@ end
 ---@param kind string
 ---@vararg any
 ---@return void
-function assets_load(kind, ...)
+function assets_pset(kind, ...)
+    local data = _assets[kind]
+    if (nil == data) then
+        return
+    end
     local params = { ... }
     if (kind == "font") then
-        japi._assets[kind] = params[1]
+        data = params[1]
     elseif (kind == "image" or kind == "model") then
-        if (nil == japi._assets[kind]) then
-            japi._assets[kind] = {}
-        end
-        japi._assets[kind][params[1]] = params[2]
+        data[params[1]] = params[2]
     elseif (kind == "bgm") then
-        if (nil == japi._assets[kind]) then
-            japi._assets[kind] = {}
-        end
-        japi._assets[kind][params[1]] = { params[2], params[4] }
+        data[params[1]] = { params[2], params[4] }
     elseif (kind == "vcm") then
-        if (nil == japi._assets[kind]) then
-            japi._assets[kind] = {}
-        end
         local h = J.CreateSound(params[2], false, false, false, 10, 10, "DefaultEAXON")
         J.HandleRef(h)
         J.SetSoundDuration(h, params[3])
         J.SetSoundVolume(h, params[4])
-        japi._assets[kind][params[1]] = h
+        data[params[1]] = h
     elseif (kind == "v3d") then
-        if (nil == japi._assets[kind]) then
-            japi._assets[kind] = {}
-        end
         local k = params[1]
-        if (nil == japi._assets[kind][k]) then
-            japi._assets[kind][k] = { i = 1, h = {} }
+        if (nil == data[k]) then
+            data[k] = { i = 1, h = {} }
         end
         for _ = 1, 3 do
             local h = J.CreateSound(params[2], false, true, true, 10, 10, "DefaultEAXON")
             J.HandleRef(h)
             J.SetSoundDuration(h, params[3])
             J.SetSoundVolume(h, params[4])
-            table.insert(japi._assets[kind][k].h, h)
+            table.insert(data[k].h, h)
         end
     elseif (kind == "vwp") then
-        if (nil == japi._assets[kind]) then
-            japi._assets[kind] = {}
-        end
         local k = params[1]
-        if (nil == japi._assets[kind][k]) then
-            japi._assets[kind][k] = { i = 1, h = {} }
+        if (nil == data[k]) then
+            data[k] = { i = 1, h = {} }
         end
         for _ = 1, 5 do
             for j = 2, #params, 1 do
@@ -188,16 +180,139 @@ function assets_load(kind, ...)
                 local h = J.CreateSound(v[1], false, true, true, 10, 10, "CombatSoundsEAX")
                 J.HandleRef(h)
                 J.SetSoundDuration(h, v[2])
-                table.insert(japi._assets[kind][k].h, h)
+                table.insert(data[k].h, h)
             end
         end
     elseif (kind == "ui") then
-        if (nil == japi._assets[kind]) then
-            japi._assets[kind] = {}
+        if (nil == data[params[1]]) then
+            data[params[1]] = {}
         end
-        if (nil == japi._assets[kind][params[1]]) then
-            japi._assets[kind][params[1]] = {}
+        data[params[1]][params[2]] = params[3]
+    end
+end
+
+---@protected
+---@param kind string
+---@vararg any
+---@return any
+function assets_pget(kind, ...)
+    local data = _assets[kind]
+    if (nil == data) then
+        return
+    end
+    local params = { ... }
+    if (kind == "speech") then
+        if (type(params[1]) == "string") then
+            if (true ~= data[params[1]]) then
+                return ''
+            end
         end
-        japi._assets[kind][params[1]][params[2]] = params[3]
+        return params[1]
+    elseif (kind == "font") then
+        return data
+    elseif (kind == "image" or kind == "model") then
+        if (type(params[1]) == "string") then
+            local n = string.lower(params[1])
+            if (nil ~= data[n]) then
+                return data[n]
+            end
+        end
+        return params[1]
+    elseif (kind == "bgm") then
+        if (type(params[1]) == "string") then
+            local n = string.lower(params[1])
+            if (nil ~= data[n]) then
+                return data[n][1], data[n][2]
+            end
+        end
+        return params[1], 127
+    elseif (kind == "vcm") then
+        if (type(params[1]) == "string") then
+            local n = string.lower(params[1])
+            if (nil ~= data[n]) then
+                return data[n]
+            end
+        end
+        return 0
+    elseif (kind == "v3d") then
+        if (type(params[1]) == "string") then
+            local n = string.lower(params[1])
+            if (nil ~= data[n]) then
+                local i = data[n].i
+                local h = data[n].h
+                local v = h[i]
+                i = i + 1
+                if (i >= #h) then
+                    i = 1
+                end
+                data[n].i = i
+                return v or 0
+            end
+        end
+        return 0
+    elseif (kind == "vwp") then
+        if (false == class.isObject(params[1], UnitClass) or false == class.isObject(params[2], UnitClass)) then
+            return 0
+        end
+        local weaponSound = params[1]:weaponSound()
+        if (nil == weaponSound) then
+            return 0
+        end
+        local targetMaterial = params[2]:material()
+        if (nil == targetMaterial) then
+            targetMaterial = "any"
+        else
+            targetMaterial = targetMaterial.value
+        end
+        local combat = string.lower(weaponSound .. "@" .. targetMaterial)
+        if (nil == data[combat]) then
+            combat = string.lower(weaponSound .. "@any")
+            if (nil == data[combat]) then
+                return 0
+            end
+        end
+        local i = data[combat].i
+        local h = data[combat].h
+        local v = h[i]
+        i = i + 1
+        if (i >= #h) then
+            i = 1
+        end
+        data[combat].i = i
+        return v or 0
+    elseif (kind == "ui") then
+        if (type(params[1]) == "string" and type(params[2]) == "string") then
+            local kit = string.lower(params[1])
+            local alias = string.lower(params[2])
+            local backup
+            if (type(params[3]) == "string") then
+                backup = string.lower(params[3])
+            end
+            if (nil ~= data[kit]) then
+                if (nil ~= data[kit][alias]) then
+                    return data[kit][alias]
+                end
+                local ext = {
+                    image = { ".tga", ".blp" },
+                    model = { ".mdx" },
+                }
+                if (nil ~= ext[backup]) then
+                    local path
+                    for _, e in ipairs(ext[backup]) do
+                        if (nil ~= data[kit][alias .. e]) then
+                            path = data[kit][alias .. e]
+                            break
+                        end
+                    end
+                    if (nil ~= path) then
+                        return path
+                    end
+                end
+            end
+            if (type(backup) == "string" and kind ~= "ui") then
+                return assets_pget(backup, alias)
+            end
+        end
+        return params[2]
     end
 end

@@ -3,8 +3,6 @@
 
 --- 数据配置
 ---@protected
-japi._assets = japi._assets or {}
----@protected
 japi._asyncExec = japi._asyncExec or {}
 ---@protected
 japi._asyncExecDelay = japi._asyncExecDelay or {}
@@ -67,68 +65,52 @@ japi._uiTagIndex = japi._uiTagIndex or 0
 ---@protected
 japi._z = japi._z or {}
 
+--- 单位语音资源路径
+---@param name string
+---@return string
+function japi.AssetsSpeech(name)
+    return assets_pget("speech", name)
+end
+
 --- 获取资源字体
 ---@return string
 function japi.AssetsFont()
-    return japi._assets.font
+    return assets_pget("font")
 end
 
 --- 获取资源图片
 ---@param alias string
 ---@return string
 function japi.AssetsImage(alias)
-    if (nil ~= japi._assets.image and nil ~= japi._assets.image[alias]) then
-        return japi._assets.image[alias]
-    end
-    return alias
+    return assets_pget("image", alias)
 end
 
 --- 获取资源模型
 ---@param alias string
 ---@return string
 function japi.AssetsModel(alias)
-    if (nil ~= japi._assets.model and nil ~= japi._assets.model[alias]) then
-        return japi._assets.model[alias]
-    end
-    return alias
+    return assets_pget("model", alias)
 end
 
 --- 获取资源Bgm
 ---@param alias string
 ---@return string,number 路径,音量
 function japi.AssetsBgm(alias)
-    if (nil ~= japi._assets.bgm and nil ~= japi._assets.bgm[alias]) then
-        return japi._assets.bgm[alias][1], japi._assets.bgm[alias][2]
-    end
-    return alias, 127
+    return assets_pget("bgm", alias)
 end
 
 --- 获取资源Vcm
 ---@param alias string
 ---@return number handle
 function japi.AssetsVcm(alias)
-    if (nil == japi._assets.vcm) then
-        return 0
-    end
-    return japi._assets.vcm[alias] or 0
+    return assets_pget("vcm", alias)
 end
 
 --- 获取资源V3d
 ---@param alias string
 ---@return number handle
 function japi.AssetsV3d(alias)
-    if (nil == japi._assets.v3d) then
-        return 0
-    end
-    local i = japi._assets.v3d[alias].i
-    local h = japi._assets.v3d[alias].h
-    local v = h[i]
-    i = i + 1
-    if (i >= #h) then
-        i = 1
-    end
-    japi._assets.v3d[alias].i = i
-    return v or 0
+    return assets_pget("v3d", alias)
 end
 
 --- 获取资源Vwp
@@ -136,48 +118,7 @@ end
 ---@param targetObj Unit
 ---@return number handle
 function japi.AssetsVwp(sourceUnit, targetObj)
-    if (false == class.isObject(sourceUnit, UnitClass) or false == class.isObject(targetObj, UnitClass)) then
-        return 0
-    end
-    if (nil == japi._assets.vwp) then
-        return 0
-    end
-    local weaponSound = sourceUnit:weaponSound()
-    if (nil == weaponSound) then
-        return 0
-    end
-    local targetMaterial = targetObj:material()
-    if (nil == targetMaterial) then
-        targetMaterial = "any"
-    else
-        targetMaterial = targetMaterial.value
-    end
-    local combat = weaponSound .. "@" .. targetMaterial
-    if (nil == japi._assets.vwp[combat]) then
-        combat = weaponSound .. "@any"
-        if (nil == japi._assets.vwp[combat]) then
-            return 0
-        end
-    end
-    local i = japi._assets.vwp[combat].i
-    local h = japi._assets.vwp[combat].h
-    local v = h[i]
-    i = i + 1
-    if (i >= #h) then
-        i = 1
-    end
-    japi._assets.vwp[combat].i = i
-    return v or 0
-end
-
---- 单位语音资源路径
----@param name string
----@return string
-function japi.AssetsSpeech(name)
-    if (true ~= LK_SPEECH[name]) then
-        return ''
-    end
-    return name
+    return assets_pget("vwp", sourceUnit, targetObj)
 end
 
 --- 获取UI套件内的资源
@@ -187,33 +128,7 @@ end
 ---@param backup string ui资源不存在时的备用资源搜索策略，如 'image'|'model',常用最多只有image可自行拓展
 ---@return string
 function japi.AssetsUI(kit, alias, backup)
-    if (nil ~= japi._assets.ui and nil ~= japi._assets.ui[kit]) then
-        if (nil ~= japi._assets.ui[kit][alias]) then
-            return japi._assets.ui[kit][alias]
-        end
-        local ext = {
-            image = { ".tga", ".blp" },
-            model = { ".mdx" },
-        }
-        if (nil ~= ext[backup]) then
-            local path
-            for _, e in ipairs(ext[backup]) do
-                if (nil ~= japi._assets.ui[kit][alias .. e]) then
-                    path = japi._assets.ui[kit][alias .. e]
-                    break
-                end
-            end
-            if (nil ~= path) then
-                return path
-            end
-        end
-    end
-    if (backup == "image") then
-        return japi.AssetsImage(alias)
-    elseif (backup == "model") then
-        return japi.AssetsModel(alias)
-    end
-    return alias
+    return assets_pget("ui", kit, alias, backup)
 end
 
 --- 使用宽屏模式

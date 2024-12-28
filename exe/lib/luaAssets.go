@@ -41,6 +41,7 @@ type AssetsType struct {
 var (
 	asTypes      map[string]AssetsType
 	asChecker    map[string][]string
+	asCheckInt   map[string]int
 	asScripts    []string
 	asModelAlias map[string]string
 	asDetectP    map[string]map[string]int
@@ -86,6 +87,7 @@ func init() {
 			Ext:  []string{".mp3", ".wav"},
 		},
 	}
+	asCheckInt = make(map[string]int)
 }
 
 func asExt(src string, set string) string {
@@ -97,7 +99,7 @@ func asExt(src string, set string) string {
 }
 
 // asCheck 检查资源是否未被使用，以免加载多余的资源
-func asCheck(names map[string][]string) {
+func asCheck() {
 	content := codesContent()
 	check := make(map[string]int)
 	reg := regexp.MustCompile(`[一-龥，。！、（）【】；：“”《》？…]+`)
@@ -116,13 +118,14 @@ func asCheck(names map[string][]string) {
 	if len(m) > 0 {
 		for _, s := range m {
 			s2 := s[1 : len(s)-1]
-			check[s2] += 1
+			check[strings.ToLower(s2)] += 1
 		}
 	}
 	// 资源检测
-	for kind, ns := range names {
+	for kind, ns := range asChecker {
 		for _, a := range ns {
-			if check[a] <= 1 {
+			la := strings.ToLower(a)
+			if check[la] <= (2 + asCheckInt[la]) {
 				pterm.Warning.Println("【资源检测】：" + kind + `:` + a + " 可能未曾使用")
 			}
 		}
@@ -158,11 +161,28 @@ func asDetect(kind string, path string, alias string, srcPath string) bool {
 	return true
 }
 
+// asScriptIn
+func asScriptIn(kind string, alias string, value string, ex string) {
+	in := []string{strconv.Quote(kind)}
+	if `` != alias {
+		in = append(in, strconv.Quote(strings.ToLower(alias)))
+	}
+	if value[0:1] == `{` {
+		in = append(in, value)
+	} else {
+		in = append(in, strconv.Quote(value))
+	}
+	if `` != ex {
+		in = append(in, ex)
+	}
+	asScripts = append(asScripts, `assets_pset(`+strings.Join(in, `,`)+`)`)
+}
+
 // kind 资源种类
 // path 配置的第1个路径参数
 // alias 配置的别称参数
 // 返回: 标识值,资源路径,额外数据
-func (app *App) asAnalysisFile(kind string, path string, alias string) (bool, string, string) {
+func (app *App) asAnalysisFile(kind string, path string, alias string, skipDetect bool) (bool, string, string) {
 	support := asTypes[kind]
 	if len(support.Ext) < 1 {
 		Panic("asAnalysisFile:" + kind)
@@ -185,6 +205,7 @@ func (app *App) asAnalysisFile(kind string, path string, alias string) (bool, st
 	}
 	// 资源来源，war3资源的优先级别是最低的
 	// assets优先级最高，再是project/resource，最后才是war3
+	isWar3 := false
 	aFile := app.Path.Assets + "\\" + support.Path + "\\" + analyser
 	if fileutil.IsExist(aFile) {
 		aTail := strings.Replace(asExt(alias, ext), "/", "\\", -1)
@@ -230,6 +251,7 @@ func (app *App) asAnalysisFile(kind string, path string, alias string) (bool, st
 			}
 		} else {
 			// war3原生资源
+			isWar3 = true
 			asPath = analyser
 			srcPath = analyser
 			switch ext {
@@ -251,6 +273,13 @@ func (app *App) asAnalysisFile(kind string, path string, alias string) (bool, st
 		pterm.Error.Println(support.Name + "：资源不存在 " + path)
 		time.Sleep(time.Second)
 		return false, asPath, exData
+	}
+	if !skipDetect {
+		if asDetect(kind, path, alias, asPath) {
+			if !isWar3 && kind != "vwp-voice" {
+				asChecker[kind] = append(asChecker[kind], alias)
+			}
+		}
 	}
 	return true, asPath, exData
 }
@@ -285,9 +314,10 @@ func (app *App) asAnalysisPath(kind string, path string, alias string) (bool, st
 				}
 				if !fileutil.IsDir(path) {
 					file := strings.Replace(path, aRoot, "", -1)
-					status, ap, _ := app.asAnalysisFile(kind, file, file)
+					status, ap, _ := app.asAnalysisFile(kind, file, file, true)
 					if status {
 						segList = append(segList, ap)
+						asDetect(kind, path, file, file)
 					}
 				}
 				return nil
@@ -301,9 +331,7 @@ func (app *App) asAnalysisPath(kind string, path string, alias string) (bool, st
 				}
 				asPath := `{` + strings.Join(segList, `,`) + `}`
 				exData := strconv.Itoa(len(segList))
-				if asDetect(kind, path, alias, asPath) {
-					asChecker[kind] = append(asChecker[kind], alias)
-				}
+				asChecker[kind] = append(asChecker[kind], alias)
 				return true, asPath, exData
 			}
 		}
@@ -312,14 +340,9 @@ func (app *App) asAnalysisPath(kind string, path string, alias string) (bool, st
 		return false, ``, ``
 	} else {
 		// 单例模式
-		status, asp, ed := app.asAnalysisFile(kind, path, alias)
+		status, asp, ed := app.asAnalysisFile(kind, path, alias, false)
 		if !status {
 			return false, asp, ed
-		}
-		if asDetect(kind, path, alias, asp) {
-			if kind != "vwp-voice" {
-				asChecker[kind] = append(asChecker[kind], alias)
-			}
 		}
 		return true, asp, ed
 	}
@@ -404,7 +427,7 @@ func (app *App) asFont(data string) string {
 			}
 		}
 	}
-	asScripts = append(asScripts, `assets_load("font",`+strconv.Quote(data)+`)`)
+	asScriptIn(`font`, ``, data, ``)
 	return data
 }
 
@@ -472,15 +495,6 @@ func (app *App) asPreview(data string) {
 
 // asImage 图片
 func (app *App) asImage(data [][]string) {
-	_reg := func(alias string, asPath string) {
-		alias = strconv.Quote(alias)
-		a := strconv.Quote(asPath)
-		asScripts = append(asScripts, `assets_load("image",`+strings.Join([]string{alias, a}, ",")+`)`)
-	}
-	_regs := func(alias string, asPath string) {
-		alias = strconv.Quote(alias)
-		asScripts = append(asScripts, `assets_load("image",`+alias+`,`+asPath+`)`)
-	}
 	count := 0
 	for _, i := range data {
 		status, asPath, exData := app.asAnalysisPath("image", i[0], i[1])
@@ -488,12 +502,12 @@ func (app *App) asImage(data [][]string) {
 			continue
 		}
 		if `` == exData {
-			_reg(i[1], asPath)
+			asScriptIn(`image`, i[1], asPath, ``)
 			count += 1
 		} else {
 			n, err := strconv.Atoi(exData)
 			if err == nil {
-				_regs(i[1], asPath)
+				asScriptIn(`image`, i[1], asPath, ``)
 				count += n
 			}
 		}
@@ -503,12 +517,6 @@ func (app *App) asImage(data [][]string) {
 
 // asModel 模型
 func (app *App) asModel(data [][]string) {
-	_reg := func(alias string, asPath string) {
-		alias = strconv.Quote(alias)
-		a := strconv.Quote(asPath)
-		asModelAlias[alias] = a
-		asScripts = append(asScripts, `assets_load("model",`+strings.Join([]string{alias, a}, ",")+`)`)
-	}
 	count := 0
 	count2 := 0
 	for _, i := range data {
@@ -542,7 +550,8 @@ func (app *App) asModel(data [][]string) {
 				count2 = count2 + ti
 			}
 		}
-		_reg(i[1], asPath)
+		asModelAlias[strconv.Quote(i[1])] = strconv.Quote(asPath)
+		asScriptIn(`model`, i[1], asPath, ``)
 		count += 1
 	}
 	pterm.Info.Println(asTypes["model"].Name + " 引入：" + strconv.Itoa(count) + "个")
@@ -557,8 +566,7 @@ func (app *App) asBGM(data [][]string) {
 		vf = math.Min(vf, 1.00)
 		vf = math.Max(vf, 0.01)
 		volume = strconv.Itoa(int(127 * vf))
-		a := strings.Join([]string{strconv.Quote(alias), strconv.Quote(asPath), dur, volume}, ",")
-		asScripts = append(asScripts, `assets_load("bgm",`+a+`)`)
+		asScriptIn(`bgm`, alias, asPath, strings.Join([]string{dur, volume}, ","))
 	}
 	count := 0
 	for _, i := range data {
@@ -580,8 +588,7 @@ func (app *App) asVcm(data [][]string) {
 		vf = math.Min(vf, 1.00)
 		vf = math.Max(vf, 0.01)
 		volume = strconv.Itoa(int(127 * vf))
-		a := strings.Join([]string{strconv.Quote(alias), strconv.Quote(asPath), dur, volume}, ",")
-		asScripts = append(asScripts, `assets_load("vcm",`+a+`)`)
+		asScriptIn(`vcm`, alias, asPath, strings.Join([]string{dur, volume}, ","))
 	}
 	count := 0
 	for _, i := range data {
@@ -603,8 +610,7 @@ func (app *App) asV3d(data [][]string) {
 		vf = math.Min(vf, 1.00)
 		vf = math.Max(vf, 0.01)
 		volume = strconv.Itoa(int(127 * vf))
-		a := strings.Join([]string{strconv.Quote(alias), strconv.Quote(asPath), dur, volume}, ",")
-		asScripts = append(asScripts, `assets_load("v3d",`+a+`)`)
+		asScriptIn(`v3d`, alias, asPath, strings.Join([]string{dur, volume}, ","))
 	}
 	count := 0
 	for _, i := range data {
@@ -646,8 +652,9 @@ func (app *App) asVwp(data []string) {
 					}
 					voices = append(voices, `{`+strings.Join([]string{strconv.Quote(asPath), dur}, ",")+`}`)
 				}
-				asScripts = append(asScripts, `assets_load("vwp",`+strconv.Quote(yf+`@`+material)+`,`+strings.Join(voices, ",")+`)`)
+				asScriptIn(`vwp`, yf+`@`+material, strings.Join(voices, ","), ``)
 			}
+			asCheckInt[strings.ToLower(yf)]--
 			count += 1
 		}
 	}
@@ -696,12 +703,12 @@ func (app *App) asUI(data []string) []string {
 							case ".blp", ".tga":
 								p := strings.Replace(path, "/", "\\", -1)
 								p = strings.Replace(p, asRepl, "", -1)
-								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
+								asScriptIn(`ui`, i, asName, strconv.Quote(p))
 							case ".mdx":
 								p := strings.Replace(path, "/", "\\", -1)
 								p = strings.Replace(p, asRepl, "", -1)
 								p = strings.Replace(path, ".mdx", ".mdl", -1)
-								asScripts = append(asScripts, `assets_load("ui",`+strconv.Quote(i)+`,`+strconv.Quote(asName)+`,`+strconv.Quote(p)+`)`)
+								asScriptIn(`ui`, i, asName, strconv.Quote(p))
 							default:
 								pterm.Warning.Println("【套件】不支持资源 " + asName)
 							}

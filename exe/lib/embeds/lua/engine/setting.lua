@@ -3,7 +3,6 @@ local inc = 1
 LK_N2C = {}
 LK_SLK_I2V = {}
 LK_SLK_N2I = {}
-LK_SPEECH = {}
 LK_ZH = {}
 ---lk:placeholder go_ids
 ---lk:placeholder map_name
@@ -91,5 +90,5 @@ end
 
 -- assets init
 function LK_ASSETS_INIT()
-    ---lk:placeholder assets
+---lk:placeholder assets
 end
