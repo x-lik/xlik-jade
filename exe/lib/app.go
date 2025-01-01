@@ -73,7 +73,8 @@ func (app *App) Init() {
 		data, _ := os.ReadFile("./env.yaml")
 		err := yaml.Unmarshal(data, &y)
 		if err != nil {
-			Panic(err)
+			pterm.Error.Println("<env.yaml>文件配置编写格式错误，请检查")
+			os.Exit(0)
 		}
 		//pwd
 		app.Pwd = y.Pwd
