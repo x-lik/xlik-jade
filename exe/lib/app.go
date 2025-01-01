@@ -74,6 +74,7 @@ func (app *App) Init() {
 		err := yaml.Unmarshal(data, &y)
 		if err != nil {
 			pterm.Error.Println("<env.yaml>文件配置编写格式错误，请检查")
+			pterm.Error.Println(err.Error())
 			os.Exit(0)
 		}
 		//pwd

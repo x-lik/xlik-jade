@@ -41,7 +41,6 @@ func stack() string {
 		tiny := strings.Join(p[len(p)-2:], "/")
 		reg := regexp.MustCompile("(\\s+)(.*?)+/" + tiny)
 		res = reg.ReplaceAllString(res, "$1/xlik")
-		pterm.Debug.Println(res)
 	}
 	return res
 }
@@ -53,7 +52,7 @@ func Panic(what interface{}) {
 		pterm.Error.Println(what)
 	case reflect.Ptr:
 		pterm.Error.Println(what)
-		pterm.Debug.Println(stack())
+		pterm.Info.Println(stack())
 	default:
 		pterm.Error.Println(t.Kind())
 	}
