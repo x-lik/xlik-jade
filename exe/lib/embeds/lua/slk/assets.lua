@@ -309,7 +309,7 @@ function assets_pget(kind, ...)
                     end
                 end
             end
-            if (type(backup) == "string" and kind ~= "ui") then
+            if (type(backup) == "string" and backup ~= "ui") then
                 return assets_pget(backup, alias)
             end
         end
