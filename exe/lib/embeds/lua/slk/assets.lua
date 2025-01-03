@@ -288,14 +288,14 @@ function assets_pget(kind, ...)
             if (type(params[3]) == "string") then
                 backup = string.lower(params[3])
             end
+            local ext = {
+                image = { ".tga", ".blp" },
+                model = { ".mdx" },
+            }
             if (nil ~= data[kit]) then
                 if (nil ~= data[kit][alias]) then
                     return data[kit][alias]
                 end
-                local ext = {
-                    image = { ".tga", ".blp" },
-                    model = { ".mdx" },
-                }
                 if (nil ~= ext[backup]) then
                     local path
                     for _, e in ipairs(ext[backup]) do
@@ -309,7 +309,7 @@ function assets_pget(kind, ...)
                     end
                 end
             end
-            if (type(backup) == "string" and backup ~= "ui") then
+            if (type(backup) == "string" and nil ~= ext[backup]) then
                 return assets_pget(backup, alias)
             end
         end
