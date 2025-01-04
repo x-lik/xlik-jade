@@ -394,7 +394,6 @@ local modifier = {
                 obj._nsight = obj._sightBase - obj._sightDiff
                 obj._turnSpeed = tonumber(newData.slk.turnRate)
                 obj._corpse = tonumber(newData.slk.death or 3)
-                obj._file = newData.slk.file
                 local spd = math.round(newData.slk.spd or 0)
                 if (spd <= 0) then
                     spd = 0
@@ -404,6 +403,7 @@ local modifier = {
                 obj._attackSpaceBase = math.round(newData.slk.cool1 or 0)
                 obj._attackRangeAcquire = math.round(newData.slk.acquire)
                 obj._attackRange = math.round(newData.slk.rangeN1 or 0)
+                obj._model = newData.slk.file
                 obj._modelScale = math.trunc(newData.slk.modelScale or 1, 2)
                 obj._scale = math.trunc(newData.slk.scale or 1, 2)
                 obj._rgba = { math.round(newData.slk.red), math.round(newData.slk.green), math.round(newData.slk.blue), 255 }
@@ -479,7 +479,6 @@ local modifier = {
                         obj._turnSpeed = tonumber(newData.slk.turnRate)
                         obj._corpse = tonumber(newData.slk.death or 3)
                         obj._attackSpaceBase = math.round(newData.slk.cool1 or 0)
-                        obj._file = newData.slk.file
                         local spd = math.round(newData.slk.spd or 0)
                         if (spd <= 0) then
                             spd = 0
@@ -491,6 +490,7 @@ local modifier = {
                             obj._move = spd
                             obj._attackRangeAcquire = math.round(newData.slk.acquire)
                             obj._attackRange = math.round(newData.slk.rangeN1 or 0)
+                            obj._model = newData.slk.file
                             obj._modelScale = math.trunc(newData.slk.modelScale or 1, 2)
                             obj._scale = math.trunc(newData.slk.scale or 1, 2)
                             obj._rgba = { math.round(newData.slk.red), math.round(newData.slk.green), math.round(newData.slk.blue), 255 }
@@ -566,7 +566,7 @@ local modifier = {
         ---@param newVal string
         _model = function(obj, _, newVal)
             local m = japi.AssetsModel(newVal)
-            if (type(m) == "string" and obj._file ~= m) then
+            if (type(m) == "string") then
                 japi.DZ_SetUnitModel(obj._handle, m)
             end
         end,
