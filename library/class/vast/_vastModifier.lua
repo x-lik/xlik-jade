@@ -567,7 +567,6 @@ local modifier = {
         _model = function(obj, _, newVal)
             local m = japi.AssetsModel(newVal)
             if (type(m) == "string" and obj._file ~= m) then
-                obj._file = m
                 japi.DZ_SetUnitModel(obj._handle, m)
             end
         end,
