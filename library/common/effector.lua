@@ -190,10 +190,10 @@ end
 function effector.rotateX(whichEffect, angle)
     sync.must()
     if (effector.isAgile(whichEffect)) then
-        japi.YD_EffectMatRotateX(whichEffect._handle, angle - (whichEffect._rotateX or 0)) -- 此angle为结果量
+        japi.YD_EffectMatRotateX(whichEffect._handle, angle - (whichEffect._rotateX or 0)) -- 参数angle为结果量
         whichEffect._rotateX = angle
     elseif (type(whichEffect) == "number") then
-        japi.YD_EffectMatRotateX(whichEffect, angle) -- 此angle为变化量
+        japi.YD_EffectMatRotateX(whichEffect, angle) -- 参数angle为变化量
     end
 end
 
@@ -206,14 +206,14 @@ function effector.rotateY(whichEffect, angle)
     if (effector.isAgile(whichEffect)) then
         local prev = whichEffect._rotateY or 0
         local ry, rz = angle, (whichEffect._rotateZ or 0)
+        local change = ry - prev
         if (rz > 90 and rz < 270) then
-            ry = -ry
-            prev = -prev
+            change = -change
         end
-        japi.YD_EffectMatRotateY(whichEffect._handle, ry - prev) -- 此angle为结果量
+        japi.YD_EffectMatRotateY(whichEffect._handle, change) -- 参数angle为结果量
         whichEffect._rotateY = angle
     elseif (type(whichEffect) == "number") then
-        japi.YD_EffectMatRotateY(whichEffect, angle) -- 此angle为变化量
+        japi.YD_EffectMatRotateY(whichEffect, angle) -- 参数angle为变化量
     end
 end
 
@@ -224,10 +224,10 @@ end
 function effector.rotateZ(whichEffect, angle)
     sync.must()
     if (effector.isAgile(whichEffect)) then
-        japi.YD_EffectMatRotateZ(whichEffect._handle, angle - (whichEffect._rotateZ or 0)) -- 此angle为结果量
+        japi.YD_EffectMatRotateZ(whichEffect._handle, angle - (whichEffect._rotateZ or 0)) -- 参数angle为结果量
         whichEffect._rotateZ = angle
     elseif (type(whichEffect) == "number") then
-        japi.YD_EffectMatRotateZ(whichEffect, angle) -- 此angle为变化量
+        japi.YD_EffectMatRotateZ(whichEffect, angle) -- 参数angle为变化量
     end
 end
 
@@ -275,14 +275,11 @@ function effector.position(whichEffect, x, y, z)
                     japi.YD_EffectMatRotateX(h, rx)
                 end
                 local ry = whichEffect._rotateY
-                local rz = whichEffect._rotateZ or 0
                 if (type(ry) == "number") then
-                    if (rz > 90 and rz < 270) then
-                        ry = -ry
-                    end
                     japi.YD_EffectMatRotateY(h, ry)
                 end
-                if (type(rz) ~= 0) then
+                local rz = whichEffect._rotateZ
+                if (type(rz) == "number") then
                     japi.YD_EffectMatRotateZ(h, rz)
                 end
                 local visible = whichEffect._visible

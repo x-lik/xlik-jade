@@ -131,11 +131,10 @@ function ability.missile(options)
     local zRot = yRot + vec0[3]
     local rotL1 = -math._r2d * math.atan(yRot, xRot)
     local rotL2 = -math._r2d * math.atan(zRot - vec2[3], distance - xRot)
-    local rotateRate = 2.2
     local dtStep = distance / speed / frequency
     local dtSpd = 1 / dtStep
-    local dtRot1 = rotateRate * rotL1 / dtStep
-    local dtRot2 = rotateRate * rotL2 / dtStep
+    local dtRot1 = 2 * rotL1 / dtStep
+    local dtRot2 = 1.5 * rotL2 / dtStep
     local dtAcc = 0
     if (options.acceleration > 0) then
         dtAcc = 1 / (distance / options.acceleration / frequency)
@@ -174,7 +173,7 @@ function ability.missile(options)
         local distortion = 1
         if (isDynTarget) then
             vec2[1], vec2[2], vec2[3] = options.targetUnit:x(), options.targetUnit:y(), options.targetUnit:h() + options.targetUnit:stature() / 2
-            distortion = math.min(1, distance / distancePrev)
+            distortion = math.max(0, distance / vector2.distance(vec0[1], vec0[2], vec2[1], vec2[2]))
             dt = dt + dtSpd * distortion
         else
             dt = dt + dtSpd
