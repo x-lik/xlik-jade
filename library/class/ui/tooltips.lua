@@ -120,7 +120,7 @@ function _index:content(options)
             end
             uiBars[i]:text(LAYOUT_ALIGN_LEFT_TOP, bars[i].text)
             uiBars[i]:fontSize(LAYOUT_ALIGN_LEFT_TOP, fontSize - 2)
-            uiBars[i]:textureValue(bars[i].texture)
+            uiBars[i]:valueTexture(bars[i].texture)
             uiBars[i]:ratio(bars[i].ratio, bars[i].width, bars[i].height)
             uiBars[i]:show(true)
             th = th + bars[i].height + bh

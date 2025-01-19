@@ -94,18 +94,22 @@ function ability.missile(options)
     local frequency = options.frequency or 0.03
     local speed = math.min(5000, math.max(50, options.speed or 500))
     local collision = 0
-    local swh
-    if (class.isObject(options.sourceUnit, UnitClass)) then
-        swh = options.sourceUnit:weaponHeight()
+    local weaponHeight = options.weaponHeight
+    if (nil == weaponHeight) then
+        if (class.isObject(options.sourceUnit, UnitClass)) then
+            weaponHeight = options.sourceUnit:weaponHeight()
+        end
+        if (nil == weaponHeight) then
+            weaponHeight = 20
+        end
     end
-    local weaponHeight = (options.weaponHeight or swh) or 20
     
     local vec0 = options.sourceVec
     local vec2
     if (type(options.targetVec) == "table") then
         vec2 = { options.targetVec[1], options.targetVec[2], options.targetVec[3] or japi.Z(options.targetVec[1], options.targetVec[2]) }
     else
-        vec2 = { options.targetUnit:x(), options.targetUnit:y(), weaponHeight + options.targetUnit:h() + options.targetUnit:stature() / 2 }
+        vec2 = { options.targetUnit:x(), options.targetUnit:y(), weaponHeight + options.targetUnit:h() }
         collision = options.targetUnit:collision()
     end
     local facing = 0
@@ -131,14 +135,6 @@ function ability.missile(options)
     local zRot = yRot + vec0[3]
     local rotL1 = -math._r2d * math.atan(yRot, xRot)
     local rotL2 = -math._r2d * math.atan(zRot - vec2[3], distance - xRot)
-    local dtStep = distance / speed / frequency
-    local dtSpd = 1 / dtStep
-    local dtRot1 = 2 * rotL1 / dtStep
-    local dtRot2 = 1.5 * rotL2 / dtStep
-    local dtAcc = 0
-    if (options.acceleration > 0) then
-        dtAcc = 1 / (distance / options.acceleration / frequency)
-    end
     
     local vec1
     if (height > 0) then
@@ -158,11 +154,21 @@ function ability.missile(options)
     effector.rotateZ(options.arrowToken, facing)
     effector.rotateY(options.arrowToken, rotL1)
     
-    local dt = 0
     local distancePrev = distance
     local faraway = frequency * speed * 25
     local rotY = rotL1
     local vecT = { vec0[1], vec0[2], vec0[3] }
+    
+    -- dt
+    local dt = 0
+    local dtStep = distance / speed / frequency
+    local dtSpd = 1 / dtStep
+    local dtRot1 = 2 * rotL1 / dtStep
+    local dtRot2 = 1.5 * rotL2 / dtStep
+    local dtAcc = 0
+    if (options.acceleration ~= 0) then
+        dtAcc = 1 / (distance / options.acceleration / frequency)
+    end
     time.setInterval(frequency, function(curTimer)
         if (class.isObject(options.targetUnit, UnitClass) and class.isDestroy(options.targetUnit)) then
             class.destroy(curTimer)
@@ -172,7 +178,7 @@ function ability.missile(options)
         local isDynTarget = type(options.targetVec) ~= "table" and nil ~= options.targetUnit and options.targetUnit:isAlive()
         local distortion = 1
         if (isDynTarget) then
-            vec2[1], vec2[2], vec2[3] = options.targetUnit:x(), options.targetUnit:y(), options.targetUnit:h() + options.targetUnit:stature() / 2
+            vec2[1], vec2[2], vec2[3] = options.targetUnit:x(), options.targetUnit:y(), options.targetUnit:h()
             distortion = math.max(0, distance / vector2.distance(vec0[1], vec0[2], vec2[1], vec2[2]))
             dt = dt + dtSpd * distortion
         else

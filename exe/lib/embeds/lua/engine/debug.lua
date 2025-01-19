@@ -38,7 +38,7 @@ function LK_ERROR(msg)
             if nil == f then
                 f = string.find(t, '\\', nil, true)
                 if nil ~= f then
-                    local sub = string.gsub(trace[i], '%s', ' ', 1)
+                    local sub = string.gsub(t, '%s', ' ', 1)
                     paths[#paths + 1] = '┃' .. sub
                 end
             end

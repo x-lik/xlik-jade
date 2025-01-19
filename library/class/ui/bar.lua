@@ -13,12 +13,12 @@ function _index:construct()
         japi.DZ_FrameSetTexture(self._handle, X_UI_NIL, 0)
     end
     --- 下条层(数值层)
-    self._textureValue = UIBackdrop(self._key .. ":texVal", self)
+    self._uiValue = UIBackdrop(self._key .. ":uiValue", self)
         :relation(UI_ALIGN_CENTER, self, UI_ALIGN_CENTER, 0, 0)
         :texture(BLP_COLOR_BLUE)
     --- 上条层(遮罩层)
-    self._textureMark = UIBackdrop(self._key .. ":texMark", self)
-        :relation(UI_ALIGN_RIGHT, self._textureValue, UI_ALIGN_RIGHT, 0, 0)
+    self._uiMark = UIBackdrop(self._key .. ":uiMark", self)
+        :relation(UI_ALIGN_RIGHT, self._uiValue, UI_ALIGN_RIGHT, 0, 0)
         :texture(BLP_COLOR_BLACK)
     --- layouts
     if (type(self._layouts) == "table") then
@@ -67,19 +67,19 @@ function _index:ratio(value, width, height)
             self:size(width, height)
             w = width - self._borderOffset
             h = height - self._borderOffset
-            self._textureValue:size(w, h)
+            self._uiValue:size(w, h)
         end
         if (value and w and h) then
             value = math.min(1, value)
             value = math.max(0, value)
             self._ratio = value
             if (value <= 0) then
-                self._textureValue:show(false)
-                self._textureMark:size(w, h):show(true)
+                self._uiValue:show(false)
+                self._uiMark:size(w, h):show(true)
             else
                 local wv = w * (1 - value)
-                self._textureValue:show(true)
-                self._textureMark:size(wv, h):show(wv > 0)
+                self._uiValue:show(true)
+                self._uiMark:size(wv, h):show(wv > 0)
             end
         end
     end
@@ -89,9 +89,9 @@ end
 --- 设置数值条状底图
 ---@param path string
 ---@return self
-function _index:textureValue(path)
+function _index:valueTexture(path)
     if (path) then
-        self._textureValue:texture(path)
+        self._uiValue:texture(path)
     end
     return self
 end
@@ -99,9 +99,9 @@ end
 --- 设置遮罩条状底图
 ---@param path string
 ---@return self
-function _index:textureMark(path)
+function _index:markTexture(path)
     if (path) then
-        self._textureMark:texture(path)
+        self._uiMark:texture(path)
     end
     return self
 end
