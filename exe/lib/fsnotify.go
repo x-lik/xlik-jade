@@ -32,22 +32,24 @@ func NewNotifyFile() *NotifyFile {
 
 // WatchDir 监控目录
 func (this *NotifyFile) WatchDir(app *App, dir string) {
-	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			if strings.Index(path, ".git") > 0 {
-				return nil
+	if fileutil.IsDir(dir) {
+		filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+			if info.IsDir() {
+				if strings.Index(path, ".git") > 0 {
+					return nil
+				}
+				paa, err2 := filepath.Abs(path)
+				if err2 != nil {
+					return err2
+				}
+				err2 = this.watch.Add(paa)
+				if err2 != nil {
+					return err2
+				}
 			}
-			paa, err2 := filepath.Abs(path)
-			if err2 != nil {
-				return err2
-			}
-			err2 = this.watch.Add(paa)
-			if err2 != nil {
-				return err2
-			}
-		}
-		return nil
-	})
+			return nil
+		})
+	}
 	go this.WatchEvent(app) //协程
 }
 

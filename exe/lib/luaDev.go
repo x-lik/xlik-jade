@@ -98,7 +98,9 @@ func (app *App) luaDev() string {
 	var librarySrc []string
 	for _, n := range librarySort {
 		src, _ := filepath.Abs(app.Path.Library + `/` + n)
-		librarySrc = append(librarySrc, src)
+		if fileutil.IsDir(src) {
+			librarySrc = append(librarySrc, src)
+		}
 		sub, _ := filepath.Abs(app.Path.Projects + "/" + app.ProjectName + `/library/` + n)
 		if fileutil.IsDir(sub) {
 			librarySrc = append(librarySrc, sub)
