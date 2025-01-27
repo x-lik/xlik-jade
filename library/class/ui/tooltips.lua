@@ -11,7 +11,7 @@ local _index = UI(UITooltipsClass, {
     data:{
         textAlign:TEXT_ALIGN_*  -- 文本对齐方式
         fontSize:10  -- 文本字号，默认10
-        padding:{0,0,0,0}, --上右下左填补
+        padding:{0,0,0,0}, --上右下左內边距填补
         icons:{
             { texture, text },-- 图标带文本的东东格式，默认最多4个
         }

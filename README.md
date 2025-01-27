@@ -1,75 +1,81 @@
-# X-LIK Jade Version
+Language : CN | [US](./README.en-US.md)
 
-**Introducing the Jade Version of x-lik Game Framework: A Raw Gemstone Awaiting Polishing**
+# X-LIK 璞玉版本
 
-The Jade version of the x-lik game framework is a raw gemstone, awaiting its final polish. It is a testament to the company's commitment to providing a platform for game developers to explore and experiment with their own ideas. Like a jade stone, the framework is not yet fully refined, but it offers a blank canvas for developers to create their own unique game experiences.
+- 首页: [https://www.hunzsig.com/x-lik](https://www.hunzsig.com/x-lik)
+- 发电: [https://afdian.com/a/hunzsig](https://afdian.com/a/hunzsig)
 
-The Jade version of x-lik game framework is completely full open-source, allowing developers to access and modify the codebase. However, it retains its core functionality modules, ensuring that the foundation of the framework remains stable and reliable. Developers are free to develop their own custom functionality modules, tailoring the framework to their specific needs.
+## 介绍
 
-It is ideal for developers who are passionate about exploring and researching their own ideas. It provides a blank canvas for developers to experiment with new concepts and techniques, pushing the boundaries of game development. Empowers developers to bring their vision to life.
+**待打磨的璞玉**
 
-**Framework Structure**
+X-LIK 璞玉版本的框架就像一块未经雕琢的璞玉，等待着各自的打磨。它体现了公司为游戏开发者提供一个探索和实验自己想法的平台的承诺。如同璞玉一般，玉不琢不成器，但它为开发者提供了一张空白的画布，让他们能够创造出独特的游戏体验。
 
-> (*) Required: Necessary, missing will cause a crash
+代码是完全开源的，开发者可以自由访问和修改代码库。它保留了核心功能模块，确保框架的基础稳定可靠。开发者可以自由开发自定义功能模块，根据自身需求对框架进行定制。
+
+这个框架非常适合那些热衷于探索和研究自己想法的开发者。让开发者能够尝试新的概念和技术，推动自定义游戏开发的极限，赋予开发者将他们的愿景变为现实的能力。此仓库只进行必要的维护和更新。
+
+## 框架结构
+
+> （*）Required 必要性，丢失崩溃
 >
-> (~) Automatic: Temporary, automatic build not available
+> （~）Automatic 临时性，缺少自动构建
 >
-> (·) Customize: Customizable, build on demand
+> （·）Customize 自定义，按需构建
 
 ```text
-├── library - (*) Core
-│   ├── ability - Independent ability set
-│   ├── class - Class
-│   │   ├── meta - (*) Simplified metaclass
-│   │   ├── ui - (*) UI interface class
-│   │   └── vast - (*) Composite large class
-│   ├── common - Basic library
-│   ├── japi - JAPI library, containing YD, DZ, KK, LK four interfaces
-│   └── encrypt.yaml - (·) Define the rules configuration for obfuscation
-├── projects - (~|·) Directory to place your map project, such as project_demo
-│   └── project_demo - (·)
-├── vendor - (·) Tool resource directory, you can place assets/w3x2lni/we, etc. (Of course, you can also leave it out)
-│   ├── assets - (*)|· Resource library
-│   │   ├── war3mapBgm - Place music, only supports mp3
-│   │   ├── war3mapFont - Place fonts, only supports ttf (can be paired with lua configuration)
-│   │   ├── war3mapIcon - Place icons, only supports tga
-│   │   ├── war3MapLoading - Loading image, only supports single tga or rule combination tga
-│   │   ├── war3mapModel - Place models, only supports mdx, do not put textures in
-│   │   ├── war3mapModelNew - Place new untested models, move to war3mapModel after testing (use command model -n to test)
-│   │   ├── war3mapPlugins - Place plugins, refer to existing formats
-│   │   ├── war3mapPreview - Preview image, only supports tga
-│   │   ├── war3mapSelection - Place selection circles, refer to provided formats
-│   │   ├── war3mapTerrain - Place terrain textures, refer to provided formats, supports tga, blp
-│   │   ├── war3mapTextures - Place model textures, only supports blp
-│   │   ├── war3mapTexturesNew - Place new untested model textures, move to war3mapTextures after testing (use command model -n to test)
-│   │   ├── war3mapUI - Place UI suite, refer to existing formats
-│   │   ├── war3mapVoice - Place vcm, v3d, vwp sound effects, only supports mp3
-│   │   └── war3mapVwp - Place weapon sound effect configuration, only supports yaml
-│   ├── w3x2lni - w3x2lni tool (v:2.7.2)
-│   └── WE - terrain tool
-├── temp - (~) Cache
-├── env.yaml - (~|·) Development environment configuration
-└── xlik.exe - (*) Command tool
+├── library - （*）核心库
+│   ├── ability - 独立技能集
+│   ├── class - 类
+│   │   ├── meta - （*）精简元类
+│   │   ├── ui - （*）UI界面类
+│   │   └── vast - （*）复合大类
+│   ├── common - 基础库
+│   ├── japi - JAPI 库，包含 YD、DZ、KK、LK 四个接口
+│   └── encrypt.yaml - （·） 定义混淆规则的配置文件
+├── projects -（~|·）用来放置你的地图项目目录，如 project_demo
+│   └── project_demo -（·）
+│       ├── assets - 资源引入
+│       ├── slk - slk引入
+│       └── library（·）项目子库
+├── vendor -（·）工具资源目录，你可以放置assets/w3x2lni/we等(当然也可以不放)
+│   ├── assets -（*|·）资源库
+│   │   ├── war3mapBgm - 放音乐，只支持 mp3、wav
+│   │   ├── war3mapFont - 放字体，只支持 ttf（可搭配lua配置）
+│   │   ├── war3mapImage - 放图片，如过去lik的图标，只支持 tga、blp
+│   │   ├── war3MapLoading - 载入图，只支持单图 tga 或 规则组合 tga
+│   │   ├── war3mapModel - 放模型，只支持 mdx，贴图不要扔进来
+│   │   ├── war3mapModelNew - 放新的未测试模型，测试完成后再放入war3mapModel（使用命令model -n测试）
+│   │   ├── war3mapPreview - 预览图，只支持 tga
+│   │   ├── war3mapSelection - 放选择圈，参考已提供格式
+│   │   ├── war3mapTerrain - 放地形贴图，参考已提供格式，支持 tga、blp
+│   │   ├── war3mapTextures - 放模型贴图，只支持 blp
+│   │   ├── war3mapTexturesNew - 放新的未测试模型贴图，测试完成后再放入war3mapTextures（使用命令model -n测试）
+│   │   ├── war3mapUI - 放UI套件，已有格式参考
+│   │   ├── war3mapVoice - 放vcm、v3d、vwp音效，只支持 mp3、wav
+│   │   └── war3mapVwp - 放武器音效配置，只支持 yaml
+│   ├── w3x2lni - w3x2lni工具(v:2.7.2)
+│   └── WE - 新马仔
+├── env.yaml -（·）开发环境配置
+├── exbook.exe -（·）文档阅读器
+├── xlik.exe -（*）命令工具
+└── .tmp -（~）缓存
 ```
 
-### How To Build ExeTool
+## 构建exe工具
 
 ```
 cd /xlik-jade/exe
 go build
 ```
 
-### How To Use
+## 使用入门
 
 ```
 xlik.exe new my_project
-xlik.exe run my_project -l // local test
-xlik.exe run my_project -t // pack test
-xlik.exe run my_project -b // build
-xlik.exe run my_project -d // dist
-xlik.exe run my_project -r // publish released
+xlik.exe run my_project -l //本地调试模式下热更新调试
+xlik.exe run my_project -t //构建脚本不加密地图并热更新调试
+xlik.exe run my_project -b //构建脚本加密地图并热更新调试
+xlik.exe run my_project -d //构建脚本加密且slk优化的地图并调试
+xlik.exe run my_project -r //基于-d二次构建上线地图并测试
 ```
-
-### Management and Maintenance
-
-Developing the project requires a huge development cost, in order to ensure the stability of the project, this repository will be maintained and updated only every once in a while. If you have a bug fix discovery, you can choose to [create a PR](https://help.github.com/articles/creating-a-pull-request/) to contribute to the project, and you can also [sponsor author](https://afdian.com/a/hunzsig) to make the maintenance activities more active.

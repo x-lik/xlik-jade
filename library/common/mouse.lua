@@ -100,7 +100,7 @@ end
 
 --- [异步]是否鼠标安全区
 --- 只有安全区可以显示指针
---- 自动根据 BlockUI 对象计算
+--- 自动根据 UIBlock 对象计算
 ---@param rx number|nil
 ---@param ry number|nil
 ---@return boolean

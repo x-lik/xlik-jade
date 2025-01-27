@@ -175,7 +175,7 @@ function japi.SetBlackBorders(topHeight, bottomHeight)
     japi.DZ_FrameEditBlackBorders(topHeight, bottomHeight)
 end
 
---- 获得游戏渲染的：离顶黑边高、离底黑边高、中间显示高、
+--- 获得游戏渲染的：离顶黑边高、离底黑边高、中间显示高
 ---@return number,number,number top,bottom,inner
 function japi.GetBlackBorders()
     return japi._blackBordersTop, japi._blackBordersBottom, japi._blackBordersInner
@@ -276,7 +276,7 @@ function japi.UISetEsc(key, ui)
     japi._uiEsc:set(key, ui)
 end
 
---- 注册UI对象Esc叠层处理
+--- UI对象事件转鼠标处理
 ---@param whichUI UI 操作的UI对象
 ---@param evt string 事件种类
 ---@param ban boolean 是否强制禁止，ban为true时无视其他条件必定注销事件

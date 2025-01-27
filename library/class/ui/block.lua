@@ -10,7 +10,7 @@ function _index:construct()
     if (true == self._blocking) then
         Pool(UIBlockClass):insert(self)
     else
-        japi.DZ_FrameShow(self._handle, false)
+        self:show(false)
     end
 end
 
@@ -33,7 +33,7 @@ function _index:block(status)
         else
             Pool(UIBlockClass):remove(self)
         end
-        japi.DZ_FrameShow(self._handle, status)
+        self:show(status)
     end
     return self
 end
