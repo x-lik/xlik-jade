@@ -4,14 +4,6 @@
 ---@class mouse
 mouse = mouse or {}
 
---- [异步]设置鼠标坐标
----@param x number
----@param y number
----@return void
-function mouse.position(x, y)
-    japi.DZ_SetMousePos(x, y)
-end
-
 --- [异步]当鼠标左键点击
 ---@param key string
 ---@param callFunc fun(evtData:eventOnMouseLeftClick)

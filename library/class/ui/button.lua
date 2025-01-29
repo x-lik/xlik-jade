@@ -13,7 +13,7 @@ local _index = UI(UIButtonClass, {
 function _index:construct()
     self:texture(X_UI_NIL)
     -- 高亮
-    if (nil ~= self._highlightFdfName) then
+    if (type(self._highlightFdfName) == "string") then
         self._highlight = UIHighlight(self._key .. ':hl', self, { _fdfName = self._highlightFdfName })
             :relation(UI_ALIGN_CENTER, self, UI_ALIGN_CENTER, 0, 0)
             :show(false)
@@ -312,7 +312,11 @@ function UIButton(key, parent, constructs)
         constructs._parent = parent or UIGame
         constructs._fdfType = "BACKDROP"
         constructs._fdfName = constructs._fdfName or "LK_BACKDROP"
-        constructs._highlightFdfName = constructs._highlightFdfName or "LK_HIGHLIGHT_HUMAN_CONSOLE"
+        if (constructs._highlightFdfName ~= nil and type(constructs._highlightFdfName) ~= "string") then
+            constructs._highlightFdfName = nil
+        else
+            constructs._highlightFdfName = constructs._highlightFdfName or "LK_HIGHLIGHT_HUMAN_CONSOLE"
+        end
         cache[key] = oUI(constructs, _index)
     end
     return cache[key]
