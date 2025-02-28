@@ -123,7 +123,7 @@ function dump(value, description, nesting)
         end
         return tostring(v)
     end
-    local _dump
+    local _dump = nil
     _dump = function(val, desc, indent, nest, keyLen)
         desc = desc or '<var>'
         local spc = ''

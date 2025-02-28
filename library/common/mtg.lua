@@ -99,7 +99,7 @@ function mtg.word(options)
                     return
                 end
                 h = h + spd
-                local siz
+                local siz = nil
                 if (scale[1] ~= 1 or scale[2] ~= 1) then
                     ani = ani + frequency
                     if (ani >= 0.1) then
@@ -192,7 +192,7 @@ function mtg.model(options)
                 return
             end
             h = h + spd
-            local siz
+            local siz = nil
             if (scale[1] ~= 1 or scale[2] ~= 1) then
                 ani = ani + frequency
                 if (ani >= 0.1) then

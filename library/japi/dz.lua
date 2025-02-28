@@ -248,7 +248,7 @@ function japi.DZ_FrameClearAllPoints(frame)
     japi.Exec("DzFrameClearAllPoints", frame)
 end
 
---- 获取名字为name的子FrameID:Id"
+--- 获取名字为name的子FrameID:Id
 --- ID默认填0，同名时优先获取最后被创建的。非Simple类的Frame类型都用此函数来获取子Frame
 ---@param name string
 ---@param id number integer

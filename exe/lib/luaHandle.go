@@ -18,9 +18,8 @@ type LuaFile struct {
 }
 
 var (
-	_spiltSym     = ` ♬♬♬♬♬♬♬ `
-	_codes        []LuaFile
-	_codesContent string
+	_luaChips   []LuaFile
+	_luaContent string
 )
 
 func luaRequire(L *lua.LState, file string) {
@@ -64,7 +63,7 @@ func luaZip(src string) string {
 	return strings.Join(ctn, " ")
 }
 
-func (app *App) luaTrimName(path string, trim string) string {
+func luaTrimName(path string, trim string) string {
 	trim = strings.Replace(trim, "\\", "/", -1)
 	name := strings.Replace(path, "\\", "/", -1)
 	name = strings.Replace(name, trim, "", 1)
@@ -74,37 +73,24 @@ func (app *App) luaTrimName(path string, trim string) string {
 	return name
 }
 
-func slkIni(file string) string {
-	content, errIni := fileutil.ReadFileToString(file)
-	if errIni != nil {
-		return ""
-	}
-	return content
-}
-
-func codesContent() string {
-	if `` != _codesContent {
-		return _codesContent
+func (app *App) luaAllContent() string {
+	if `` != _luaContent {
+		return _luaContent
 	}
 	// 智能分析混淆
-	var _codesBuilder strings.Builder
-	for _, v := range _codes {
-		_codesBuilder.WriteString(luaZip(v.code) + _spiltSym)
+	var builder strings.Builder
+	for _, v := range _luaChips {
+		builder.WriteString(luaZip(v.code) + ` `)
 	}
-	_codesContent = _codesBuilder.String()
-	_codesBuilder.Reset()
-	return _codesContent
+	_luaContent = builder.String()
+	builder.Reset()
+	return _luaContent
 }
 
-func codesContentZip() string {
-	content := codesContent()
-	return luaZip(content)
-}
-
-func codesIn(item LuaFile) {
-	_codes = append(_codes, item)
-	if `` != _codesContent {
-		_codesContent = ``
+func luaChipsIn(item LuaFile) {
+	_luaChips = append(_luaChips, item)
+	if `` != _luaContent {
+		_luaContent = ``
 	}
 }
 
@@ -125,8 +111,7 @@ func orCount(content string, code map[string]int) bool {
 func (app *App) luaSetup() string {
 	openHot := app.BuildModeName == "_local" || app.BuildModeName == "_test" || app.BuildModeName == "_build"
 	isSimplify := openHot
-	content := codesContentZip()
-	var l []byte
+	content := app.luaAllContent()
 	// setup
 	x, _ := Embeds.ReadFile("embeds/lua/setup/setup.lua")
 	scripts := string(x)
@@ -136,6 +121,11 @@ func (app *App) luaSetup() string {
 		if len(s) > 0 {
 			scripts = strings.Replace(scripts, "---lk:placeholder setup:hot", string(s), 1)
 		}
+	}
+	// hook
+	l, _ := Embeds.ReadFile("embeds/lua/setup/hook.lua")
+	if len(l) > 0 {
+		scripts = strings.Replace(scripts, "---lk:placeholder setup:hook", string(l), 1)
 	}
 	// asyncRand
 	var asyncRandIn [][]string
@@ -291,7 +281,7 @@ func (app *App) luaSetup() string {
 // luaStart
 func (app *App) luaStart() string {
 	isSimplify := app.BuildModeName == "_local"
-	content := codesContentZip()
+	content := app.luaAllContent()
 	x, _ := Embeds.ReadFile("embeds/lua/start/start.lua")
 	scripts := string(x)
 	// cameraEvents
@@ -328,6 +318,14 @@ func (app *App) luaStart() string {
 	if isSimplify || isCount {
 		l, _ = Embeds.ReadFile("embeds/lua/start/zInit.lua")
 		scripts = strings.Replace(scripts, "---lk:placeholder start:zInit", string(l), 1)
+	}
+	// asyncEffects
+	isCount = orCount(content, map[string]int{
+		"japi.AsyncEffectShow(": 2,
+	})
+	if isSimplify || isCount {
+		l, _ = Embeds.ReadFile("embeds/lua/start/asyncEffects.lua")
+		scripts = strings.Replace(scripts, "---lk:placeholder start:asyncEffects", string(l), 1)
 	}
 	return scripts
 }

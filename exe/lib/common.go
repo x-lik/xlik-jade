@@ -145,11 +145,15 @@ func Nano(n int) string {
 	return s1 + s2
 }
 
+// This function generates a string of length n using the characters in the given string
 func NanoOL(n int) string {
+	// Generate a string of length n using the characters in the given string
 	s, err := gonanoid.Generate("abcDEFghiJKLmnopqrSTUvwxYZ", n)
+	// If there is an error, panic
 	if err != nil {
 		Panic(err)
 	}
+	// Return the generated string
 	return s
 }
 

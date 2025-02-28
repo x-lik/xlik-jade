@@ -7,11 +7,6 @@
 ---@class Enchant:Meta
 local _index = Meta(EnchantClass)
 
----@protected
-function _index:destruct()
-    class.cache(EnchantClass)[self._key] = nil
-end
-
 --- 获取key
 ---@return string
 function _index:key()

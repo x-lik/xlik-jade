@@ -36,7 +36,7 @@ end)
 ---@param this Item
 description.define("itemBase", function(this, options)
     local desc = {}
-    local name
+    local name = nil
     if (this:level() > 0 and this:levelMax() > 1) then
         name = this:name() .. "[" .. colour.hex(colour.white, this:level()) .. "级]"
     else

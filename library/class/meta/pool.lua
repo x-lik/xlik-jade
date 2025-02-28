@@ -2,11 +2,6 @@
 ---@class Pool:Meta
 local _index = Meta(PoolClass)
 
----@protected
-function _index:destruct()
-    class.cache(PoolClass)[self._scope] = nil
-end
-
 --- 域数据
 ---@return Array
 function _index:data()
@@ -121,23 +116,23 @@ function _index:randEach(action)
 end
 
 --- 构造Pool对象
----@param scope string
+---@param key string
 ---@return Pool
-function Pool(scope)
-    must(type(scope) == "string", "scope@string")
+function Pool(key)
+    must(type(key) == "string", "key@string")
     local cache = class.cache(PoolClass)
-    if (nil == cache[scope]) then
-        cache[scope] = oMeta({ _scope = scope, _data = Array() }, _index)
+    if (nil == cache[key]) then
+        cache[key] = oMeta({ _key = key, _data = Array() }, _index)
     end
-    return cache[scope]
+    return cache[key]
 end
 
 --- Pool是否已实例
----@param scope string
+---@param key string
 ---@return boolean
-function isPool(scope)
-    if (type(scope) ~= "string") then
+function isPool(key)
+    if (type(key) ~= "string") then
         return false
     end
-    return nil ~= class._cache[PoolClass] and nil ~= class._cache[PoolClass][scope]
+    return nil ~= class._cache[PoolClass] and nil ~= class._cache[PoolClass][key]
 end

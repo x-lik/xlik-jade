@@ -99,8 +99,8 @@ func asExt(src string, set string) string {
 }
 
 // asCheck 检查资源是否未被使用，以免加载多余的资源
-func asCheck() {
-	content := codesContent()
+func (app *App) asCheck() {
+	content := app.luaAllContent()
 	check := make(map[string]int)
 	reg := regexp.MustCompile(`[一-龥，。！、（）【】；：“”《》？…]+`)
 	mcn := reg.FindAllString(content, -1)
@@ -418,7 +418,7 @@ func (app *App) asFont(data string) string {
 			}
 			if fontLua != "" {
 				pterm.Debug.Println("【字体】载入lua配置")
-				codesIn(LuaFile{
+				luaChipsIn(LuaFile{
 					name: "projects.fonts",
 					dst:  app.BuildDstPath + "/map/projects/fonts.lua",
 					code: fontLua,
@@ -750,11 +750,11 @@ func (app *App) asUI(data []string) []string {
 							if errl != nil {
 								Panic(errl)
 							}
-							name := app.luaTrimName(path, app.Path.Assets)
+							name := luaTrimName(path, app.Path.Assets)
 							n := strings.Replace(name, `.`, `/`, -1)
 							dst := app.BuildDstPath + "/map/" + n + ".lua"
 							code := lc
-							codesIn(LuaFile{
+							luaChipsIn(LuaFile{
 								name: name,
 								dst:  dst,
 								code: code,
@@ -769,14 +769,14 @@ func (app *App) asUI(data []string) []string {
 					uiTips += `，已引入scripts`
 				}
 				// main
-				name := app.luaTrimName(mainLua, app.Path.Assets)
+				name := luaTrimName(mainLua, app.Path.Assets)
 				n := strings.Replace(name, `.`, `/`, -1)
 				dst := app.BuildDstPath + "/map/" + n + ".lua"
 				code, err2 := fileutil.ReadFileToString(mainLua)
 				if err2 != nil {
 					Panic(err2)
 				}
-				codesIn(LuaFile{
+				luaChipsIn(LuaFile{
 					name: name,
 					dst:  dst,
 					code: code,

@@ -15,7 +15,7 @@ function tooltipsAbility(whichAbility, lvOffset)
     if (lv > whichAbility:levelMax()) then
         return nil
     end
-    local tips
+    local tips = nil
     if (lvOffset > 0) then
         tips = description.combine(whichAbility, { level = lv }, "abilityBase", SYMBOL_D, "attributes", "abilityLvPoint")
     else

@@ -16,11 +16,18 @@ event.asyncRegister("window", eventKind.windowResize, "_li_resize", function(evt
         ---@param ui UI
         japi._uiAdaptive:backEach(function(_, ui)
             if (class.isType(ui, "UI")) then
-                if (ui._widthAdaptive) then
-                    ui:size(ui._width, ui._height)
+                if (ui._width and ui._height) then
+                    local aw = japi.UIAdaptive(ui._width)
+                    ui._widthAdaptive = aw
+                    ui:resetAnchor()
+                    japi.DZ_FrameSetSize(ui._handle, aw, ui._height)
                 end
                 if (ui._upNode) then
-                    ui:relation(ui._point, ui._upNode, ui._upNodePoint, ui._x, ui._y)
+                    local ax = japi.UIAdaptive(ui._x)
+                    japi.DZ_FrameClearAllPoints(ui._handle)
+                    japi.DZ_FrameSetPoint(ui._handle, ui._point, ui._upNode._handle, ui._upNodePoint, ax, ui._y)
+                    ui._xAdaptive = ax
+                    ui:resetAnchor()
                 end
             end
         end)

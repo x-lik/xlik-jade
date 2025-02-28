@@ -37,8 +37,8 @@ end
 ---@return self
 function _index:onUnitEvent(evt, ...)
     local opt = { ... }
-    local key
-    local callFunc
+    local key = nil
+    local callFunc = nil
     if (type(opt[1]) == "function") then
         key = self:id() .. evt
         callFunc = opt[1]
@@ -129,7 +129,7 @@ function _index:banReason()
     if (self:isCooling()) then
         return "冷却中"
     end
-    local advRe
+    local advRe = nil
     local costAdv = self:get("costAdv")
     if (isArray(costAdv)) then
         costAdv:forEach(function(k, v)
@@ -249,7 +249,7 @@ function _index:spell(evtData)
     else
         --- 非无视距离类型需要进行距离判断
         local castDistance = self:castDistance()
-        local distTarget
+        local distTarget = nil
         if (class.isObject(evtData.targetUnit, UnitClass)) then
             distTarget = evtData.targetUnit
         elseif (evtData.targetX and evtData.targetY) then
@@ -525,7 +525,7 @@ end
 function _index:cooling()
     local cd = self:coolDown()
     if (cd > 0) then
-        local revert
+        local revert = nil
         local evtData = { triggerUnit = self:bindUnit() }
         local pot = self:castPotTimes()
         if (pot > 0 and self._castPotRemain > 0) then

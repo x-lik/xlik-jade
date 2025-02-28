@@ -6,6 +6,7 @@ import (
 	"github.com/duke-git/lancet/v2/fileutil"
 	"github.com/pterm/pterm"
 	lua "github.com/yuin/gopher-lua"
+	"gopkg.in/yaml.v3"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -24,37 +25,6 @@ func (app *App) luaDev() string {
 	if app.BuildModeName == "_local" {
 		coreScripts = append(coreScripts, "package.path = package.path .. \";"+strings.Replace(app.Path.Assets, "\\", "/", -1)+"/?.lua\"")
 		coreScripts = append(coreScripts, "package.path = package.path .. \";"+strings.Replace(app.Pwd, "\\", "/", -1)+"/?.lua\"")
-	} else if app.BuildModeName == "_build" || app.BuildModeName == "_dist" {
-		//  core - encrypt
-		script := ""
-		x, _ := Embeds.ReadFile("embeds/lua/go/encrypt.lua")
-		coreScripts = append(coreScripts, string(x))
-		// 字串数字化
-		chao, _ := CharChao()
-		script = "____={"
-		for k, v := range chao {
-			i := 3
-			nPrev := Nano(Rand(23, 37))
-			for {
-				if i == 0 {
-					if k == `\` {
-						k = `\\`
-					}
-					script += nPrev + "='" + k + "',"
-					break
-				}
-				if i == 3 {
-					script += v + "='" + nPrev + "',"
-				} else {
-					nCur := Nano(Rand(23, 37))
-					script += nPrev + "='" + nCur + "',"
-					nPrev = nCur
-				}
-				i = i - 1
-			}
-		}
-		script += "} ENCRYPT_STRING()"
-		coreScripts = append(coreScripts, script)
 	}
 	// 外置 lua引擎
 	L := lua.NewState()
@@ -67,10 +37,7 @@ func (app *App) luaDev() string {
 	luaRequireEmbed(L, "embeds/lua/go/system.lua")
 	// lua - core1
 	_idxPt := make(map[string]int)
-	cores := []string{"engine"}
-	if app.BuildModeName == "_local" || app.BuildModeName == "_test" || app.BuildModeName == "_build" || app.BuildModeName == "_dist" {
-		cores = append(cores, "debug")
-	}
+	cores := []string{"engine", "debug"}
 	if app.BuildModeName == "_dist" {
 		cores = append(cores, "debugRelease")
 	}
@@ -85,7 +52,7 @@ func (app *App) luaDev() string {
 			code: code,
 			gen:  true,
 		}
-		codesIn(m)
+		luaChipsIn(m)
 		// 记录以下后续需要用到的索引
 		if v == `blizzard` || v == `setting` || v == `debug` || v == `debugRelease` {
 			_idxPt[v] = i
@@ -94,16 +61,46 @@ func (app *App) luaDev() string {
 
 	//-------------- library ---------------
 
-	librarySort := []string{"common", "japi", "ability", "class"}
-	var librarySrc []string
-	for _, n := range librarySort {
-		src, _ := filepath.Abs(app.Path.Library + `/` + n)
-		if fileutil.IsDir(src) {
-			librarySrc = append(librarySrc, src)
+	var libSortMain []string
+	yamlFile := app.Path.Library + `/library.yaml`
+	if fileutil.IsExist(yamlFile) {
+		data, _ := os.ReadFile(yamlFile)
+		y := YamlLibrary{}
+		erry := yaml.Unmarshal(data, &y)
+		if nil == erry {
+			libSortMain = y.Require
 		}
-		sub, _ := filepath.Abs(app.Path.Projects + "/" + app.ProjectName + `/library/` + n)
-		if fileutil.IsDir(sub) {
-			librarySrc = append(librarySrc, sub)
+	}
+	var librarySrc []string
+	if len(libSortMain) == 0 {
+		librarySrc = append(librarySrc, app.Path.Library)
+	} else {
+		for _, n := range libSortMain {
+			p := app.Path.Library + `/` + n
+			if fileutil.IsDir(p) {
+				librarySrc = append(librarySrc, p)
+			}
+		}
+	}
+	var libSortSub []string
+	subRoot := app.Path.Projects + "/" + app.ProjectName + `/library`
+	yamlFile = subRoot + `/library.yaml`
+	if fileutil.IsExist(yamlFile) {
+		data, _ := os.ReadFile(yamlFile)
+		y := YamlLibrary{}
+		erry := yaml.Unmarshal(data, &y)
+		if nil == erry {
+			libSortSub = y.Require
+		}
+	}
+	if len(libSortSub) == 0 {
+		librarySrc = append(librarySrc, subRoot)
+	} else {
+		for _, n := range libSortSub {
+			p := subRoot + `/` + n
+			if fileutil.IsDir(p) {
+				librarySrc = append(librarySrc, p)
+			}
 		}
 	}
 	for _, src := range librarySrc {
@@ -117,7 +114,7 @@ func (app *App) luaDev() string {
 					Panic(err2)
 				}
 				isGen := "_local" != app.BuildModeName
-				name := app.luaTrimName(path, app.Pwd)
+				name := luaTrimName(path, app.Pwd)
 				dst := ""
 				if isGen {
 					ns := strings.Split(name, ".")
@@ -129,7 +126,7 @@ func (app *App) luaDev() string {
 					n := strings.Replace(name, `.`, `/`, -1)
 					dst = app.BuildDstPath + "/map/" + n + ".lua"
 				}
-				codesIn(LuaFile{
+				luaChipsIn(LuaFile{
 					name: name,
 					dst:  dst,
 					code: code,
@@ -149,7 +146,7 @@ func (app *App) luaDev() string {
 		dst := app.BuildDstPath + "/map/projects/" + v + ".lua"
 		x, _ := Embeds.ReadFile("embeds/lua/slk/" + v + ".lua")
 		code := string(x)
-		codesIn(LuaFile{
+		luaChipsIn(LuaFile{
 			name: "projects." + v,
 			dst:  dst,
 			code: code,
@@ -172,14 +169,14 @@ func (app *App) luaDev() string {
 			}
 			if filepath.Ext(path) == ".lua" {
 				luaRequire(L, path)
-				name := app.luaTrimName(path, app.Pwd)
+				name := luaTrimName(path, app.Pwd)
 				n := strings.Replace(name, `.`, `/`, -1)
 				dst := app.BuildDstPath + "/map/" + n + ".lua"
 				code, err2 := fileutil.ReadFileToString(path)
 				if err2 != nil {
 					Panic(err2)
 				}
-				codesIn(LuaFile{
+				luaChipsIn(LuaFile{
 					name: name,
 					dst:  dst,
 					code: code,
@@ -217,14 +214,14 @@ func (app *App) luaDev() string {
 			}
 			if filepath.Ext(path) == ".lua" {
 				luaRequire(L, path)
-				name := app.luaTrimName(path, app.Pwd)
+				name := luaTrimName(path, app.Pwd)
 				n := strings.Replace(name, `.`, `/`, -1)
 				dst := app.BuildDstPath + "/map/" + n + ".lua"
 				code, err2 := fileutil.ReadFileToString(path)
 				if err2 != nil {
 					Panic(err2)
 				}
-				codesIn(LuaFile{
+				luaChipsIn(LuaFile{
 					name: name,
 					dst:  dst,
 					code: code,
@@ -255,7 +252,11 @@ func (app *App) luaDev() string {
 	reg := regexp.MustCompile("\\[[A-Za-z][A-Za-z\\d]{3}]")
 	var idIni []string
 	for _, k := range iniKeys {
-		iniF6[k] = slkIni(app.BuildDstPath + "/table/" + k + ".ini")
+		conIni, errIni := fileutil.ReadFileToString(app.BuildDstPath + "/table/" + k + ".ini")
+		if errIni != nil {
+			conIni = ""
+		}
+		iniF6[k] = conIni
 		matches := reg.FindAllString(iniF6[k], -1)
 		for _, v := range matches {
 			v = strings.Replace(v, "[", "", 1)
@@ -385,7 +386,7 @@ func (app *App) luaDev() string {
 	// lua - init
 	x, _ := Embeds.ReadFile("embeds/lua/engine/init.lua")
 	initCodes := string(x)
-	codesIn(LuaFile{
+	luaChipsIn(LuaFile{
 		name: "projects.init",
 		dst:  app.BuildDstPath + "/map/projects/init.lua",
 		code: initCodes,
@@ -403,11 +404,11 @@ func (app *App) luaDev() string {
 			if err2 != nil {
 				Panic(err2)
 			}
-			name := app.luaTrimName(path, app.Pwd)
+			name := luaTrimName(path, app.Pwd)
 			n := strings.Replace(name, `.`, `/`, -1)
 			dst := app.BuildDstPath + "/map/" + n + ".lua"
 			code := lc
-			codesIn(LuaFile{
+			luaChipsIn(LuaFile{
 				name: name,
 				dst:  dst,
 				code: code,
@@ -421,7 +422,7 @@ func (app *App) luaDev() string {
 	}
 
 	// 为 setting 补充：物编ID
-	settingCode := _codes[_idxPt[`setting`]].code
+	settingCode := _luaChips[_idxPt[`setting`]].code
 	if len(slkIdCli) > 0 {
 		for k, v := range slkIdCli {
 			slkIdCli[k] = "'" + v + "'"
@@ -438,7 +439,7 @@ func (app *App) luaDev() string {
 		mapName := sm[0][1]
 		settingCode = strings.Replace(settingCode, "---lk:placeholder map_name", `LK_MAP_NAME = "`+mapName+`"`, 1)
 	}
-	_codes[_idxPt[`setting`]].code = settingCode
+	_luaChips[_idxPt[`setting`]].code = settingCode
 
 	// toc
 	tocFile := app.BuildDstPath + "/map/UI/xlik.toc"
@@ -458,7 +459,7 @@ func (app *App) luaDev() string {
 	}
 
 	// lua - setup
-	codesIn(LuaFile{
+	luaChipsIn(LuaFile{
 		name: "projects.setup",
 		dst:  app.BuildDstPath + "/map/projects/setup.lua",
 		code: app.luaSetup(),
@@ -466,7 +467,7 @@ func (app *App) luaDev() string {
 	})
 
 	// lua - start
-	codesIn(LuaFile{
+	luaChipsIn(LuaFile{
 		name: "projects.start",
 		dst:  app.BuildDstPath + "/map/projects/start.lua",
 		code: app.luaStart(),
@@ -479,7 +480,7 @@ func (app *App) luaDev() string {
 	if app.BuildModeName == "_dist" {
 		coreName = Nano(23)
 		connect := []string{coreName}
-		for i := 0; i < len(_codes); i++ {
+		for i := 0; i < len(_luaChips); i++ {
 			nano := Nano(23)
 			if i == _idxPt[`debug`] || i == _idxPt[`debugRelease`] {
 				connect = append(connect, nano)
@@ -487,14 +488,14 @@ func (app *App) luaDev() string {
 			if i != _idxPt[`debugRelease`] {
 				coreScripts = append(coreScripts, luaRequireStr(nano))
 			}
-			_codes[i].name = nano
+			_luaChips[i].name = nano
 		}
 		err = FilePutContents(app.BuildDstPath+"/map/.connect", strings.Join(connect, "|"), os.ModePerm)
 		if err != nil {
 			Panic(err)
 		}
 	} else {
-		for _, v := range _codes {
+		for _, v := range _luaChips {
 			coreScripts = append(coreScripts, luaRequireStr(v.name))
 		}
 	}
@@ -508,15 +509,15 @@ func (app *App) luaDev() string {
 		code: coreCode,
 		gen:  true,
 	}
-	codesIn(coreMap)
+	luaChipsIn(coreMap)
 
 	// assets check
-	asCheck()
+	app.asCheck()
 
 	if app.BuildModeName == "_build" || app.BuildModeName == "_dist" {
-		app.EncryptLua(_codes)
+		app.EncryptChips(_luaChips)
 	}
-	for _, v := range _codes {
+	for _, v := range _luaChips {
 		dst := v.dst
 		code := v.code
 		if app.BuildModeName == "_dist" {

@@ -8,11 +8,6 @@ local _index = Meta(GridClass, {
     _size = 256,
 })
 
----@protected
-function _index:destruct()
-    class.cache(GridClass)[self._scope] = nil
-end
-
 --- 设置分格大小
 --- 一般只用于Grid初始化时
 --- 只有数据集内没有对象时能顺利修改
@@ -49,17 +44,16 @@ end
 ---@return void
 function _index:insert(enum)
     sync.must()
-    local key = datum.enumKey(enum)
-    must(nil ~= key, "Invalid enum")
-    local scope = self._scope
-    local x, y = datum.enumXY(enum, scope)
+    local ek = datum.enumKey(enum)
+    must(nil ~= ek, "Invalid enum")
+    local x, y = datum.enumXY(enum, self._key)
     if (nil == x or nil == y) then
         return
     end
     local d = self:xy2data(x, y)
-    if (false == d:keyExists(key)) then
+    if (false == d:keyExists(ek)) then
         setmetatable({}, { __mode = "v" })
-        d:set(key, enum)
+        d:set(ek, enum)
         self._count = self._count + 1
         if (class.is(enum)) then
             if (nil == enum._grid) then
@@ -75,22 +69,21 @@ end
 ---@return void
 function _index:update(enum)
     sync.must()
-    local key = datum.enumKey(enum)
-    must(nil ~= key, "Invalid enum")
-    local scope = self._scope
+    local ek = datum.enumKey(enum)
+    must(nil ~= ek, "Invalid enum")
     if (class.is(enum)) then
         if (nil ~= enum._grid and nil ~= enum._grid[self._id]) then
-            enum._grid[self._id]:set(key, nil)
+            enum._grid[self._id]:set(ek, nil)
             enum._grid[self._id] = nil
         end
     end
-    local x, y = datum.enumXY(enum, scope)
+    local x, y = datum.enumXY(enum, self._key)
     if (nil == x or nil == y) then
         return
     end
     local d = self:xy2data(x, y)
-    if (false == d:keyExists(key)) then
-        d:set(key, enum)
+    if (false == d:keyExists(ek)) then
+        d:set(ek, enum)
         if (class.is(enum)) then
             enum._grid[self._id] = d
         end
@@ -102,16 +95,15 @@ end
 ---@return void
 function _index:remove(enum)
     sync.must()
-    local key = datum.enumKey(enum)
-    must(nil ~= key, "Invalid enum")
-    local scope = self._scope
-    local x, y = datum.enumXY(enum, scope)
+    local ek = datum.enumKey(enum)
+    must(nil ~= ek, "Invalid enum")
+    local x, y = datum.enumXY(enum, self._key)
     if (nil == x or nil == y) then
         return
     end
     local d = self:xy2data(x, y)
-    if (d:keyExists(key)) then
-        d:set(key, nil)
+    if (d:keyExists(ek)) then
+        d:set(ek, nil)
         self._count = self._count - 1
         if (class.is(enum)) then
             if (nil ~= enum._grid and nil ~= enum._grid[self._id]) then
@@ -131,7 +123,6 @@ end
 ---@return datumEnum[]
 function _index:catch(options)
     local res = {}
-    local scope = self._scope
     if (self._count > 0) then
         local xMin, yMin, xMax, yMax = RegionPlayable:xMin(), RegionPlayable:yMin(), RegionPlayable:xMax(), RegionPlayable:yMax()
         if (class.isObject(options.region, RegionClass)) then
@@ -177,7 +168,7 @@ function _index:catch(options)
                             return false
                         end
                         if (options.region or options.square or options.circle or options.corner) then
-                            local ex, ey = datum.enumXY(enum, scope)
+                            local ex, ey = datum.enumXY(enum, self._key)
                             if (nil == ex or nil == ey) then
                                 return
                             end
@@ -215,7 +206,7 @@ function _index:catch(options)
                 end)
             end
         end
-        local _do
+        local _do = nil
         _do = function(d)
             if (d > md or #res >= limit) then
                 return
@@ -326,10 +317,10 @@ function _index:closest(options)
     if (#catch <= 0) then
         return nil
     end
-    local closer
+    local closer = nil
     local closestDst = 99999
     for _, c in ipairs(catch) do
-        local cx, cy = datum.enumXY(c, self._scope)
+        local cx, cy = datum.enumXY(c, self._key)
         local dst = vector2.distance(x, y, cx, cy)
         if (dst < closestDst) then
             closer = c
@@ -340,27 +331,27 @@ function _index:closest(options)
 end
 
 --- 构造Grid对象
----@param scope string
+---@param key string
 ---@return Grid
-function Grid(scope)
-    must(type(scope) == "string", "scope@string")
+function Grid(key)
+    must(type(key) == "string", "key@string")
     local cache = class.cache(GridClass)
-    if (nil == cache[scope]) then
+    if (nil == cache[key]) then
         ---@type Grid
-        local o = oMeta({ _scope = scope, _data = {} }, _index)
+        local o = oMeta({ _key = key, _data = {} }, _index)
         -- ID
         class.id(o, false)
-        cache[scope] = o
+        cache[key] = o
     end
-    return cache[scope]
+    return cache[key]
 end
 
 --- Grid是否已实例
----@param scope string
+---@param key string
 ---@return boolean
-function isGrid(scope)
-    if (type(scope) ~= "string") then
+function isGrid(key)
+    if (type(key) ~= "string") then
         return false
     end
-    return nil ~= class._cache[GridClass] and nil ~= class._cache[GridClass][scope]
+    return nil ~= class._cache[GridClass] and nil ~= class._cache[GridClass][key]
 end

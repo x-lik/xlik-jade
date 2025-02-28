@@ -12,11 +12,6 @@ function _index:construct()
         :relation(UI_ALIGN_CENTER, self, UI_ALIGN_CENTER, 0, 0)
 end
 
----@protected
-function _index:destruct()
-    class.cache(UIBackdropClass)[self._key] = nil
-end
-
 --- 设置宽高尺寸[0-0.8,0-0.6]
 --- blocker自动跟随
 ---@param width number

@@ -4033,7 +4033,7 @@ J.SetCineFilterTexMapFlags = J.Common["SetCineFilterTexMapFlags"]
 J.SetCineFilterTexture = J.Common["SetCineFilterTexture"]
 --- 播放电影镜头(所有玩家) [R]
 --- 对所有玩家播放电影镜头:[Camera File]
---- 在'Objects\\CinematicCameras'目录下有一些电影镜头,可用Mpq工具来查询.
+--- 在 Objects\\CinematicCameras 目录下有一些电影镜头,可用Mpq工具来查询.
 --- cameraModelFile string
 ---@type fun(cameraModelFile:string):void
 J.SetCinematicCamera = J.Common["SetCinematicCamera"]
@@ -5887,20 +5887,4 @@ J.I2C = function(id)
         cc.c[ic] = id
     end
     return ic
-end
-
---- 中文转码
----@type fun():string
-J.N2C = function(...)
-    local ns = { ... }
-    if (#ns == 0) then
-        return ""
-    end
-    local s = ""
-    for _, n in ipairs(ns) do
-        if (nil ~= LK_N2C[n]) then
-            s = s .. LK_N2C[n]
-        end
-    end
-    return s
 end

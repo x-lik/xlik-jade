@@ -131,7 +131,7 @@ end
 function attribute.format(key, value, label)
     must(type(key) == "string", "key@string")
     must(type(value) == "number", "value@number")
-    local txt
+    local txt = nil
     local la, form, anti = attribute.label(key), attribute.form(key), attribute.isAnti(key)
     local l = label or la
     if (value == 0) then
@@ -167,8 +167,8 @@ function attribute.comp(attributes, targetUnit, lv, diff)
         for _, a in ipairs(attributes) do
             local param = a[1]
             local t1 = a[2] or 0
-            local d1
-            local d2
+            local d1 = nil
+            local d2 = nil
             local sets = {}
             if (type(t1) == "number") then
                 d1 = t1

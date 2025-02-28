@@ -165,7 +165,7 @@ function _index:set(name, variety, duration, domain)
         self:modifier(false, key, caleVal)
     else
         local dynKey = SYMBOL_DYN .. key
-        local dynVal
+        local dynVal = nil
         if (type(diff) == "number") then
             if (diff == 0) then
                 return self, false
@@ -177,7 +177,7 @@ function _index:set(name, variety, duration, domain)
         -- 挂载Buff
         local desc = {}
         local form, anti = attribute.form(key), attribute.isAnti(key)
-        local signal
+        local signal = nil
         if (type(diff) == "number") then
             if (diff >= 0) then
                 if (anti) then
@@ -198,7 +198,7 @@ function _index:set(name, variety, duration, domain)
             end
         end
         desc[#desc + 1] = "持续: " .. colour.hex(colour.skyblue, string.format("%0.1f", duration) .. " 秒")
-        local bf
+        local bf = nil
         bf = Buff({
             key = key,
             object = self,

@@ -2,11 +2,6 @@
 ---@class Flow:Meta
 local _index = Meta(FlowClass)
 
----@protected
-function _index:destruct()
-    class.cache(FlowClass)[self._key] = nil
-end
-
 --- 设置伤害过程中止条件
 ---@param func fun(data:table):boolean
 ---@return void

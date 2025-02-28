@@ -17,11 +17,6 @@ function _index:construct()
     japi.DZ_FrameSetTextAlignment(self._handle, self._textAlign)
 end
 
----@protected
-function _index:destruct()
-    class.cache(UITextClass)[self._key] = nil
-end
-
 --- 设置文本对齐方式
 ---@param align number TEXT_ALIGN?
 ---@return self

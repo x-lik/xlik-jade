@@ -29,7 +29,7 @@ function oUI(params, index)
     end
     --- construct
     do
-        local construct
+        local construct = nil
         construct = function(c)
             local super = getmetatable(c)
             if (nil ~= super and nil ~= super.__index) then

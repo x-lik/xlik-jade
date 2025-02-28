@@ -92,8 +92,8 @@ description.define("attributes", function(this, options)
     for _, a in ipairs(attributes) do
         local param = a[1]
         local m2 = a[2] or 0
-        local d1
-        local d2
+        local d1 = nil
+        local d2 = nil
         if (type(m2) == "number") then
             d1 = m2
             d2 = a[3] or d1

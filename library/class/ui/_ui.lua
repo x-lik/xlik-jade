@@ -388,7 +388,7 @@ function _index:show(status)
                 japi.UISetEsc(self:id(), nil)
             end
         end
-        local _f
+        local _f = nil
         _f = function(o)
             local evtList = event.get("async", o)
             if (type(evtList) == "table") then
@@ -480,7 +480,7 @@ function _index:tooltips(content)
             UITooltips():show(false)
         end)
         self:onEvent(eventKind.uiEnter, "lk_tlt", function()
-            local con
+            local con = nil
             if (type(content) == "table") then
                 con = content
             elseif (type(content) == "function") then
@@ -637,7 +637,7 @@ function uiGradientStart(whichUI, options, callback)
         dtX = 0
         dtY = 0
     end
-    local curAlpha
+    local curAlpha = nil
     if (type(options.alpha) == "number") then
         if (options.alpha == 1) then
             curAlpha = 0

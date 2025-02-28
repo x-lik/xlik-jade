@@ -105,7 +105,8 @@ function ability.missile(options)
     end
     
     local vec0 = options.sourceVec
-    local vec2
+    ---@type number[]
+    local vec2 = nil
     if (type(options.targetVec) == "table") then
         vec2 = { options.targetVec[1], options.targetVec[2], options.targetVec[3] or japi.Z(options.targetVec[1], options.targetVec[2]) }
     else

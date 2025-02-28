@@ -197,7 +197,7 @@ function keyboard.abilityHotkey(param)
         sync.must()
         local key = "lk_ahk"
         for idx, keycode in ipairs(param) do
-            local call
+            local call = nil
             call = function(evtData)
                 keyboard.onPress(keycode, key, nil)
                 keyboard.onRelease(keycode, key, function()
@@ -242,7 +242,7 @@ function keyboard.itemHotkey(param)
         sync.must()
         local key = "lk_ihk"
         for idx, keycode in ipairs(param) do
-            local call
+            local call = nil
             call = function(evtData)
                 keyboard.onPress(keycode, key, nil)
                 keyboard.onRelease(keycode, key, function()

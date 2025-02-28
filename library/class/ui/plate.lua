@@ -22,11 +22,6 @@ function _index:construct()
     self._closer = closer
 end
 
----@protected
-function _index:destruct()
-    class.cache(UIPlateClass)[self._key] = nil
-end
-
 --- 设定ESC隐藏功能绑定
 ---@param status boolean|nil 开启|关闭
 ---@return self

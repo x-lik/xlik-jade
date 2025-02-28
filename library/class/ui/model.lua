@@ -4,11 +4,6 @@ local _index = UI(UIModelClass, {
     _autoCast = true,
 })
 
----@protected
-function _index:destruct()
-    class.cache(UIModelClass)[self._key] = nil
-end
-
 --- 设置模型
 ---@param path string 模型路径
 ---@return self

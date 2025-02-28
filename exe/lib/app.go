@@ -25,14 +25,12 @@ type Path struct {
 }
 
 type App struct {
-	Args            []string
-	Pwd             string
-	ProjectName     string
-	BuildModeName   string
-	BuildDstPath    string
-	Path            Path
-	EncryptAnalysis map[string][]string
-	EncryptResults  map[string]map[string]string
+	Args          []string
+	Pwd           string
+	ProjectName   string
+	BuildModeName string
+	BuildDstPath  string
+	Path          Path
 }
 
 // NewApp creates a new App application struct

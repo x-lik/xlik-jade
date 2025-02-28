@@ -662,7 +662,7 @@ function Unit(force, tpl, x, y, facing)
     must(type(facing) == "number", "facing@number")
     -- 分析拥有者
     ---@type Player
-    local owner
+    local owner = nil
     if (class.isObject(force, PlayerClass)) then
         owner = force
     elseif (class.isObject(force, TeamClass)) then

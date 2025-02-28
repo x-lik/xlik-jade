@@ -20,11 +20,6 @@ function _index:construct()
     end
 end
 
----@protected
-function _index:destruct()
-    class.cache(UILabelClass)[self._key] = nil
-end
-
 --- 设置主题宽高尺寸[0-0.8,0-0.6]
 --- 这里icon的尺寸跟随主题而变化
 --- 只有autoSize不为true时可设置

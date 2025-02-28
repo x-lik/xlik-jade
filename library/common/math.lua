@@ -209,7 +209,7 @@ end
 ---@return any,number|nil diff只有在数字类型才会存在
 function math.cale(variety, base)
     local val = variety
-    local diff
+    local diff = nil
     if (type(variety) == "string") then
         local opr = string.sub(variety, 1, 2)
         if (opr == "+=" or opr == "-=" or opr == "*=" or opr == "/=") then

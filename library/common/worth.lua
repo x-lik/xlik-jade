@@ -159,7 +159,7 @@ end
 function worth.cale(data1, operator, data2)
     local rule = worth.get()
     local keys = rule:keys()
-    local res
+    local res = nil
     if (operator == "*" or operator == "/") then
         local ratio = 0
         if (type(data1) == "table" or type(data2) == "number") then

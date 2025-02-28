@@ -399,7 +399,7 @@ function UnitTpl(speech, speechExtra)
     local o = oVast(params, _index)
     local s = japi.AssetsSpeech(o._speech)
     must(type(s) == "string", "Invalid speech")
-    local id
+    local id = nil
     if (type(o._speechExtra) == "string" and o._speechExtra ~= '') then
         id = slk.n2i(s .. "|EX|" .. o._speechExtra)
     end

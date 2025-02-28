@@ -131,7 +131,7 @@ function vistring.sub(s, i, j)
     local k = 1
     local cffing = false
     local cff1st = -1
-    local cffColor
+    local cffColor = nil
     while (k <= lenInByte) do
         local byteLen = mbstring.byteLen(s, k)
         local charLen = 1
@@ -191,8 +191,8 @@ function vistring.split(str, size)
     local count = 0
     local i0 = 1
     local i = 1
-    local cffColor
-    local cffColorS
+    local cffColor = nil
+    local cffColorS = nil
     local cffTailing = false
     local subStr = {}
     while (i <= lenInByte) do

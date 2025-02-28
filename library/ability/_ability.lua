@@ -110,7 +110,7 @@ function ability.caleValueWorth(obj, whichLevel)
     whichLevel = whichLevel or obj:level()
     local worthKeys = worth.get():keys()
     local val = {}
-    local vary
+    local vary = nil
     if (whichLevel > 1) then
         vary = obj:get("worthCostVary")
     end

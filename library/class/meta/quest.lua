@@ -7,7 +7,6 @@ function _index:destruct()
     J.DestroyQuest(self._handle)
     J.HandleUnRef(self._handle)
     self._handle = nil
-    class.cache(QuestClass)[self._title] = nil
 end
 
 --- 设置图标
@@ -76,8 +75,11 @@ function Quest(title)
     if (nil == cache[title]) then
         ---@type Quest
         local o = oMeta(_index, {
-            _title = title, _content = '',
-            _complete = false, _fail = false, _discover = true,
+            _key = title,
+            _content = '',
+            _complete = false,
+            _fail = false,
+            _discover = true,
         })
         o._handle = J.CreateQuest()
         J.HandleRef(o._handle)

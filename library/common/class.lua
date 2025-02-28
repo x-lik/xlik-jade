@@ -1,5 +1,5 @@
 --- 类
---- 请勿覆盖class关键字
+--- 请勿覆盖class关键字，保留self键名：_key, _type, _id, _className, __reality, __indexes等
 ---@alias Object {_type:string,_className:string}
 ---@class class
 class = class or {}
@@ -221,7 +221,7 @@ function class.instanceof(obj, name)
         return false
     end
     local result = false
-    local is
+    local is = nil
     is = function(o)
         while (nil ~= o and false == result) do
             if (o._className == name) then
@@ -260,7 +260,7 @@ function class.hierarchy(obj)
     if (type(obj) ~= "table" or class.isDestroy(obj)) then
         return chain
     end
-    local link
+    local link = nil
     link = function(o)
         while (nil ~= o) do
             local mt = getmetatable(o)
@@ -321,7 +321,7 @@ function class.destroy(obj)
     if (nil ~= obj._id) then
         class._i2o[obj._id] = nil
     end
-    local objType
+    local objType = nil
     if (obj._type == "Meta") then
         objType = Meta(obj._className)
     elseif (obj._type == "Vast") then
@@ -333,7 +333,7 @@ function class.destroy(obj)
         return
     end
     do
-        local destruct
+        local destruct = nil
         destruct = function(c)
             if rawget(c, "destruct") then
                 c.destruct(obj)
@@ -350,6 +350,10 @@ function class.destroy(obj)
             end
         end
         destruct(objType)
+    end
+    local cc = class._cache[obj._className]
+    if (cc and obj._key and cc[obj._key]) then
+        cc[obj._key] = nil
     end
     obj._type = false
     obj = nil

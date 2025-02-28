@@ -9,7 +9,6 @@ local _index = Meta(ProcessClass)
 ---@protected
 function _index:destruct()
     self:over()
-    class.cache(ProcessClass)[self._key] = nil
 end
 
 --- 当进入流程

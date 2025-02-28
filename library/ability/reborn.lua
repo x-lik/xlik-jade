@@ -44,7 +44,7 @@ function ability.reborn(whichUnit, delay, invulnerable, x, y)
     if (false == class.isObject(whichUnit, UnitClass)) then
         return
     end
-    local rebornTimer
+    local rebornTimer = nil
     if (delay < 1) then
         delay = math.max(0.2, delay)
         time.setTimeout(delay, function()

@@ -104,7 +104,7 @@ function dump(value, description, nesting)
         end
         return tostring(v)
     end
-    local _dump
+    local _dump = nil
     _dump = function(val, desc, indent, nest, keyLen)
         desc = desc or '<var>'
         local spc = ''
@@ -167,7 +167,7 @@ function must(check, tips)
         if (type(tips) ~= "string") then
             tips = "must error"
         end
-        if (nil == game or false == game.isRunning()) then
+        if (nil == LK_DEBUG_MUST) then
             LK_ERROR('**MUST**' .. tips)
         else
             error('**MUST**' .. tips)

@@ -1,9 +1,7 @@
 local inc = 1
 
-LK_N2C = {}
 LK_SLK_I2V = {}
 LK_SLK_N2I = {}
-LK_ZH = {}
 ---lk:placeholder go_ids
 ---lk:placeholder map_name
 

@@ -73,8 +73,8 @@ function table.shuffle(arr)
     local result = table.clone(arr)
     local length = #result
     local times = length
-    local temp
-    local random
+    local temp = nil
+    local random = nil
     while (times > 1) do
         random = math.rand(1, length)
         temp = result[times]

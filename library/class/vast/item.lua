@@ -52,8 +52,8 @@ end
 ---@return self
 function _index:onUnitEvent(evt, ...)
     local opt = { ... }
-    local key
-    local callFunc
+    local key = nil
+    local callFunc = nil
     if (type(opt[1]) == "function") then
         key = self:id() .. evt
         callFunc = opt[1]

@@ -4,11 +4,6 @@ local _index = Meta(AIClass, {
     _1st = "idle",
 })
 
----@protected
-function _index:destruct()
-    class.cache(AIClass)[self._key] = nil
-end
-
 --- AI被启用后会执行设置的第一个行为的key
 --- 默认行为为idle，如果第一个行为未定义执行函数，link将提示报错
 ---@param key string 默认idle

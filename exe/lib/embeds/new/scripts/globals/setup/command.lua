@@ -37,7 +37,7 @@ if (LK_DEBUG) then
     player.command("^-proc [a-zA-Z0-9_]+$", function(evtData)
         local p = string.trim(evtData.matchedString)
         p = string.sub(p, 7, string.len(p))
-        local proc
+        local proc = nil
         if (p == "this") then
             proc = ProcessCurrent
         else

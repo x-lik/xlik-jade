@@ -14,7 +14,7 @@ function oVast(params, ...)
             __reality = true,
             __indexes = indexes,
             __index = function(_, key)
-                local v
+                local v = nil
                 for _, es in ipairs(indexes) do
                     v = es[key]
                     if (nil ~= v) then
@@ -29,7 +29,7 @@ function oVast(params, ...)
     class.id(o, true)
     --- construct
     do
-        local construct
+        local construct = nil
         construct = function(c)
             local super = getmetatable(c)
             if type(super) == "table" then

@@ -8,12 +8,17 @@ type YamlEnv struct {
 	Assets  string `yaml:"assets"`
 }
 
+type YamlSound struct {
+	Path     string `yaml:"path"`
+	Duration int    `yaml:"duration"`
+}
+
 type YamlEncrypt struct {
 	Forces []string            `yaml:"forces,flow"`
 	Rules  []map[string]string `yaml:"rules,flow"`
 }
 
-type YamlSound struct {
-	Path     string `yaml:"path"`
-	Duration int    `yaml:"duration"`
+type YamlLibrary struct {
+	Require []string    `yaml:"require,flow"`
+	Encrypt YamlEncrypt `yaml:"encrypt,flow"`
 }

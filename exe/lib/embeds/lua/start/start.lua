@@ -7,6 +7,7 @@ J.TriggerAddAction(tgr, function()
     J.DestroyTrigger(tgr)
     J.HandleUnRef(tgr)
     tgr = nil
+    LK_DEBUG_MUST = 1
     game.phase("start")
     local qty = 0
     for i = 0, BJ_MAX_PLAYERS - 1 do

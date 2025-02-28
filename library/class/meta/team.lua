@@ -3,15 +3,10 @@
 ---@class Team:Meta
 local _index = Meta(TeamClass)
 
----@protected
-function _index:destruct()
-    class.cache(TeamClass)[self._name] = nil
-end
-
 --- 获取队伍名称
 ---@return string
 function _index:name()
-    return self._name
+    return self._key
 end
 
 --- 配置队伍成员玩家（只控制索引1-12）
@@ -28,7 +23,7 @@ function _index:members(indexes)
         color = self._color
     end
     if (self._nameSync) then
-        name = self._name
+        name = self._key
     end
     for _, m in ipairs(indexes) do
         if (type(m) == "number") then
@@ -115,7 +110,7 @@ function Team(name, color, nameSync, colorSync)
     local cache = class.cache(TeamClass)
     if (nil == cache[name]) then
         cache[name] = oMeta({
-            _name = name,
+            _key = name,
             _color = color,
             _nameSync = nameSync,
             _colorSync = colorSync,

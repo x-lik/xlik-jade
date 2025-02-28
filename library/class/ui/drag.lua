@@ -19,7 +19,6 @@ local _index = UI(UIDragClass, {
 function _index:destruct()
     self:onEvent(eventKind.uiLeftClick, nil)
     self:onEvent(eventKind.uiLeftRelease, nil)
-    class.cache(UIDragClass)[self._key] = nil
 end
 
 --- 设置外边距排斥空间

@@ -132,7 +132,7 @@ end
 ---@return void
 function _index:insert(whichItem, index)
     ---@type Item
-    local it
+    local it = nil
     if (class.isObject(whichItem, ItemClass)) then
         it = whichItem
     elseif (class.isObject(whichItem, ItemTplClass)) then

@@ -2,11 +2,6 @@
 ---@class Group:Meta
 local _index = Meta(GroupClass)
 
----@protected
-function _index:destruct()
-    class.cache(GroupClass)[self._scope] = nil
-end
-
 --- 域数据
 ---@return Array
 function _index:data()
@@ -67,7 +62,7 @@ function _index:catch(options)
                 return false
             end
             if (options.region or options.square or options.circle or options.corner) then
-                local ex, ey = datum.enumXY(enum, self._scope)
+                local ex, ey = datum.enumXY(enum, self._key)
                 if (nil == ex or nil == ey) then
                     return
                 end
@@ -167,7 +162,7 @@ function _index:closest(options)
     if (#catch <= 0) then
         return nil
     end
-    local closer
+    local closer = nil
     local closestDst = 99999
     for _, c in ipairs(catch) do
         local dst = vector2.distance(x, y, c:x(), c:y())
@@ -180,23 +175,23 @@ function _index:closest(options)
 end
 
 --- 构造Group对象
----@param scope string
+---@param key string
 ---@return Group
-function Group(scope)
-    must(type(scope) == "string", "scope@string")
+function Group(key)
+    must(type(key) == "string", "key@string")
     local cache = class.cache(GroupClass)
-    if (nil == cache[scope]) then
-        cache[scope] = oMeta({ _scope = scope, _data = Array() }, _index)
+    if (nil == cache[key]) then
+        cache[key] = oMeta({ _key = key, _data = Array() }, _index)
     end
-    return cache[scope]
+    return cache[key]
 end
 
 --- Group是否已实例
----@param scope string
+---@param key string
 ---@return boolean
-function isGroup(scope)
-    if (type(scope) ~= "string") then
+function isGroup(key)
+    if (type(key) ~= "string") then
         return false
     end
-    return nil ~= class._cache[GroupClass] and nil ~= class._cache[GroupClass][scope]
+    return nil ~= class._cache[GroupClass] and nil ~= class._cache[GroupClass][key]
 end

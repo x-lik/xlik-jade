@@ -378,7 +378,7 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
                 if (event.asyncHas("mouse", eventKind.mouseMove, elKey)) then
                     return
                 end
-                local _out
+                local _out = nil
                 local _in = function(evtData)
                     if (cursor.isQuoting() and false == cursor.isDragging()) then
                         return
@@ -563,7 +563,7 @@ end
 ---@return number
 function japi.CameraGetField(key)
     if (nil == japi._cameraField[key]) then
-        local val
+        local val = nil
         if (key == "ex") then
             val = J.GetCameraEyePositionX()
         elseif (key == "ey") then

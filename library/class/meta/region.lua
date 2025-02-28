@@ -44,7 +44,6 @@ function _index:destruct()
         J.RemoveRect(self._handle)
         J.HandleUnRef(self._handle)
     end
-    class.cache(RegionClass)[self._name] = nil
 end
 
 --- 获取handle
@@ -60,7 +59,7 @@ end
 --- 获取区域名
 ---@return string
 function _index:name()
-    return self._name
+    return self._key
 end
 
 --- 坐标是否在区域里
@@ -279,7 +278,7 @@ function _index:initMode(callFunc)
                     self._modeTimer = nil
                     return
                 end
-                local newUnits
+                local newUnits = nil
                 local shape = self._shape
                 if (shape == "square") then
                     newUnits = Group(UnitClass):catch({
@@ -374,7 +373,7 @@ function Region(name, shape, x, y, width, height)
     local cache = class.cache(RegionClass)
     if (nil == cache[name]) then
         local o = oMeta({
-            _name = name,
+            _key = name,
             _shape = shape,
             _x = x,
             _y = y,

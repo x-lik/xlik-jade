@@ -50,11 +50,6 @@ function _index:construct()
     end
 end
 
----@protected
-function _index:destruct()
-    class.cache(UIBarClass)[self._key] = nil
-end
-
 --- 设置条数据值
 ---@param value number 取值范围[0.00-1.00]
 ---@param width number

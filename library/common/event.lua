@@ -20,7 +20,7 @@ event._async = event._async or {}
 function event.source(source, symbol)
     must(type(source) == "string", "source@string")
     must(type(symbol) == "string" or type(symbol) == "table", "symbol@string|table")
-    local src
+    local src = nil
     if (source == "sync") then
         -- 同步事件时
         -- 必须处在同步环境

@@ -100,7 +100,7 @@ end
 ---@param arr string[]
 ---@return string
 function string.implode(delimeter, arr)
-    local str
+    local str = nil
     for _, v in ipairs(arr) do
         if (nil == str) then
             str = v
@@ -154,7 +154,7 @@ function string.subAllPos(str, pattern)
     if (nil == str or nil == pattern) then
         return
     end
-    local s
+    local s = nil
     local e = 0
     local res = {}
     while (true) do
@@ -178,7 +178,7 @@ function string.subCount(str, pattern)
     if (nil == str or nil == pattern) then
         return 0
     end
-    local s
+    local s = nil
     local e = 0
     local qty = 0
     while (true) do
@@ -202,8 +202,8 @@ end
 function string.subBetween(str, head, tail)
     local res = {}
     if (nil ~= str and nil ~= head and head ~= tail) then
-        local s
-        local t
+        local s = nil
+        local t = nil
         local i = 0
         while (true) do
             if (nil == s) then

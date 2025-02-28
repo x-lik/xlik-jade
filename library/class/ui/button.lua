@@ -58,7 +58,6 @@ end
 
 ---@protected
 function _index:destruct()
-    class.cache(UIButtonClass)[self._key] = nil
     class.destroy(self._borderTimer)
     self._borderTimer = nil
 end
@@ -249,7 +248,7 @@ function _index:hotkey(keycode, call)
             keyboard.onPress(keycode, key, nil)
             keyboard.onRelease(keycode, key, nil)
         elseif (keyName ~= '' and type(call) == "function") then
-            local f
+            local f = nil
             f = function()
                 keyboard.onPress(keycode, key, nil)
                 keyboard.onRelease(keycode, key, function()

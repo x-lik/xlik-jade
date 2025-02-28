@@ -284,7 +284,7 @@ function assets_pget(kind, ...)
         if (type(params[1]) == "string" and type(params[2]) == "string") then
             local kit = string.lower(params[1])
             local alias = string.lower(params[2])
-            local backup
+            local backup = nil
             if (type(params[3]) == "string") then
                 backup = string.lower(params[3])
             end
@@ -297,7 +297,7 @@ function assets_pget(kind, ...)
                     return data[kit][alias]
                 end
                 if (nil ~= ext[backup]) then
-                    local path
+                    local path = nil
                     for _, e in ipairs(ext[backup]) do
                         if (nil ~= data[kit][alias .. e]) then
                             path = data[kit][alias .. e]

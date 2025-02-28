@@ -28,13 +28,13 @@ game.onPhase("process", function()
     end)
     
     -- 指针tooltips
-    local lastUnder
+    local lastUnder = nil
     mouse.onMove("lk_cs_tooltips", function(evtData)
         if (cursor.isQuoting()) then
             return
         end
         ---@type Unit|Item|nil
-        local under
+        local under = nil
         local tx, ty = -1, -1
         local tips, textAlign
         local fontSize = 9
@@ -680,7 +680,7 @@ game.onPhase("process", function()
                 end
             end
             local ccr = ab:cursorCondResult({ x = tx, y = ty, radius = curSize, units = newUnits })
-            local texture
+            local texture = nil
             if (0 ~= ccr) then
                 texture = circleParams.disable or circleParams.enable
             else
@@ -852,7 +852,7 @@ game.onPhase("process", function()
                 end
             end
             local ccr = ab:cursorCondResult({ x = tx, y = ty, width = curWidth, height = curHeight, units = newUnits })
-            local texture
+            local texture = nil
             if (0 ~= ccr) then
                 texture = csTexture.square.disable or csTexture.square.enable
             else

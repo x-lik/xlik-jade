@@ -45,7 +45,7 @@ local idPrefix = {
     upgrade = "U",
 }
 
-local _convert
+local _convert = nil
 
 --- 10进制数字转2/8/10/16/36进制
 ---@param dec number
@@ -100,7 +100,7 @@ function SLK_CREATE_ID(_v)
     if (nil == SLK_ID_COUNT[prefix]) then
         SLK_ID_COUNT[prefix] = 0
     end
-    local sid
+    local sid = nil
     while (true) do
         local id = convert(SLK_ID_COUNT[prefix], 36)
         SLK_ID_COUNT[prefix] = SLK_ID_COUNT[prefix] + 1

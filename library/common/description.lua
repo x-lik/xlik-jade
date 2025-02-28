@@ -35,7 +35,7 @@ function description.combine(obj, options, ...)
     if (nil == description._define) then
         return joiner
     end
-    local _join
+    local _join = nil
     _join = function(ts)
         if (type(ts) == "string") then
             if (string.subPos(ts, "|n") == -1) then

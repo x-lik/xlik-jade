@@ -104,7 +104,7 @@ end
 ---@protected
 ---@return void
 function _index:triggerChange()
-    local tailAuto
+    local tailAuto = nil
     ---@type Item[]
     local s = self._storage
     for i = self._volume, 1, -1 do
@@ -127,7 +127,7 @@ end
 ---@return void
 function _index:insert(whichItem, index)
     ---@type Item
-    local it
+    local it = nil
     if (class.isObject(whichItem, ItemClass)) then
         it = whichItem
     elseif (class.isObject(whichItem, ItemTplClass)) then

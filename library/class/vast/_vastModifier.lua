@@ -537,7 +537,7 @@ local modifier = {
         _speech = function(obj, _, newVal)
             local s = japi.AssetsSpeech(newVal)
             if (type(s) == "string") then
-                local id
+                local id = nil
                 if (type(obj._speechExtra) == "string" and obj._speechExtra ~= '') then
                     id = slk.n2i(s .. "|EX|" .. obj._speechExtra)
                 end
@@ -552,7 +552,7 @@ local modifier = {
         _speechExtra = function(obj, _, newVal)
             local s = japi.AssetsSpeech(obj._speech)
             if (type(s) == "string") then
-                local id
+                local id = nil
                 if (type(newVal) == "string" and newVal ~= '') then
                     id = slk.n2i(s .. "|EX|" .. newVal)
                 end

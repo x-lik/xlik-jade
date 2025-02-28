@@ -123,7 +123,7 @@ end
 ---@protected
 ---@return void
 function _index:triggerChange()
-    local tailAuto
+    local tailAuto = nil
     ---@type Ability[]
     local s = self._storage
     for i = self._volume, 1, -1 do
@@ -147,7 +147,7 @@ end
 ---@return void
 function _index:insert(whichAbility, index)
     ---@type Ability
-    local ab
+    local ab = nil
     if (class.isObject(whichAbility, AbilityClass)) then
         ab = whichAbility
     elseif (class.isObject(whichAbility, AbilityTplClass)) then
