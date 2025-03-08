@@ -1891,13 +1891,6 @@ function japi.DZ_Map_GetGuildName(whichPlayer)
     return japi.Exec("DzAPI_Map_GetGuildName", whichPlayer)
 end
 
---- 获取全局服务器存档值
----@param key string
----@return number
-function japi.DZ_Map_GetMapConfig(key)
-    return japi.Exec("DzAPI_Map_GetMapConfig", key)
-end
-
 --- 玩家是否拥有该商城道具（平台地图商城）
 --- 平台地图商城玩家拥有该道具返还true
 ---@param whichPlayer number
@@ -2594,6 +2587,7 @@ function japi.DZ_Map_GetSinceLastPlayedSeconds(whichPlayer)
     return japi.DZ_RequestExtraIntegerData(70, whichPlayer, nil, nil, false, 0, 0, 0)
 end
 
+--- 游戏内快速购买
 --- 打开U币快速购买窗口
 --- 弹出提示框询问玩家是否使用U币直接购买指定道具，作者需已在商城上架对应商品（商品信息中的道具和数量与接口所请求的参数一致）。
 --- 如果前一次购买的提示框未关闭的情况下再次调用此接口，后续请求无效。
@@ -2605,10 +2599,11 @@ end
 ---@param count number int 数量
 ---@param seconds number int 购买倒计时（秒数），最小5秒，最大99秒，0表示始终显示
 ---@return boolean
-function japi.DZ_Map_CancelQuickBuy(whichPlayer, key, count, seconds)
+function japi.DZ_Map_QuickBuy(whichPlayer, key, count, seconds)
     return japi.DZ_RequestExtraBooleanData(72, whichPlayer, key, nil, false, count, seconds, 0)
 end
 
+--- 取消快速购买
 --- 关闭U币快速购买窗口
 --- 关闭最后一次打开的U币快速购买窗口，结合打开U币快速购买窗口使用。
 --- 适用于游戏场景切换后，之前的提示购买已不再适用的情况，比如游戏开始前1分钟可以更换英雄，提示玩家购买英雄更换道具，1分钟后关闭提示防止玩家误购买。

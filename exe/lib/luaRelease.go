@@ -57,7 +57,7 @@ func (app *App) luaRelease() string {
 		Panic(err2)
 	}
 	_ = os.Remove(releaseFile)
-	err = FilePutContents(distFile, releaseCode, os.ModePerm)
+	err = fileutil.WriteStringToFile(distFile, releaseCode, false)
 	if err != nil {
 		Panic(err)
 	}

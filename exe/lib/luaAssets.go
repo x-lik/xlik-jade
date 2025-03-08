@@ -469,7 +469,7 @@ func (app *App) asLoading(data string) {
 				break
 			}
 		}
-		err := FilePutContents(app.BuildDstPath+"/table/w3i.ini", strings.Join(w3ia, "\r\n"), fs.ModePerm)
+		err := fileutil.WriteStringToFile(app.BuildDstPath+"/table/w3i.ini", strings.Join(w3ia, "\r\n"), false)
 		if err != nil {
 			Panic(err)
 		}

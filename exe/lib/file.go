@@ -42,11 +42,6 @@ func DirCheck(path string) bool {
 	return true
 }
 
-// FilePutContents file_put_contents()
-func FilePutContents(filename string, data string, mode os.FileMode) error {
-	return os.WriteFile(filename, []byte(data), mode)
-}
-
 // GetModTime 获取文件(夹)修改时间 返回unix时间戳
 func GetModTime(path string) int64 {
 	modTime := int64(0)

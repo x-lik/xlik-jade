@@ -48,25 +48,7 @@ func Encrypt2Csv(dstDir string, filename string) {
 	DirCheck(dstDir)
 	csvFile := dstDir + `/` + filename + `.csv`
 	_ = os.Remove(csvFile)
-	var content []string
-	parseCsv := func(str string) string {
-		hasQuota := strings.Index(str, `"`) != -1
-		isParse := hasQuota || strings.Index(str, `,`) != -1
-		if hasQuota {
-			str = strings.Replace(str, `"`, `""`, -1)
-		}
-		if isParse {
-			str = `"` + str + `"`
-		}
-		return str
-	}
-	for e, r := range _results {
-		for k, v := range r {
-			v = strings.Replace(v, `,`, `，`, -1)
-			content = append(content, e+`,`+parseCsv(k)+`,`+parseCsv(v))
-		}
-	}
-	_ = FilePutContents(csvFile, "\xEF\xBB\xBF"+strings.Join(content, "\n"), os.ModePerm)
+	_ = fileutil.WriteStringToFile(csvFile, CsvMapSSS(_results), false)
 }
 
 // 处理规则
@@ -369,6 +351,22 @@ func (app *App) encryptDigital(content string) string {
 }
 
 // EncryptOne 混淆Lua
+// Lua Code Obfuscation Feature Supplement
+//
+// Obfuscating Lua code enhances security by making it harder to understand and reverse - engineer.
+// Due to limited support and low revenue, and to safeguard users' code security, the obfuscation function isn't open.
+// However, we offer techniques for users to implement on their own.
+//
+// The framework extracts all strings from Lua code, which provides a convenient basis for users to perform string obfuscation according to their needs.
+// It also offers fully open - sourced YAML - based obfuscation rules and a simple integer obfuscation method.
+//
+// Users can customize the obfuscation process with the following techniques:
+// 1. String: Encode (e.g., Base64) and decode at runtime; split and concatenate strings.
+// 2. Number: Store in variables and perform operations on them.
+// 3. Function: Rename to meaningless names and wrap functions.
+// 4. Parameter: Rename to meaningless names.
+//
+// Applying these techniques can improve code security against reverse - engineering attempts.
 func (app *App) EncryptOne(content string) string {
 	content = app.encryptString(content)  // 字符串
 	content = luaZip(content)             // 压缩
@@ -378,45 +376,6 @@ func (app *App) EncryptOne(content string) string {
 	for k, v := range _holderData {
 		content = strings.Replace(content, k, v, -1)
 	}
-	// Lua Code Obfuscation Feature Supplement
-	//
-	// This section provides supplementary information and ideas for obfuscating Lua code.
-	// Obfuscating Lua code can make it more difficult for unauthorized users to understand
-	// and reverse-engineer the code, enhancing its security.
-	//
-	// Users can customize the obfuscation process by applying the following techniques
-	// to different elements in the Lua code:
-	//
-	// 1. String Obfuscation
-	//    - **Encoding**: Convert strings to different encodings such as Base64. For example,
-	//      you can use Lua libraries to encode strings and then decode them at runtime.
-	//      This way, the original strings are not directly visible in the code.
-	//    - **Splitting and Concatenation**: Split a string into multiple parts and concatenate
-	//      them at runtime. For instance, instead of having a single string "hello", you can
-	//      split it into "hel" and "lo" and combine them in the code.
-	//
-	// 2. Number Obfuscation
-	//    - **Arithmetic Operations**: Instead of using plain numbers, perform arithmetic operations
-	//      to calculate the values. For example, instead of using the number 10, you can use
-	//      5 + 5 or 20 / 2. This makes it harder to immediately recognize the actual values.
-	//    - **Using Variables**: Store numbers in variables and use those variables throughout
-	//      the code. You can also perform operations on these variables to further obfuscate
-	//      the values.
-	//
-	// 3. Function Obfuscation
-	//    - **Renaming**: Change the names of functions to meaningless or randomly generated names.
-	//      This makes it difficult for someone reading the code to understand the purpose of
-	//      each function.
-	//    - **Wrapping**: Wrap functions inside other functions. This adds an extra layer of
-	//      complexity and makes the call flow less obvious.
-	//
-	// 4. Parameter Name Obfuscation
-	//    - **Renaming**: Similar to function renaming, change the names of function parameters
-	//      to meaningless names. This can make it harder to understand the input requirements
-	//      of functions.
-	//
-	// By applying these obfuscation techniques, users can enhance the security of their Lua code
-	// and make it more resistant to reverse-engineering attempts.
 	return content
 }
 

@@ -2,8 +2,8 @@ local inc = 1
 
 LK_SLK_I2V = {}
 LK_SLK_N2I = {}
----lk:placeholder go_ids
----lk:placeholder map_name
+LK_GO_IDS = {}
+LK_MAP_NAME = '(name)'
 
 -- 用于反向补充slk优化造成的数据丢失问题
 -- 如你遇到slk优化后（dist后）地图忽然报错问题，则有可能是优化丢失

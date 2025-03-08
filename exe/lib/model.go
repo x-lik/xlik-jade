@@ -281,7 +281,7 @@ func (app *App) ModelMap(class string, filter string, page int) {
 		t1 := time.Now()
 		allP := strconv.FormatFloat(math.Ceil(float64(count)/289), 'f', 0, 64)
 		pterm.Success.Println(batch + "已处理 " + strconv.Itoa(id) + "[" + strconv.Itoa(page*289) + ":" + strconv.Itoa((page+1)*289-1) + "]个模型，共" + allP + "批")
-		err := FilePutContents(unitIni, unitIniContent, fs.ModePerm)
+		err := fileutil.WriteStringToFile(unitIni, unitIniContent, false)
 		if err != nil {
 			Panic(err)
 		}

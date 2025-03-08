@@ -73,7 +73,9 @@ func (app *App) luaDev() string {
 	}
 	var librarySrc []string
 	if len(libSortMain) == 0 {
-		librarySrc = append(librarySrc, app.Path.Library)
+		if fileutil.IsDir(app.Path.Library) {
+			librarySrc = append(librarySrc, app.Path.Library)
+		}
 	} else {
 		for _, n := range libSortMain {
 			p := app.Path.Library + `/` + n
@@ -94,7 +96,9 @@ func (app *App) luaDev() string {
 		}
 	}
 	if len(libSortSub) == 0 {
-		librarySrc = append(librarySrc, subRoot)
+		if fileutil.IsDir(subRoot) {
+			librarySrc = append(librarySrc, subRoot)
+		}
 	} else {
 		for _, n := range libSortSub {
 			p := subRoot + `/` + n
@@ -373,10 +377,10 @@ func (app *App) luaDev() string {
 	csTableDir := app.BuildDstPath + "/table"
 	for k, v := range slkIniBuilder {
 		if iniF6[k] == "" {
-			err = FilePutContents(csTableDir+"/"+k+".ini", v.String(), fs.ModePerm)
+			err = fileutil.WriteStringToFile(csTableDir+"/"+k+".ini", v.String(), false)
 
 		} else {
-			err = FilePutContents(csTableDir+"/"+k+".ini", iniF6[k]+"\n\n"+v.String(), fs.ModePerm)
+			err = fileutil.WriteStringToFile(csTableDir+"/"+k+".ini", iniF6[k]+"\n\n"+v.String(), false)
 		}
 		if err != nil {
 			Panic(err)
@@ -427,7 +431,7 @@ func (app *App) luaDev() string {
 		for k, v := range slkIdCli {
 			slkIdCli[k] = "'" + v + "'"
 		}
-		settingCode = strings.Replace(settingCode, "---lk:placeholder go_ids", "LK_GO_IDS = {"+strings.Join(slkIdCli, ",")+"}", 1)
+		settingCode = strings.Replace(settingCode, "LK_GO_IDS = {}", "LK_GO_IDS = {"+strings.Join(slkIdCli, ",")+"}", 1)
 	}
 	// import assets codes
 	settingCode = strings.Replace(settingCode, "---lk:placeholder assets", asCodes, 1)
@@ -437,7 +441,7 @@ func (app *App) luaDev() string {
 	sm := reg.FindAllStringSubmatch(wj, 1)
 	if len(sm) > 0 {
 		mapName := sm[0][1]
-		settingCode = strings.Replace(settingCode, "---lk:placeholder map_name", `LK_MAP_NAME = "`+mapName+`"`, 1)
+		settingCode = strings.Replace(settingCode, "LK_MAP_NAME = '(name)'", `LK_MAP_NAME = "`+mapName+`"`, 1)
 	}
 	_luaChips[_idxPt[`setting`]].code = settingCode
 
@@ -453,7 +457,7 @@ func (app *App) luaDev() string {
 	if len(asFdfs) > 0 {
 		toc += "\r\n" + strings.Join(asFdfs, "\r\n")
 	}
-	err = FilePutContents(tocFile, toc+"\r\n", fs.ModePerm)
+	err = fileutil.WriteStringToFile(tocFile, toc+"\r\n", false)
 	if err != nil {
 		Panic(err)
 	}
@@ -490,7 +494,7 @@ func (app *App) luaDev() string {
 			}
 			_luaChips[i].name = nano
 		}
-		err = FilePutContents(app.BuildDstPath+"/map/.connect", strings.Join(connect, "|"), os.ModePerm)
+		err = fileutil.WriteStringToFile(app.BuildDstPath+"/map/.connect", strings.Join(connect, "|"), false)
 		if err != nil {
 			Panic(err)
 		}
@@ -525,7 +529,7 @@ func (app *App) luaDev() string {
 		}
 		if dst != "" && v.gen {
 			DirCheck(dst)
-			err = FilePutContents(dst, code, os.ModePerm)
+			err = fileutil.WriteStringToFile(dst, code, false)
 			if err != nil {
 				Panic(err)
 			}

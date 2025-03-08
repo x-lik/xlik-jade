@@ -1,5 +1,5 @@
 -- 加载lua-engine
-J = {}
+J = J or {}
 J.Runtime = require("jass.runtime")
 J.Console = require("jass.console")
 J.Debug = require("jass.debug")

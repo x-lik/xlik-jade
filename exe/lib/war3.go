@@ -6,7 +6,6 @@ import (
 	"github.com/samber/lo"
 	"gopkg.in/yaml.v3"
 	"io"
-	"io/fs"
 	"os"
 	"regexp"
 	"strings"
@@ -121,7 +120,7 @@ func (app *App) War3map() {
 			war3mapContent = reg.ReplaceAllString(war3mapContent, reContent)
 
 			// merge
-			err = FilePutContents(war3mapJass, war3mapContent, fs.ModePerm)
+			err = fileutil.WriteStringToFile(war3mapJass, war3mapContent, false)
 			if err != nil {
 				Panic(err)
 			}

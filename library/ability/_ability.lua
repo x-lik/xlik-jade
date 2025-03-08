@@ -1,4 +1,4 @@
---- 技能模组，通用的技能计算方法规则函数，包含技能通用的执行过程，用于Ability或单独调用
+--- 技能模组，通用的技能处理方法规则函数，包含技能通用的执行过程，用于Ability或单独调用
 ---@alias abilityBuffAddon {name:string,icon:string,description:string[]}
 ---@class ability
 ability = ability or {}
