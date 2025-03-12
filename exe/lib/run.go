@@ -12,8 +12,6 @@ func (app *App) runTest(w3xFire string, times int) {
 	cmd := exec.Command(app.Path.WE+"/bin/WEConfig.exe", "-launchwar3", "-loadfile", w3xFire)
 	_, _ = cmd.Output()
 	pterm.Info.Println("尝试启动中")
-	ticker := time.NewTicker(time.Second)
-	pterm.Info.Println(<-ticker.C)
 	exes := []string{"war3.exe"}
 	if ExeRunningQty(exes) > 0 {
 		pterm.Success.Println("War3已启动 " + app.Path.War3)

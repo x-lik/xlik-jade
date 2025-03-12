@@ -400,16 +400,17 @@ func (app *App) asFont(data string) string {
 		}
 	}
 	data = strings.Replace(data, ".ttf", "", -1)
+	isDefault := false
 	fontFile := app.Path.Assets + "/war3mapFont/" + data + ".ttf"
 	if false == fileutil.IsExist(fontFile) {
 		pterm.Warning.Println("【字体】文件 " + data + " 不存在")
+		isDefault = true
+		fontFile = "embeds/lni/assets/fonts.ttf"
 		data = "default"
 	}
+	CopyFile(fontFile, app.BuildDstPath+"/map/fonts.ttf")
 	pterm.Info.Println("【字体】引入：" + data)
-	if data == "default" {
-		CopyFile("embeds/lni/assets/fonts.ttf", app.BuildDstPath+"/map/fonts.ttf")
-	} else {
-		CopyFile(fontFile, app.BuildDstPath+"/map/fonts.ttf")
+	if !isDefault {
 		luaFile := app.Path.Assets + "/war3mapFont/" + data + ".lua"
 		if fileutil.IsExist(luaFile) {
 			fontLua, err := fileutil.ReadFileToString(luaFile)

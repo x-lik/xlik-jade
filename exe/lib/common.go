@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"crypto/md5"
-	"encoding/json"
 	"fmt"
 	"github.com/go-audio/wav"
 	gonanoid "github.com/matoous/go-nanoid"
@@ -57,14 +56,6 @@ func Panic(what interface{}) {
 		pterm.Error.Println(t.Kind())
 	}
 	os.Exit(0)
-}
-
-func Dump(v interface{}) {
-	b, err := json.Marshal(v)
-	if err != nil {
-		Panic(err)
-	}
-	fmt.Println(string(b))
 }
 
 // Rand rand()
@@ -221,57 +212,6 @@ func CharRand() string {
 	allStr := "01234abcdefghijklmnopqrstuvwxyxzABCDEFGHIJKLMNOPQRSTUVWXYXZ56789"
 	i := rand.Intn(len(allStr) - 1)
 	return allStr[i:(i + 1)]
-}
-
-func CharChao() (map[string]string, map[string]string) {
-	if nil == charChao {
-		charChao = make(map[string]string)
-		charChaoAnti = make(map[string]string)
-		allStr := `01234abcdefghijklmnopqrstuvwxyxz._:!,/\+-<>@|ABCDEFGHIJKLMNOPQRSTUVWXYXZ56789`
-		for i := 0; i < len(allStr); i++ {
-			r := Zebra(10)
-			charChao[allStr[i:(i+1)]] = r
-			charChaoAnti[r] = allStr[i:(i + 1)]
-		}
-	}
-	return charChao, charChaoAnti
-}
-
-func MBSplit(str string, size int) []string {
-	var sp []string
-	lenInByte := len(str)
-	if lenInByte <= 0 {
-		return sp
-	}
-	count := 0
-	i0 := 0
-	i := 0
-	for {
-		if i >= lenInByte {
-			break
-		}
-		curByte := str[i]
-		byteLen := 1
-		if curByte > 0 && curByte <= 127 {
-			byteLen = 1 // 1字节字符
-		} else if curByte >= 192 && curByte <= 223 {
-			byteLen = 2 // 双字节字符
-		} else if curByte >= 224 && curByte <= 239 {
-			byteLen = 3 // 汉字
-		} else if curByte >= 240 && curByte <= 247 {
-			byteLen = 4 // 4字节字符
-		}
-		count = count + 1 // 字符的个数（长度）
-		i = i + byteLen   // 重置下一字节的索引
-		if count >= size {
-			sp = append(sp, str[i0:i])
-			i0 = i
-			count = 0
-		} else if i > lenInByte {
-			sp = append(sp, str[i0:lenInByte])
-		}
-	}
-	return sp
 }
 
 func MD5(str string) string {
