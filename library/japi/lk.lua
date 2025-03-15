@@ -772,7 +772,7 @@ function japi.IsLongPressing(kind, key)
             return false
         end
         if (type(key) == "string") then
-            return type(japi._longPress[kind][key]) == "table" and (japi._longPress[key].start > 0)
+            return type(japi._longPress[kind][key]) == "table" and (japi._longPress[kind][key].start > 0)
         end
         local is = false
         for _, v in pairs(japi._longPress[kind]) do
