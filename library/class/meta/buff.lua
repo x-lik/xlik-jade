@@ -103,15 +103,15 @@ end
 function _index:description()
     local d = { self._name }
     ---@type BuffDescription
-    local description = self._description
-    if (type(description) == "string") then
-        d[#d + 1] = description
-    elseif (type(description) == "table") then
-        for _, v in ipairs(description) do
+    local desc = self._description
+    if (type(desc) == "string") then
+        d[#d + 1] = desc
+    elseif (type(desc) == "table") then
+        for _, v in ipairs(desc) do
             d[#d + 1] = tostring(v)
         end
-    elseif (type(description) == "function") then
-        d = table.merge(d, description(self))
+    elseif (type(desc) == "function") then
+        d = table.merge(d, desc(self))
     end
     return d
 end

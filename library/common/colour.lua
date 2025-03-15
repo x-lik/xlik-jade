@@ -107,25 +107,25 @@ function colour.format(str, packHex, options)
         local builder = {}
         if (lp > 0) then
             local idx = 1
-            local cursor = 1
+            local cs = 1
             for _, p in ipairs(poses) do
                 if (p[1] > 1) then
                     if (type(packHex) == "string") then
-                        table.insert(builder, colour.hex(packHex, string.sub(str, cursor, p[1] - 1)))
+                        table.insert(builder, colour.hex(packHex, string.sub(str, cs, p[1] - 1)))
                     else
-                        table.insert(builder, string.sub(str, cursor, p[1] - 1))
+                        table.insert(builder, string.sub(str, cs, p[1] - 1))
                     end
                 end
                 if (type(options) == "table" and type(options[idx]) == "table") then
                     table.insert(builder, colour.hex(options[idx][1], tostring(options[idx][2])))
                 end
-                cursor = p[2] + 1
+                cs = p[2] + 1
                 idx = idx + 1
             end
             if (type(packHex) == "string") then
-                table.insert(builder, colour.hex(packHex, string.sub(str, cursor)))
+                table.insert(builder, colour.hex(packHex, string.sub(str, cs)))
             else
-                table.insert(builder, string.sub(str, cursor))
+                table.insert(builder, string.sub(str, cs))
             end
         end
         return table.concat(builder, '')

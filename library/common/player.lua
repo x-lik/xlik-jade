@@ -146,8 +146,7 @@ player._evtAttacked = J.Condition(function()
     end
     event.syncTrigger(attacker, eventKind.unitBeforeAttack, { targetUnit = target })
     event.syncTrigger(target, eventKind.unitBeBeforeAttack, { sourceUnit = attacker })
-    local slk = v.slk
-    local dmgpt = math.trunc(slk.dmgpt1, 3)
+    local dmgpt = math.trunc(v.slk.dmgpt1, 3)
     local attackSpeed = math.min(math.max(attacker:attackSpeed(), -80), 400)
     local delay = 0.25 + attacker:attackPoint() * dmgpt / (1 + attackSpeed * 0.01)
     local t = time.setTimeout(delay, function()
