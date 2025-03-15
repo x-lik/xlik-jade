@@ -435,10 +435,16 @@ func (app *App) asFont(data string) string {
 // asLoading 载入图
 func (app *App) asLoading(data string) {
 	_ = os.Remove(app.BuildDstPath + "/resource/Framework/LoadingScreen.mdx")
-	loadingPath := app.Path.Assets + "/war3MapLoading/" + data
-	loadingFile := app.Path.Assets + "/war3MapLoading/" + data + ".tga"
+	var loadingPath string
+	var loadingFile string
+	if filepath.Ext(data) == `.tga` {
+		loadingFile = app.Path.Assets + "/war3MapLoading/" + data
+	} else {
+		loadingPath = app.Path.Assets + "/war3MapLoading/" + data
+		loadingFile = loadingPath + ".tga"
+	}
 	loaded := false
-	if fileutil.IsDir(loadingPath) {
+	if loadingPath != `` && fileutil.IsDir(loadingPath) {
 		CopyFile("embeds/lni/assets/LoadingScreenDir.mdx", app.BuildDstPath+"/resource/Framework/LoadingScreen.mdx")
 		loadingSites := []string{"pic", "bc", "bg"}
 		for _, s := range loadingSites {
