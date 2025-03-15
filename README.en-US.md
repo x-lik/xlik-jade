@@ -1,6 +1,6 @@
 Language : [CN](./README.md) | US
 
-# X-LIK Jade Version
+# X-LIK Jade Version (Completely open source)
 
 - Home Page: [https://www.hunzsig.com/x-lik](https://www.hunzsig.com/x-lik)
 - Sponsor: [https://afdian.com/a/hunzsig](https://afdian.com/a/hunzsig)
