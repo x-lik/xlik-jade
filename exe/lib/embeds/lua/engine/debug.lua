@@ -8,48 +8,48 @@ J.Runtime['handle_level'] = 0
 ---@return string
 function LK_ERROR(msg)
     msg = tostring(msg)
+    local _, fm = string.find(msg, '**MUST**', 1, true)
+    if (nil == fm) then
+        print(msg .. '\n' .. debug.traceback())
+        return
+    end
+    msg = string.sub(msg, fm + 1)
     local a1, a2 = string.find(msg, '@', nil, true)
     if (nil ~= a1) then
         local pn = string.sub(msg, 1, a1 - 1)
         local pt = string.sub(msg, a2 + 1)
         msg = "参数 " .. pn .. " 必须为 " .. pt .. "类型\n┣━━  Param [" .. pn .. "] must be of type [" .. pt .. ']'
     end
-    local _, fm = string.find(msg, '**MUST**', 1, true)
-    if (nil == fm) then
-        print(msg .. '\n' .. debug.traceback())
-    else
-        msg = string.sub(msg, fm + 1)
-        local trace = {}
-        local back, delimeter = debug.traceback('', 2), '\n'
-        local s, a, b = 1, 1, 1
-        while true do
-            a, b = string.find(back, delimeter, s, true)
-            if not a then
-                break
-            end
-            table.insert(trace, string.sub(back, s, a - 1))
-            s = b + 1
+    local trace = {}
+    local back, delimeter = debug.traceback('', 2), '\n'
+    local s, a, b = 1, 1, 1
+    while true do
+        a, b = string.find(back, delimeter, s, true)
+        if not a then
+            break
         end
-        table.insert(trace, string.sub(back, s))
-        local paths = {}
-        for i = 3, #trace, 1 do
-            local t = trace[i]
-            local f = string.find(t, '(debug)', nil)
-            if nil == f then
-                f = string.find(t, '\\', nil, true)
-                if nil ~= f then
-                    local sub = string.gsub(t, '%s', ' ', 1)
-                    paths[#paths + 1] = '┃' .. sub
-                end
-            end
-        end
-        if (#paths > 0) then
-            table.insert(paths, 1, "┏━━  必检 M U S T ━━\n┣━━  " .. msg)
-            table.insert(paths, '┗' .. string.rep('━', 90))
-            msg = table.concat(paths, '\n')
-        end
-        print(msg)
+        table.insert(trace, string.sub(back, s, a - 1))
+        s = b + 1
     end
+    table.insert(trace, string.sub(back, s))
+    local paths = {}
+    for i = 3, #trace, 1 do
+        local t = trace[i]
+        local f = string.find(t, '(debug)', nil)
+        if nil == f then
+            f = string.find(t, '\\', nil, true)
+            if nil ~= f then
+                local sub = string.gsub(t, '%s', ' ', 1)
+                paths[#paths + 1] = '┃' .. sub
+            end
+        end
+    end
+    if (#paths > 0) then
+        table.insert(paths, 1, "┏━━  必检 M U S T ━━\n┣━━  " .. msg)
+        table.insert(paths, '┗' .. string.rep('━', 90))
+        msg = table.concat(paths, '\n')
+    end
+    print(msg)
 end
 J.Runtime['error_handle'] = LK_ERROR
 
