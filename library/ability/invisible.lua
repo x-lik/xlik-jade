@@ -2,9 +2,9 @@
 --[[
     使用 Unit:isInvisible() 判断是否隐身
     options = {
-        whichUnit 目标单位
-        duration 持续时间
-        model 点特效路径
+        whichUnit = Unit, --[必须]目标单位
+        duration = number, --[必须]持续时间（秒），默认0（小于等于0无效）
+        model = string, --[可选]点特效路径
     }
 ]]
 ---@param options {whichUnit:Unit,duration:number,model:string}|abilityBuffAddon
@@ -23,8 +23,8 @@ function ability.invisible(options)
         signal = buffSignal.up,
         name = options.name,
         icon = options.icon,
-        description = options.description,
         duration = duration,
+        description = options.description,
         ---@param buffObj Unit
         purpose = function(buffObj)
             superposition.plus(buffObj, "invisible")
@@ -39,8 +39,8 @@ end
 --[[
     模版技能 取消隐身
     options = {
-        whichUnit 目标单位
-        model 点特效路径
+        whichUnit = Unit, --[必须]目标单位
+        model = string, --[可选]点特效路径
     }
 ]]
 ---@param options {whichUnit:Unit,model:string}

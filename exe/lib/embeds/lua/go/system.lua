@@ -81,24 +81,6 @@ slk_ability({
     HeroDur = { 0 },
 })
 
---- #回避(伤害)+
-slk_ability({
-    _parent = "AIlf",
-    Name = "LK_ABILITY_AVOID_ADD",
-    Art = "",
-    levels = 2,
-    DataA = { 0, -10000000 }
-})
-
---- #回避(伤害)-
-slk_ability({
-    _parent = "AIlf",
-    Name = "LK_ABILITY_AVOID_SUB",
-    Art = "",
-    levels = 2,
-    DataA = { 0, 10000000 }
-})
-
 --- #视野
 local sights = { 1, 2, 3, 4, 5 }
 local i = 1

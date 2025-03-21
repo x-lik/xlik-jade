@@ -2,12 +2,12 @@
 --[[
     使用 Unit:isStunning() 判断是否眩晕
     options = {
-        sourceUnit 源单位
-        targetUnit 目标单位
-        duration 持续时间
-        odds 几率0-100
-        model 绑定特效路径
-        attach 绑定特效位置
+        sourceUnit = Unit, --[可选]源单位
+        targetUnit = Unit, --[必须]目标单位
+        duration = number, --[必须]持续时间（秒），默认0（小于等于0无效）
+        odds = number, --[可选]几率，默认100，建议范围[0-100]（小于等于0无效）
+        model = string, --[可选]绑定特效路径，默认ThunderclapTarget
+        attach = string, --[可选]绑定特效位置，默认overhead
     }
 ]]
 ---@param options {targetUnit:Unit,sourceUnit:Unit,duration:number,odds:number,model:string,attach:string}|abilityBuffAddon
@@ -43,8 +43,8 @@ function ability.stun(options)
         signal = buffSignal.down,
         name = options.name,
         icon = options.icon,
-        description = options.description,
         duration = duration,
+        description = options.description,
         ---@param buffObj Unit
         purpose = function(buffObj)
             effector.attach(buffObj, model, attach)

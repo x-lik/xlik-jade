@@ -3,89 +3,89 @@
     对接引流 Flow `damage`
     使用 Unit:isHurting() 判断是否受伤中
     使用 Unit:isDamaging() 判断是否造成伤害中
-    params = {
-        sourceUnit 源单位
-        targetUnit 目标单位
-        damage 伤害值
-        damageSrc 伤害来源
-        damageType 伤害类型（影响元素反应或自定义效果）
-        damageTypeLevel 伤害类级别（影响元素附着或自定义效果）
-        breakArmor 破甲类型
-        extra table 自定义额外数据map
+    options = {
+        sourceUnit = Unit, --[可选]源单位
+        targetUnit = Unit, --[必须]目标单位
+        damage = number, --[可选]伤害值，默认0
+        damageSrc = table, --[可选]伤害来源，默认injury.damageSrc.common（详情查看injury.damageSrc）
+        damageType = table, --[可选]伤害类型，默认injury.damageType.common （详情查看injury.damageType）
+        damageTypeLevel = number, --[可选]伤害类级别（影响元素附着或自定义效果），默认0
+        breakArmor = table, --[可选]破防类型，默认{}（详情查看injury.breakArmor）
+        extra = table, --[可选]自定义额外数据
     }
 ]]
 ---@see injury#damageType
 ---@see injury#damageSrc
 ---@see injury#breakArmorType
----@param params {sourceUnit:Unit,targetUnit:Unit,damage:number,damageSrc:table,damageType:table,damageTypeLevel:number,breakArmor:table[],extra:table}
+---@param options {sourceUnit:Unit,targetUnit:Unit,damage:number,damageSrc:table,damageType:table,damageTypeLevel:number,breakArmor:table[],extra:table}
 ---@return void
-function ability.damage(params)
+function ability.damage(options)
     sync.must()
-    params.damage = params.damage or 0
-    if (params.damage < 1 or false == class.isObject(params.targetUnit, UnitClass)) then
+    options.damage = options.damage or 0
+    if (options.damage < 1 or false == class.isObject(options.targetUnit, UnitClass)) then
         return
     end
-    if (params.targetUnit:isDead()) then
+    if (options.targetUnit:isDead()) then
         return
     end
-    if (nil ~= params.sourceUnit) then
-        if (false == class.isObject(params.sourceUnit, UnitClass)) then
+    if (nil ~= options.sourceUnit) then
+        if (false == class.isObject(options.sourceUnit, UnitClass)) then
             return
         end
-        if (params.sourceUnit:isDead()) then
+        if (options.sourceUnit:isDead()) then
             return
         end
     end
     -- 禁用错误的伤害来源
-    params.damageSrc = params.damageSrc or injury.damageSrc.common
-    if (params.damageSrc == injury.damageSrc.attack and nil ~= params.sourceUnit and params.sourceUnit:isUnArming()) then
+    options.damageSrc = options.damageSrc or injury.damageSrc.common
+    if (options.damageSrc == injury.damageSrc.attack and nil ~= options.sourceUnit and options.sourceUnit:isUnArming()) then
         return
-    elseif (params.damageSrc == injury.damageSrc.ability and nil ~= params.sourceUnit and params.sourceUnit:isSilencing()) then
+    elseif (options.damageSrc == injury.damageSrc.ability and nil ~= options.sourceUnit and options.sourceUnit:isSilencing()) then
         return
     end
     --- 触发受伤前事件
-    event.syncTrigger(params.targetUnit, eventKind.unitBeforeHurt, params)
+    event.syncTrigger(options.targetUnit, eventKind.unitBeforeHurt, options)
     -- 修正伤害类型
-    params.damageType = params.damageType or injury.damageType.common
-    params.damageTypeLevel = params.damageTypeLevel or 0
+    options.damageType = options.damageType or injury.damageType.common
+    options.damageTypeLevel = options.damageTypeLevel or 0
     -- 修正破防类型
-    params.breakArmor = params.breakArmor or {}
+    options.breakArmor = options.breakArmor or {}
     --- 对接伤害过程
     if (isFlow("damage")) then
-        Flow("damage"):run(params)
+        Flow("damage"):run(options)
     end
     --- 最终伤害
-    if (params.damage >= 1) then
-        if (nil ~= params.sourceUnit) then
-            params.targetUnit._lastHurtSource = params.sourceUnit
-            params.sourceUnit._lastDamageTarget = params.targetUnit
-            superposition.plus(params.sourceUnit, "damage")
-            superposition.plus(params.sourceUnit:owner(), "damage")
+    if (options.damage >= 1) then
+        if (nil ~= options.sourceUnit) then
+            options.targetUnit._lastHurtSource = options.sourceUnit
+            options.sourceUnit._lastDamageTarget = options.targetUnit
+            superposition.plus(options.sourceUnit, "damage")
+            superposition.plus(options.sourceUnit:owner(), "damage")
             time.setTimeout(3.5, function()
-                if (false == class.isDestroy(params.sourceUnit)) then
-                    superposition.minus(params.sourceUnit, "damage")
-                    superposition.minus(params.sourceUnit:owner(), "damage")
+                if (false == class.isDestroy(options.sourceUnit)) then
+                    superposition.minus(options.sourceUnit, "damage")
+                    superposition.minus(options.sourceUnit:owner(), "damage")
                 end
             end)
             --- 触发伤害事件
-            event.syncTrigger(params.sourceUnit, eventKind.unitDamage, params)
-            if (params.damageSrc == injury.damageSrc.attack) then
-                event.syncTrigger(params.sourceUnit, eventKind.unitAttack, params)
+            event.syncTrigger(options.sourceUnit, eventKind.unitDamage, options)
+            if (options.damageSrc == injury.damageSrc.attack) then
+                event.syncTrigger(options.sourceUnit, eventKind.unitAttack, options)
             end
         end
-        superposition.plus(params.targetUnit, "hurt")
-        superposition.plus(params.targetUnit:owner(), "hurt")
+        superposition.plus(options.targetUnit, "hurt")
+        superposition.plus(options.targetUnit:owner(), "hurt")
         time.setTimeout(3.5, function()
-            if (false == class.isDestroy(params.targetUnit)) then
-                superposition.minus(params.targetUnit, "hurt")
-                superposition.minus(params.targetUnit:owner(), "hurt")
+            if (false == class.isDestroy(options.targetUnit)) then
+                superposition.minus(options.targetUnit, "hurt")
+                superposition.minus(options.targetUnit:owner(), "hurt")
             end
         end)
         --- 触发受伤事件
-        event.syncTrigger(params.targetUnit, eventKind.unitHurt, params)
-        if (params.damageSrc == injury.damageSrc.attack) then
-            event.syncTrigger(params.targetUnit, eventKind.unitBeAttack, params)
+        event.syncTrigger(options.targetUnit, eventKind.unitHurt, options)
+        if (options.damageSrc == injury.damageSrc.attack) then
+            event.syncTrigger(options.targetUnit, eventKind.unitBeAttack, options)
         end
-        params.targetUnit:hpCur("-=" .. params.damage)
+        options.targetUnit:hpCur("-=" .. options.damage)
     end
 end

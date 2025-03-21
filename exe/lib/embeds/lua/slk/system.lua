@@ -10,11 +10,6 @@ slk_ability({ _parent = "Aro2" })
 -- #隐身
 slk_ability({ _parent = "Apiv" })
 
---- #回避(伤害)+
-slk_ability({ _parent = "AIlf" })
---- #回避(伤害)-
-slk_ability({ _parent = "AIlf" })
-
 --- #视野
 local sightBase = { 1, 2, 3, 4, 5 }
 local i = 1

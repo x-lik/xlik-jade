@@ -2,10 +2,10 @@
 --[[
     使用 Unit:isSilencing() 判断是否被沉默
     options = {
-        whichUnit 目标单位
-        duration 持续时间
-        model 绑定特效路径
-        attach 绑定特效位置
+        whichUnit = Unit, --[必须]目标单位
+        duration = number, --[必须]持续时间（秒），默认0（小于等于0无效）
+        model = string, --[可选]绑定特效路径，默认SilenceTarget
+        attach = string, --[可选]绑定特效位置，默认origin
     }
 ]]
 ---@param options {whichUnit:Unit,duration:number,model:string,attach:string}|abilityBuffAddon
@@ -27,6 +27,7 @@ function ability.silent(options)
         signal = buffSignal.down,
         name = options.name,
         icon = options.icon,
+        duration = duration,
         description = options.description,
         ---@param buffObj Unit
         purpose = function(buffObj)

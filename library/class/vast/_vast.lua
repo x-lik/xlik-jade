@@ -227,6 +227,7 @@ function _index:set(name, variety, duration, domain)
                         cs[1]._purpose(o)
                     else
                         o[dynKey] = nil
+                        VastModifier(o, key, nil, o:get(name, domain))
                     end
                 end
             end

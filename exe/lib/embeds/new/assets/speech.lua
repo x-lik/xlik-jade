@@ -106,13 +106,9 @@ assets_speech("FirePandarenBrewmaster")
 --农民
 assets_speech("Peasant")
 --步兵
-assets_speech("Footman", {
-    avatar = assets_speech_extra({ model = "Footman" })
-})
+assets_speech("Footman")
 --骑士
-assets_speech("Knight", {
-    avatar = assets_speech_extra({ model = "Knight" })
-})
+assets_speech("Knight")
 --矮人火枪手
 assets_speech("Rifleman")
 --迫击炮小队

@@ -59,22 +59,22 @@ end
 --[[
     模版技能 虚拟箭矢
     options = {
-        sourceUnit = Unit, --[可选]伤害来源（没有来源单位时，必须有sourceVec）
+        sourceUnit = Unit, --[可选]源单位（没有来源单位时，必须有sourceVec）
         targetUnit = Unit, --[可选]目标单位（有单位目标，那么冲击跟踪到单位就结束）
-        sourceVec = number[] len:3[可选]强制设定初始坐标
-        targetVec = number[] len:3[可选]强制设定目标坐标
-        model = nil, --[必须]虚拟箭矢的特效
-        animateScale = 1.00, --[可选]虚拟箭矢的动画速度，默认1
-        scale = 1.00, --[可选]虚拟箭矢的模型缩放，默认1
-        frequency = 0.03, --[可选]刷新周期，默认0.03
-        speed = 500, --[可选]每秒冲击的距离，默认1秒500px
-        acceleration = 0, --[可选]冲击加速度，每个周期都会增加一次
-        height = 0, --[可选]飞跃高度，默认0
-        weaponHeight = 0, --[可选]武器高度，默认20
-        weaponLength = 0, --[可选]武器长度，默认20
-        reflex = 0, --[可选]弹射次数，默认0，优先选择其余单位，没有则跳回原target
-        reflexOffset = 300, --[可选]弹射跳回原target时的偏移距离，默认300
-        twist = false, --[可选]是否扭曲，默认false
+        sourceVec = number[], --[可选]len:3，强制设定初始坐标
+        targetVec = number[], --[可选]len:3，强制设定目标坐标
+        model = string, --[必须]虚拟箭矢的特效，默认nil
+        animateScale = number, --[可选]虚拟箭矢的动画速度，默认1
+        scale = number, --[可选]虚拟箭矢的模型缩放，默认1
+        frequency = number, --[可选]刷新周期，默认0.03
+        speed = number, --[可选]每秒冲击的距离，默认500（表示1秒移动500的距离）
+        acceleration = number, --[可选]冲击加速度，默认0（每个周期[每隔frequency秒]都会增加一次）
+        height = number, --[可选]飞跃高度，默认0
+        weaponHeight = number, --[可选]武器高度，默认20
+        weaponLength = number, --[可选]武器长度，默认20
+        reflex = number, --[可选]弹射次数，默认0，优先选择其余单位，没有则跳回原target
+        reflexOffset = number, --[可选]弹射跳回原target时的偏移距离，默认300
+        twist = boolean, --[可选]是否扭曲，默认false
         onMove = abilityMissileFunc, --[可选]每周期回调,当return false时可强行中止循环
         onEnd = abilityMissileFunc, --[可选]结束回调,当return true时才会执行reflex
     }

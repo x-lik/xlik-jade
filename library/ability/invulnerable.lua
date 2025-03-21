@@ -2,10 +2,10 @@
 --[[
     使用 Unit:isInvulnerable() 判断是否无敌
     options = {
-        whichUnit 目标单位
-        duration 持续时间
-        model 绑定特效路径
-        attach 绑定特效位置
+        whichUnit = Unit, --[必须]目标单位
+        duration = Unit, --[必须]持续时间（秒），默认0
+        model = string, --[可选]绑定特效路径，默认DivineShieldTarget
+        attach = string, --[可选]绑定特效位置，默认origin
     }
 ]]
 ---@param options {whichUnit:Unit,duration:number,model:string,attach:string}|abilityBuffAddon

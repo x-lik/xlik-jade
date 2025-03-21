@@ -1,5 +1,5 @@
 --- 底层技能 反隐光环
----@param whichUnit Unit
+---@param whichUnit Unit 作用单位
 ---@param value number 反隐范围，设0取消
 function ability.visible(whichUnit, value)
     sync.must()
