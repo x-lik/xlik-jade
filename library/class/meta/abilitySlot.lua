@@ -238,7 +238,7 @@ function _index:remove(index)
     local s = self._storage
     if (type(index) == "number" and index > 0 and index <= self._volume) then
         if (class.isObject(s[index], AbilityClass)) then
-            VastModifier(s[index], "_bindUnit", s[index]._bindUnit, nil)
+            s[index]:setNil("bindUnit")
         end
     end
 end

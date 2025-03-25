@@ -31,8 +31,8 @@ function _index:run(data)
     if (actions:count() > 0) then
         data = data or {}
         local abort = self._abort
-        actions:forEach(function(_, func)
-            promise(func, nil, nil, data)
+        actions:forEach(function(k, func)
+            promise(func, function() print("Flow:" .. self._key .. ':' .. k .. " run error") end, nil, data)
             if (type(abort) == "function") then
                 return not abort(data)
             end

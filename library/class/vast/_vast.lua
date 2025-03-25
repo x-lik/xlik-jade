@@ -103,13 +103,14 @@ function _index:modifier(isDyn, key, changeVal)
     end
 end
 
---- 强制设置内部参为nil
+--- 强制设置内部参为nil并执行修改处理
+--- 此方法与self.any=nil的区别在于会尝试执行VastModifier
 ---@param name string 参数名
 ---@return void
 function _index:setNil(name)
-    name = attribute.enParam(name)
-    VastModifier(self, name, self[name], nil)
-    self[name] = nil
+    local key = attribute.enParam(name)
+    VastModifier(self, key, self[key], nil)
+    self[key] = nil
 end
 
 --- 设置内部参

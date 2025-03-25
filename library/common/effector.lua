@@ -10,16 +10,21 @@ effector._agile = effector._agile or {}
 
 --- 销毁特效
 ---@param whichEffect number|agileEffect
+---@param setVisible boolean 是否隐藏特效，默认false
 ---@return void
-function effector.destroy(whichEffect)
+function effector.destroy(whichEffect, setVisible)
     sync.must()
     if (effector.isAgile(whichEffect)) then
-        japi.DZ_SetEffectVisible(whichEffect._handle, false)
+        if (true == setVisible) then
+            japi.DZ_SetEffectVisible(whichEffect._handle, false)
+        end
         J.DestroyEffect(whichEffect._handle)
         J.HandleUnRef(whichEffect._handle)
         effector._agile[whichEffect] = nil
     elseif (type(whichEffect) == "number") then
-        japi.DZ_SetEffectVisible(whichEffect, false)
+        if (true == setVisible) then
+            japi.DZ_SetEffectVisible(whichEffect, false)
+        end
         J.DestroyEffect(whichEffect)
         J.HandleUnRef(whichEffect)
     end
@@ -264,7 +269,7 @@ function effector.position(whichEffect, x, y, z)
             local d = vector2.distance(whichEffect._x, whichEffect._y, x, y)
             if (d > 1024) then
                 local model = whichEffect._model
-                effector.destroy(h)
+                effector.destroy(h, true)
                 h = J.AddSpecialEffect(model, x, y)
                 J.HandleRef(h)
                 whichEffect._handle = h
@@ -325,7 +330,7 @@ local _pile = function(attach, key, whichEffect)
         if (isArray(attach)) then
             attach:set(key, nil)
         end
-        effector.destroy(whichEffect._handle)
+        effector.destroy(whichEffect._handle, true)
         whichEffect = nil
     else
         whichEffect._pile = p
@@ -536,7 +541,7 @@ function effector.clearAttach(whichUnit)
     local es = whichUnit._attach
     if (isArray(es)) then
         es:forEach(function(_, e)
-            effector.destroy(e._handle)
+            effector.destroy(e._handle, true)
             e = nil
         end)
         class.destroy(es)

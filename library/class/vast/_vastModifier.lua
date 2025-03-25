@@ -147,8 +147,7 @@ local modifier = {
                 obj._itemSlotIndex = nil
                 obj._bindUnit = nil
                 if (class.isObject(ab, AbilityClass)) then
-                    VastModifier(ab, "_bindUnit", oldVal, nil)
-                    ab._bindUnit = nil
+                    ab:setNil("bindUnit")
                 end
             end
         end,
@@ -158,9 +157,8 @@ local modifier = {
         _bindAbility = function(obj, oldVal, newVal)
             local bu = obj:bindUnit()
             if (class.isObject(oldVal, AbilityClass)) then
-                VastModifier(oldVal, "_bindUnit", bu, nil)
-                oldVal._bindItem = nil
-                oldVal._bindUnit = nil
+                oldVal:setNil("bindUnit")
+                oldVal:setNil("bindItem")
                 class.destroy(oldVal)
             end
             if (false == class.isDestroy(obj) and class.isObject(newVal, AbilityClass)) then
@@ -238,7 +236,7 @@ local modifier = {
             else
                 if (nil ~= obj._handle) then
                     Grid(ItemClass):remove(obj)
-                    effector.destroy(obj._handle)
+                    effector.destroy(obj._handle, true)
                     obj._handle = nil
                     datum.freePosition(x, y)
                     obj._x = 0

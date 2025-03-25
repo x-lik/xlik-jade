@@ -41,7 +41,7 @@ function _index:bubbleClear()
         if (class.is(v)) then
             class.destroy(v)
         elseif (effector.isAgile(v)) then
-            effector.destroy(v)
+            effector.destroy(v, true)
         end
     end
     self._bubble = {}
