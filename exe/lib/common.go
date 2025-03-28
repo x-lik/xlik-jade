@@ -58,6 +58,27 @@ func Panic(what interface{}) {
 	os.Exit(0)
 }
 
+// Unshift This function takes a slice of any type T and an element of type T, and returns a new slice with the element added to the beginning of the original slice.
+func Unshift[T any](slice []T, element T) []T {
+	newSlice := make([]T, 0, len(slice)+1)
+	newSlice = append(newSlice, element)
+	newSlice = append(newSlice, slice...)
+	return newSlice
+}
+
+// Pop This function takes a pointer to a slice of any type T and returns the last element of the slice
+func Pop[T any](slice *[]T) T {
+	var zero T
+	if len(*slice) == 0 {
+		// If the length is 0, return the zero value
+		return zero
+	}
+	lastIndex := len(*slice) - 1
+	lastElement := (*slice)[lastIndex]
+	*slice = (*slice)[:lastIndex]
+	return lastElement
+}
+
 // Rand rand()
 // Range: [0, 2147483647]
 func Rand(min, max int) int {
