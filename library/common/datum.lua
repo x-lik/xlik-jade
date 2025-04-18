@@ -66,7 +66,7 @@ function datum.ternary(bool, tVal, fVal)
     end
 end
 
---- 选取物返唯一key
+--- 根据选取物返回唯一key
 ---@alias datumEnum Unit|Item|UIKit|agileEffect|number
 ---@param enum datumEnum
 ---@return string|nil
@@ -85,20 +85,56 @@ function datum.enumKey(enum)
     return nil
 end
 
---- 选取物返坐标
+--- 根据选取物获取X坐标
 ---@param enum any
----@param scope string|nil 指引域
----@return number,number|nil,nil
-function datum.enumXY(enum, scope)
-    local x, y
+---@param scopeKey string|nil 指引域键值
+---@return number|nil 无效选取物返回nil
+function datum.enumX(enum, scopeKey)
+    local x
     if (class.inObject(enum, UnitClass, ItemClass) and false == class.isDestroy(enum)) then
-        x, y = enum:x(), enum:y()
+        x = enum:x()
     elseif (effector.isAgile(enum)) then
-        x, y = effector.x(enum), effector.y(enum)
-    elseif (type(enum) == "number" and scope == "destructable") then
-        x, y = J.GetDestructableX(enum), J.GetDestructableY(enum)
+        x = effector.x(enum)
+    elseif (type(enum) == "number") then
+        if (scopeKey == "destructable") then
+            x = J.GetDestructableX(enum)
+        elseif (scopeKey == "unit") then
+            x = J.GetUnitX(enum)
+        elseif (scopeKey == "item") then
+            x = J.GetItemX(enum)
+        end
     end
-    return x, y
+    return x
+end
+
+--- 根据选取物获取Y坐标
+---@param enum any
+---@param scopeKey string|nil 指引域键值
+---@return number|nil 无效选取物返回nil
+function datum.enumY(enum, scopeKey)
+    local y
+    if (class.inObject(enum, UnitClass, ItemClass) and false == class.isDestroy(enum)) then
+        y = enum:y()
+    elseif (effector.isAgile(enum)) then
+        y = effector.y(enum)
+    elseif (type(enum) == "number") then
+        if (scopeKey == "destructable") then
+            y = J.GetDestructableY(enum)
+        elseif (scopeKey == "unit") then
+            y = J.GetUnitY(enum)
+        elseif (scopeKey == "item") then
+            y = J.GetItemY(enum)
+        end
+    end
+    return y
+end
+
+--- 根据选取物获取X,Y坐标
+---@param enum any
+---@param scopeKey string|nil 指引域键值
+---@return number,number|nil,nil 无效选取物返回nil
+function datum.enumXY(enum, scopeKey)
+    return datum.enumX(enum, scopeKey), datum.enumY(enum, scopeKey)
 end
 
 --- 寻找未被占用坐标
@@ -156,4 +192,25 @@ function datum.freePosition(x, y)
         local ik = x .. '_' .. y
         datum._position[ik] = nil
     end
+end
+
+--- 二分法在数组中精准寻找目标index
+--- 未找到则返回-1
+---@param arr number[]
+---@param target number
+---@return number
+function datum.binaryIndex(arr, target)
+    local left, right = 1, #arr
+    local mid = nil
+    while (left <= right) do
+        mid = math.floor((left + right) / 2)
+        if (arr[mid] == target) then
+            return mid
+        elseif (arr[mid] < target) then
+            left = mid + 1
+        elseif (arr[mid] > target) then
+            right = mid - 1
+        end
+    end
+    return -1
 end

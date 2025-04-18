@@ -3,7 +3,7 @@
 terrain = terrain or {}
 
 -- 地表贴图类型
-terrain.type = {
+terrain.kind = {
     -- 地形类型（这里只写默认的16个，如果你改动了地形，请自行补充）
     -- 对应地形样式取决于we内配置的16个样式
     lords_dirt = J.C2I("Ldrt"), -- 洛丹伦(夏) 泥地 [泥土]
@@ -24,6 +24,14 @@ terrain.type = {
     dalaran_bricktiles = J.C2I("Xbtl"), -- 达拉然 砖 [蓝冰]
 }
 
+--- 检测是否有效的并已经备注的类型
+--- 此方法并不能判定所有地形是否有效，你可以补充terrain.kind达到检测所有的范围
+---@param value table
+---@return boolean
+function terrain.isValid(value)
+    return nil ~= terrain.kind[value]
+end
+
 --- 设置水颜色
 ---@param red number 取值范围[0-255]
 ---@param green number 取值范围[0-255]
@@ -34,39 +42,41 @@ function terrain.setWaterColor(red, green, blue, alpha)
     J.SetWaterBaseColor(red, green, blue, alpha)
 end
 
---- 获取x，y坐标的地形地表贴图类型，看terrain.type
+--- 获取x，y坐标的地形地表贴图类型
+---@see terrain#kind
 ---@param x number
 ---@param y number
 ---@return number
-function terrain.getType(x, y)
+function terrain.getKind(x, y)
     return J.GetTerrainType(x, y)
 end
 
 --- 设置x，y坐标的地形地表贴图类型
----@see terrain#type
+---@see terrain#kind
 ---@param x number
 ---@param y number
----@param typ number terrain.type
+---@param kind number terrain.kind
 ---@param radius number 默认128，改变的半径范围，实际会转为刷子大小，1刷子等于128
 ---@param shape number 默认0，0圆形|1方形
 ---@param style number 默认-1，随机样式
 ---@return void
-function terrain.setType(x, y, typ, radius, shape, style)
+function terrain.setKind(x, y, kind, radius, shape, style)
     radius = radius or 128
     radius = math.floor(radius / 128)
     if (radius < 1) then
         return
     end
-    J.SetTerrainType(x, y, typ, style or -1, radius, shape or 0)
+    J.SetTerrainType(x, y, kind, style or -1, radius, shape or 0)
 end
 
 --- 是否某类型
+---@see terrain#kind
 ---@param x number
 ---@param y number
----@param whichType number terrain.type
+---@param whichKind number terrain.kind
 ---@return boolean
-function terrain.isType(x, y, whichType)
-    return whichType == terrain.getType(x, y)
+function terrain.isKind(x, y, whichKind)
+    return whichKind == terrain.getKind(x, y)
 end
 
 --- 为玩家设置x，y坐标的荒芜地表

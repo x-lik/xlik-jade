@@ -62,6 +62,12 @@ function _index:name()
     return self._key
 end
 
+--- 获取区域形状
+---@return string|'square'|'circle'
+function _index:shape()
+    return self._shape
+end
+
 --- 坐标是否在区域里
 ---@param x number
 ---@param y number
@@ -162,27 +168,27 @@ function _index:splat(texture, alpha)
 end
 
 --- 添加天气
----@see weather#type
----@param weatherType weather 参考 weather.type，当设为nil且status为false时，去除所有天气，否则只去除1对应数量级
+---@see weather#kind
+---@param weatherKind weather 参考 weather.kind，当设为nil且status为false时，去除所有天气，否则只去除1对应数量级
 ---@return number
-function _index:weatherInsert(weatherType)
-    must(type(weatherType) == "table", "weatherType@weather.type")
+function _index:weatherInsert(weatherKind)
+    must(weather.isValid(weatherKind), "weatherKind@weather.kind")
     ---@type number[]
     local ws = self._weathers
     if (nil == ws) then
         ws = {}
         self._weathers = ws
     end
-    local w = weather.create(weatherType, self)
+    local w = weather.create(weatherKind, self)
     table.insert(ws, w)
     return w
 end
 
 --- 删除天气
----@see weather#type
----@param weatherType nil|weather 参考 weather.type，当设为nil时，去除所有天气，否则只去除对应类型的1个数量级的天气
+---@see weather#kind
+---@param weatherKind nil|weather 参考 weather.kind，当设为nil时，去除所有天气，否则只去除对应类型的1个数量级的天气
 ---@return void
-function _index:weatherRemove(weatherType)
+function _index:weatherRemove(weatherKind)
     ---@type number[]
     local ws = self._weathers
     if (nil == ws) then
@@ -191,10 +197,10 @@ function _index:weatherRemove(weatherType)
     if (#ws > 0) then
         for i = #ws, 1, -1 do
             local wv = ws[i]
-            if (nil == weatherType) then
+            if (nil == weatherKind) then
                 table.remove(ws, i)
                 weather.destroy(wv)
-            elseif (weatherType == weather.getType(wv)) then
+            elseif (weatherKind == weather.getKind(wv)) then
                 table.remove(ws, i)
                 weather.destroy(wv)
                 break

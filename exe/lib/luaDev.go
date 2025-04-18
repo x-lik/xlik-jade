@@ -41,7 +41,7 @@ func (app *App) luaDev() string {
 	if app.BuildModeName == "_dist" {
 		cores = append(cores, "debugRelease")
 	}
-	cores = append(cores, []string{"promise", "pairx", "blizzard", "setting"}...)
+	cores = append(cores, []string{"typeof", "promise", "pairx", "blizzard", "setting"}...)
 	for i, v := range cores {
 		dst := app.BuildDstPath + "/map/engine/" + v + ".lua"
 		x, _ := Embeds.ReadFile("embeds/lua/engine/" + v + ".lua")

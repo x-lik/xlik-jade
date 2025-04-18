@@ -9,9 +9,11 @@
 ---@class weather 天气类型
 weather = weather or {}
 
+--- 已创建天气类型记录
+weather._record = weather._record or {}
+
 --- 天气类型
-weather._types = weather._types or {}
-weather.type = {
+weather.kind = {
     sun = { value = "LRaa", label = "日光" },
     moon = { value = "LRma", label = "月光" },
     shield = { value = "MEds", label = "紫光盾" },
@@ -31,32 +33,38 @@ weather.type = {
     mistRedHeave = { value = "FDrh", label = "厚红雾" }
 }
 
+--- 检测是否属于有效的类型
+---@param value table
+---@return boolean
+function weather.isValid(value)
+    return nil ~= weather.kind[value]
+end
+
 --- 生成一片天气
 --- 使用此方法并不会将天气数据插入到Region之内（仅仅是引用了Region生成的原生区域）
 --- 一般不直接使用此方法，而是基于Region对象使用，详情见 meta/region weather相关方法
----@see weather#type
----@param weatherType weather 天气类型，参考 weather.type
+---@see weather#kind
+---@param kind weather 天气类型，参考 weather.kind
 ---@param bindRegion Region 绑定的区域
 ---@return number
-function weather.create(weatherType, bindRegion)
+function weather.create(kind, bindRegion)
     sync.must()
-    must(type(weatherType) == "table", "weatherType@weather.type")
-    must(nil ~= weatherType, "weatherType@weather.type")
-    local realType = J.C2I(weatherType.value)
-    must(nil ~= realType, "Invalid weatherType")
+    must(weather.isValid(kind), "kind@weather.kind")
+    local realType = J.C2I(kind.value)
+    must(nil ~= realType, "Invalid weather kind")
     local w = J.AddWeatherEffect(bindRegion:handle(), realType)
     J.EnableWeatherEffect(w, true)
-    weather._types[w] = weatherType
+    weather._record[w] = kind
     return w
 end
 
 --- 获取某片天气的类型
----@see weather#type
+---@see weather#kind
 ---@param whichWeather number
 ---@return table|nil
-function weather.getType(whichWeather)
+function weather.getKind(whichWeather)
     sync.must()
-    return weather._types[whichWeather]
+    return weather._record[whichWeather]
 end
 
 --- 删除某片天气
@@ -67,6 +75,6 @@ function weather.destroy(whichWeather)
     if (type(whichWeather) == "number") then
         J.EnableWeatherEffect(whichWeather, false)
         J.RemoveWeatherEffect(whichWeather)
-        weather._types[whichWeather] = nil
+        weather._record[whichWeather] = nil
     end
 end
