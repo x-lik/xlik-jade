@@ -180,28 +180,32 @@ function event.asyncTrigger(symbol, evtKind, triggerData)
             if (nil ~= topSymbol) then
                 local data = event.get("async", topSymbol, evtKind)
                 if (isArray(data) and data:count() > 0) then
-                    local keys = data:keys()
-                    local kLen = #keys
-                    for i = 1, kLen, 1 do
-                        local callFunc = data:get(keys[i])
-                        if (nil ~= callFunc) then
-                            promise(callFunc, nil, nil, td)
+                    local actions = {}
+                    data:forEach(function(_, act)
+                        if (nil ~= act) then
+                            actions[#actions + 1] = act
                         end
+                    end)
+                    for _, a in ipairs(actions) do
+                        promise(a, nil, nil, td)
                     end
+                    actions = nil
                 end
             end
         end
         -- 触发异步事件
         local data = event.get("async", symbol, evtKind)
         if (isArray(data) and data:count() > 0) then
-            local keys = data:keys()
-            local kLen = #keys
-            for i = 1, kLen, 1 do
-                local callFunc = data:get(keys[i])
-                if (nil ~= callFunc) then
-                    promise(callFunc, nil, nil, td)
+            local actions = {}
+            data:forEach(function(_, act)
+                if (nil ~= act) then
+                    actions[#actions + 1] = act
                 end
+            end)
+            for _, a in ipairs(actions) do
+                promise(a, nil, nil, td)
             end
+            actions = nil
         end
     end)
 end
@@ -257,28 +261,32 @@ function event.syncTrigger(symbol, evtKind, triggerData)
         if (nil ~= topSymbol) then
             local data = event.get("sync", topSymbol, evtKind)
             if (isArray(data) and data:count() > 0) then
-                local keys = data:keys()
-                local kLen = #keys
-                for i = 1, kLen, 1 do
-                    local callFunc = data:get(keys[i])
-                    if (nil ~= callFunc) then
-                        promise(callFunc, nil, nil, td)
+                local actions = {}
+                data:forEach(function(_, act)
+                    if (nil ~= act) then
+                        actions[#actions + 1] = act
                     end
+                end)
+                for _, a in ipairs(actions) do
+                    promise(a, nil, nil, td)
                 end
+                actions = nil
             end
         end
     end
     -- 触发该域的同步事件
     local data = event.get("sync", symbol, evtKind)
     if (isArray(data) and data:count() > 0) then
-        local keys = data:keys()
-        local kLen = #keys
-        for i = 1, kLen, 1 do
-            local callFunc = data:get(keys[i])
-            if (nil ~= callFunc) then
-                promise(callFunc, nil, nil, td)
+        local actions = {}
+        data:forEach(function(_, act)
+            if (nil ~= act) then
+                actions[#actions + 1] = act
             end
+        end)
+        for _, a in ipairs(actions) do
+            promise(a, nil, nil, td)
         end
+        actions = nil
     end
     -- 触发同级域的异步事件
     event.asyncTrigger(symbol, evtKind, triggerData)

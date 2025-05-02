@@ -705,6 +705,7 @@ func (app *App) asUI(data []string) []string {
 						if !info.IsDir() {
 							asName = asName[1:]
 							asName = strings.Replace(asName, "\\", "/", -1)
+							asName = strings.ToLower(asName)
 							ext := filepath.Ext(path)
 							switch ext {
 							case ".blp", ".tga":

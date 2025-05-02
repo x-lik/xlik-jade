@@ -524,6 +524,8 @@ local modifier = {
                                 obj._icon = newData.slk.Art or X_UI_QUESTION
                             end
                         end
+                        -- 如果需要条件跟随物编的额外数据，可以尝试下面注释的代码
+                        -- japi.DZ_SetUnitID(obj:handle(), newVal)
                     else
                         print("slkData fetch failed! SlkId:" .. newVal)
                     end

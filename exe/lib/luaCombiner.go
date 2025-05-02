@@ -52,6 +52,8 @@ func luaZip(src string) string {
 	content = reg.ReplaceAllString(content, "")
 	reg = regexp.MustCompile("\\s*--.*")
 	content = reg.ReplaceAllString(content, "")
+	reg = regexp.MustCompile(`(\w)\s*([.:])\s*(\w)`)
+	content = reg.ReplaceAllString(content, "$1$2$3")
 	cta := strings.Split(content, "\n")
 	var ctn []string
 	for _, c := range cta {
