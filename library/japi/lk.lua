@@ -39,7 +39,7 @@ japi._clientHeight = japi._clientHeight or 0
 ---@protected
 japi._clientWidth = japi._clientWidth or 0
 ---@protected
-japi._cursor = japi._cursor or { rx = 0.4, ry = 0.3 }
+japi._cursor = japi._cursor or { rx = 0.4, ry = 0.3, focusUI = nil, focusTo = nil }
 ---@protected
 japi._hasMallItem = japi._hasMallItem or {}
 ---@protected
@@ -276,6 +276,13 @@ function japi.UISetEsc(key, ui)
     japi._uiEsc:set(key, ui)
 end
 
+--- 鼠标当前指向所在的注册UI对象
+--- 只有注册了指针进出事件的UI对象才会生效
+---@return UI|nil
+function japi.UIFocus()
+    return japi._cursor.focusUI
+end
+
 --- UI对象事件转鼠标处理
 ---@param whichUI UI 操作的UI对象
 ---@param evt string 事件种类
@@ -288,9 +295,9 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
     if (nil == whichUI._ui2mouse) then
         whichUI._ui2mouse = {}
     end
-    --- 检查弹层区,指针区可以限制某些功能,自动根据UITooltips对象计算
+    --- 检查安全区,指针区可以限制某些功能,自动根据UITooltips对象计算
     ---@type fun(rx:number|nil,ry:number|nil):boolean
-    local _checkTooltips = function(rx, ry)
+    local _checkSafety = function(rx, ry)
         local is = true
         if (Pool(UITooltipsClass):count() == 0) then
             return is
@@ -298,7 +305,7 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
         rx = rx or japi.MouseRX()
         ry = ry or japi.MouseRY()
         Pool(UITooltipsClass):forEach(function(enumObj)
-            if (isInsideUI(enumObj, rx, ry)) then
+            if (enumObj:isInside(rx, ry)) then
                 is = false
                 return false
             end
@@ -321,7 +328,7 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
     local meKey = "kl_u2m_" .. whichUI:id()
     local elKey = meKey .. "#el"
     ---@type boolean 内判定
-    local isInside = isInsideUI(whichUI) and _checkTooltips()
+    local isInside = whichUI:isInside() and _checkSafety()
     local isDrtReg = (false == event.asyncHas(whichUI, eventKind.uiEnter) or isInside)
     local insideEvents = { eventKind.mouseLeftClick, eventKind.mouseLeftRelease, eventKind.mouseRightClick, eventKind.mouseRightRelease, eventKind.mouseWheel, eventKind.mouseMove }
     local transEvents = { eventKind.uiLeftClick, eventKind.uiLeftRelease, eventKind.uiRightClick, eventKind.uiRightRelease, eventKind.uiWheel, eventKind.uiMove }
@@ -342,9 +349,6 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
             -- 左右键松开事件绝大多数都处理清扫业务，此处设计为不需要检测是否UI之内
             if (uEvt == eventKind.uiLeftRelease or uEvt == eventKind.uiRightRelease) then
                 event.asyncRegister("mouse", mEvt, meKey, function(evtData)
-                    if (cursor.isQuoting() and false == cursor.isDragging()) then
-                        return
-                    end
                     event.asyncTrigger(whichUI, uEvt, evtData)
                 end)
             else
@@ -354,7 +358,7 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
                     end
                     -- 检测是否UI之内，是否有弹层遮挡
                     local rx, ry = evtData.rx, evtData.ry
-                    if (isInsideUI(whichUI, rx, ry) and _checkTooltips(rx, ry)) then
+                    if (whichUI:isInside(rx, ry) and _checkSafety(rx, ry)) then
                         event.asyncTrigger(whichUI, uEvt, evtData)
                     end
                 end)
@@ -373,37 +377,60 @@ function japi.UIEvent2Mouse(whichUI, evt, ban)
             end
             u2m[elKey] = math.max(0, u2m[elKey] + n)
             if (u2m[elKey] <= 0) then
+                if (nil ~= whichUI._entering) then
+                    event.asyncTrigger(whichUI, eventKind.uiLeave, { triggerPlayer = PlayerLocal() })
+                    whichUI._entering = nil
+                end
                 event.asyncRegister("mouse", eventKind.mouseMove, elKey, nil)
+                if (whichUI == japi._cursor.focusUI) then
+                    japi._cursor.focusUI = nil
+                    if (nil ~= japi._cursor.focusTo) then
+                        japi._cursor.focusTo()
+                    end
+                end
             else
                 if (event.asyncHas("mouse", eventKind.mouseMove, elKey)) then
                     return
                 end
                 local _out = nil
                 local _in = function(evtData)
-                    if (cursor.isQuoting() and false == cursor.isDragging()) then
+                    if (cursor.isQuoting()) then
                         return
                     end
                     local rx, ry = evtData.rx, evtData.ry
-                    if (isInsideUI(whichUI, rx, ry) and _checkTooltips(rx, ry)) then
-                        event.asyncTrigger(whichUI, eventKind.uiEnter, evtData)
-                        _out()
+                    if (whichUI:isInside(rx, ry) and _checkSafety(rx, ry)) then
+                        if (nil ~= japi._cursor.focusUI) then
+                            japi._cursor.focusTo = _out
+                        else
+                            _out()
+                        end
                     end
                 end
                 _out = function()
+                    --- trigger enter event
+                    event.asyncTrigger(whichUI, eventKind.uiEnter, { triggerPlayer = PlayerLocal() })
+                    whichUI._entering = true
+                    japi._cursor.focusUI = whichUI
                     --- register all inside events
                     for mi, m in ipairs(insideEvents) do
                         u2mRegister(m, transEvents[mi], true)
                     end
                     ---@param evtData eventOnMouseMove
                     event.asyncRegister("mouse", eventKind.mouseMove, elKey, function(evtData)
-                        if (isBorderUI(whichUI)) then
+                        if (true ~= whichUI._dragging and whichUI:isBorder()) then
                             event.asyncRegister("mouse", eventKind.mouseMove, elKey, nil)
                             --- clear(unregister) all inside events
                             for mi, m in ipairs(insideEvents) do
                                 u2mRegister(m, transEvents[mi], false)
                             end
                             event.asyncTrigger(whichUI, eventKind.uiLeave, evtData)
+                            whichUI._entering = nil
+                            japi._cursor.focusUI = nil
                             event.asyncRegister("mouse", eventKind.mouseMove, elKey, _in)
+                            if (nil ~= japi._cursor.focusTo) then
+                                japi._cursor.focusTo()
+                                japi._cursor.focusTo = nil
+                            end
                         end
                     end)
                 end

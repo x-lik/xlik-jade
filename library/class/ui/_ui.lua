@@ -295,7 +295,7 @@ function _index:relation(point, upperUI, upperPoint, x, y)
         if (true == self._adaptive) then
             ax = japi.UIAdaptive(x)
         end
-        uiGradientStop(self)
+        self:gradientStop()
         if (self._upNode ~= upperUI) then
             if (nil ~= self._upNode and false == isUIGame(self._upNode)) then
                 local ls = self._upNode._lowNodes
@@ -357,7 +357,7 @@ function _index:size(width, height)
             if (true == self._adaptive) then
                 aw = japi.UIAdaptive(width)
             end
-            uiGradientStop(self)
+            self:gradientStop()
             self._widthAdaptive = aw
             self._width = width
             self._height = height
@@ -442,31 +442,6 @@ function _index:onEvent(evt, ...)
     return self
 end
 
---- 构造UI对象
----@param name string
----@param prototype table 原型数据
----@return UI
-function UI(name, prototype)
-    sync.must()
-    must(type(name) == "string", "name@string")
-    local cache = class.cache(_index._type)
-    if (nil == cache[name]) then
-        if (nil == prototype) then
-            prototype = {}
-        end
-        prototype._className = name
-        cache[name] = setmetatable(prototype, { __index = _index })
-        local extends = class.extends(name)
-        if (type(extends) == "table") then
-            for _, c in ipairs(extends) do
-                setmetatable(c, { __index = cache[name] })
-            end
-            class.extends(name, false)
-        end
-    end
-    return cache[name]
-end
-
 --- 设置tooltips回调
 --- 可以直接设置静态的content数据
 --- 也可以设置回调content数据的回调函数
@@ -528,79 +503,22 @@ function _index:tooltips(content)
     return self
 end
 
---- 屏幕相对坐标是否在UI内
----@param whichUI UI
----@param rx number 默认鼠标RX
----@param ry number 默认鼠标RY
----@param checkShow boolean 是否检查可见性
----@return boolean
-function isInsideUI(whichUI, rx, ry, checkShow)
-    if (type(checkShow) ~= "boolean") then
-        checkShow = true
-    end
-    if (true == checkShow and false == whichUI:isShow()) then
-        return false
-    end
-    local anchor = whichUI:anchor()
-    if (nil == anchor) then
-        return false
-    end
-    rx = rx or japi.MouseRX()
-    ry = ry or japi.MouseRY()
-    local ax = anchor[1]
-    local ay = anchor[2]
-    local w = anchor[3]
-    local h = anchor[4]
-    local xMin = ax - w / 2
-    local xMax = ax + w / 2
-    local yMin = ay - h / 2
-    local yMax = ay + h / 2
-    return rx < xMax and rx > xMin and ry < yMax and ry > yMin
-end
-
---- 屏幕相对坐标是否在UI外
----@param whichUI UI
----@param rx number 默认鼠标RX
----@param ry number 默认鼠标RY
----@return boolean
-function isBorderUI(whichUI, rx, ry)
-    if (false == whichUI:isShow()) then
-        return false
-    end
-    local anchor = whichUI:anchor()
-    if (nil == anchor) then
-        return false
-    end
-    rx = rx or japi.MouseRX()
-    ry = ry or japi.MouseRY()
-    local ax = anchor[1]
-    local ay = anchor[2]
-    local w = anchor[3]
-    local h = anchor[4]
-    local xMin = ax - w / 2
-    local xMax = ax + w / 2
-    local yMin = ay - h / 2
-    local yMax = ay + h / 2
-    return rx > xMax or rx < xMin or ry > yMax or ry < yMin
-end
-
 --- UI强制停止匀渐变
----@param whichUI UI
 ---@return void
-function uiGradientStop(whichUI)
-    local t = whichUI._gradientTimer
+function _index:gradientStop()
+    local t = self._gradientTimer
     if (class.isObject(t, TimerAsyncClass)) then
         class.destroy(t)
-        whichUI._gradientTimer = nil
-        japi.DZ_FrameClearAllPoints(whichUI._handle)
-        if (nil ~= whichUI._upNode) then
-            japi.DZ_FrameSetPoint(whichUI._handle, whichUI._point, whichUI._upNode._handle, whichUI._upNodePoint, whichUI._x, whichUI._y)
+        self._gradientTimer = nil
+        japi.DZ_FrameClearAllPoints(self._handle)
+        if (nil ~= self._upNode) then
+            japi.DZ_FrameSetPoint(self._handle, self._point, self._upNode._handle, self._upNodePoint, self._x, self._y)
         end
-        if (type(whichUI._widthAdaptive) == "number") then
-            japi.DZ_FrameSetSize(whichUI._handle, whichUI._widthAdaptive, whichUI._height)
+        if (type(self._widthAdaptive) == "number") then
+            japi.DZ_FrameSetSize(self._handle, self._widthAdaptive, self._height)
         end
-        japi.DZ_FrameSetAlpha(whichUI._handle, whichUI._alpha)
-        japi.DZ_FrameShow(whichUI._handle, whichUI:isShow())
+        japi.DZ_FrameSetAlpha(self._handle, self._alpha)
+        japi.DZ_FrameShow(self._handle, self:isShow())
     end
 end
 
@@ -612,22 +530,21 @@ end
 --- x number 坐标偏移量总量
 --- y number 坐标偏移量总量
 --- size number 尺寸偏移百分比，如30，最终尺寸必定是真实尺寸
----@param whichUI UI
 ---@param options {duration:number,alpha:number,x:number,y:number,size:number}
 ---@param callback fun(callUI:UI):void 动画结束后回调，可处理隐藏等操作
 ---@return self
-function uiGradientStart(whichUI, options, callback)
-    uiGradientStop(whichUI)
+function _index:gradientStart(options, callback)
+    self:gradientStop()
     options.duration = math.max(0.1, options.duration or 0.1)
     local step = 10
-    local baseAlpha = whichUI._alpha
-    local basePoint = whichUI._point
-    local baseUpper = whichUI._upNode
-    local baseUpperPoint = whichUI._upNodePoint
-    local baseX = whichUI._x
-    local baseY = whichUI._y
-    local baseWidth = whichUI._widthAdaptive
-    local baseHeight = whichUI._height
+    local baseAlpha = self._alpha
+    local basePoint = self._point
+    local baseUpper = self._upNode
+    local baseUpperPoint = self._upNodePoint
+    local baseX = self._x
+    local baseY = self._y
+    local baseWidth = self._widthAdaptive
+    local baseHeight = self._height
     local dtX = (options.x or 0) / step
     local dtY = (options.y or 0) / step
     local dtA = 0
@@ -647,7 +564,7 @@ function uiGradientStart(whichUI, options, callback)
             dtA = -baseAlpha / step
         end
         if (nil ~= curAlpha) then
-            japi.DZ_FrameSetAlpha(whichUI._handle, curAlpha)
+            japi.DZ_FrameSetAlpha(self._handle, curAlpha)
         end
     end
     if (type(options.size) == "number" and nil ~= baseWidth) then
@@ -659,33 +576,119 @@ function uiGradientStart(whichUI, options, callback)
         end
     end
     if (dtX ~= 0 or dtY ~= 0) then
-        japi.DZ_FrameClearAllPoints(whichUI._handle)
-        japi.DZ_FrameSetPoint(whichUI._handle, basePoint, baseUpper._handle, baseUpperPoint, baseX + dtX * step, baseY + dtY * step)
+        japi.DZ_FrameClearAllPoints(self._handle)
+        japi.DZ_FrameSetPoint(self._handle, basePoint, baseUpper._handle, baseUpperPoint, baseX + dtX * step, baseY + dtY * step)
     end
     if (dtW ~= 0 and dtH ~= 0) then
-        japi.DZ_FrameSetSize(whichUI._handle, baseWidth + dtW * step, baseHeight + dtH * step)
+        japi.DZ_FrameSetSize(self._handle, baseWidth + dtW * step, baseHeight + dtH * step)
     end
-    japi.DZ_FrameShow(whichUI._handle, true)
-    whichUI._gradientTimer = async.setInterval(options.duration / step * 60, function(_)
+    japi.DZ_FrameShow(self._handle, true)
+    self._gradientTimer = async.setInterval(options.duration / step * 60, function(_)
         step = step - 1
         if (step <= 0) then
             if (type(callback) == "function") then
-                callback(whichUI)
+                callback(self)
             end
-            uiGradientStop(whichUI)
+            self:gradientStop()
             return
         end
         if (nil ~= curAlpha) then
             curAlpha = curAlpha + dtA
-            japi.DZ_FrameSetAlpha(whichUI._handle, curAlpha)
+            japi.DZ_FrameSetAlpha(self._handle, curAlpha)
         end
         if (dtX ~= 0 or dtY ~= 0) then
-            japi.DZ_FrameClearAllPoints(whichUI._handle)
-            japi.DZ_FrameSetPoint(whichUI._handle, basePoint, baseUpper._handle, baseUpperPoint, baseX + dtX * step, baseY + dtY * step)
+            japi.DZ_FrameClearAllPoints(self._handle)
+            japi.DZ_FrameSetPoint(self._handle, basePoint, baseUpper._handle, baseUpperPoint, baseX + dtX * step, baseY + dtY * step)
         end
         if (dtW ~= 0 and dtH ~= 0) then
-            japi.DZ_FrameSetSize(whichUI._handle, baseWidth + dtW * step, baseHeight + dtH * step)
+            japi.DZ_FrameSetSize(self._handle, baseWidth + dtW * step, baseHeight + dtH * step)
         end
     end)
-    return whichUI
+    return self
+end
+
+--- 屏幕相对坐标是否在UI内
+---@param rx number 默认鼠标RX
+---@param ry number 默认鼠标RY
+---@param checkShow boolean 是否检查可见性
+---@return boolean
+function _index:isInside(rx, ry, checkShow)
+    if (type(checkShow) ~= "boolean") then
+        checkShow = true
+    end
+    if (true == checkShow and false == self:isShow()) then
+        return false
+    end
+    local anchor = self:anchor()
+    if (nil == anchor) then
+        return false
+    end
+    rx = rx or japi.MouseRX()
+    ry = ry or japi.MouseRY()
+    local ax = anchor[1]
+    local ay = anchor[2]
+    local w = anchor[3]
+    local h = anchor[4]
+    local xMin = ax - w / 2
+    local xMax = ax + w / 2
+    local yMin = ay - h / 2
+    local yMax = ay + h / 2
+    return rx < xMax and rx > xMin and ry < yMax and ry > yMin
+end
+
+--- 屏幕相对坐标是否在UI外
+---@param rx number 默认鼠标RX
+---@param ry number 默认鼠标RY
+---@return boolean
+function _index:isBorder(rx, ry)
+    if (false == self:isShow()) then
+        return false
+    end
+    local anchor = self:anchor()
+    if (nil == anchor) then
+        return false
+    end
+    rx = rx or japi.MouseRX()
+    ry = ry or japi.MouseRY()
+    local ax = anchor[1]
+    local ay = anchor[2]
+    local w = anchor[3]
+    local h = anchor[4]
+    local xMin = ax - w / 2
+    local xMax = ax + w / 2
+    local yMin = ay - h / 2
+    local yMax = ay + h / 2
+    return rx > xMax or rx < xMin or ry > yMax or ry < yMin
+end
+
+--- 指针相对坐标是否已进入UI内
+--- 只有注册了指针进出事件的UI对象才会生效
+---@return boolean
+function _index:isEntering()
+    return true == self._entering
+end
+
+--- 构造UI对象
+---@param name string
+---@param prototype table 原型数据
+---@return UI
+function UI(name, prototype)
+    sync.must()
+    must(type(name) == "string", "name@string")
+    local cache = class.cache(_index._type)
+    if (nil == cache[name]) then
+        if (nil == prototype) then
+            prototype = {}
+        end
+        prototype._className = name
+        cache[name] = setmetatable(prototype, { __index = _index })
+        local extends = class.extends(name)
+        if (type(extends) == "table") then
+            for _, c in ipairs(extends) do
+                setmetatable(c, { __index = cache[name] })
+            end
+            class.extends(name, false)
+        end
+    end
+    return cache[name]
 end

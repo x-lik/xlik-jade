@@ -112,7 +112,7 @@ function mouse.isSafety(rx, ry)
     end
     ---@param b UIBlock
     Pool(UIBlockClass):forEach(function(b)
-        if (isInsideUI(b, rx, ry)) then
+        if (b:isInside(rx, ry)) then
             is = false
             return false
         end
