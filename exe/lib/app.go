@@ -162,7 +162,7 @@ func (app *App) guessPr() {
 		if l > 1 {
 			pterm.Warning.Println("项目名无法模糊匹配多个：" + strings.Join(matchPr, `,`))
 		} else if l == 1 {
-			pterm.Warning.Println("项目名模糊匹配：" + app.ProjectName + ` to ` + matchPr[0])
+			pterm.Warning.Println("项目名模糊匹配：" + app.ProjectName + ` -> ` + matchPr[0])
 			app.ProjectName = matchPr[0]
 		}
 	}
