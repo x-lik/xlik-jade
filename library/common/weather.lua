@@ -13,31 +13,32 @@ weather = weather or {}
 weather._record = weather._record or {}
 
 --- 天气类型
+local t = { _type = "weather" }
 weather.kind = {
-    sun = { value = "LRaa", label = "日光" },
-    moon = { value = "LRma", label = "月光" },
-    shield = { value = "MEds", label = "紫光盾" },
-    rain = { value = "RAlr", label = "雨" },
-    rainstorm = { value = "RAhr", label = "大雨" },
-    snow = { value = "SNls", label = "雪" },
-    snowstorm = { value = "SNhs", label = "大雪" },
-    wind = { value = "WOlw", label = "风" },
-    windstorm = { value = "WNcw", label = "大风" },
-    mistWhiteLight = { value = "FDwl", label = "薄白雾" },
-    mistWhiteHeave = { value = "FDwh", label = "厚白雾" },
-    mistGreenLight = { value = "FDgl", label = "薄绿雾" },
-    mistGreenHeave = { value = "FDgh", label = "厚绿雾" },
-    mistBlueLight = { value = "FDbl", label = "薄蓝雾" },
-    mistBlueHeave = { value = "FDbh", label = "厚蓝雾" },
-    mistRedLight = { value = "FDrl", label = "薄红雾" },
-    mistRedHeave = { value = "FDrh", label = "厚红雾" }
+    sun = setmetatable({ value = J.C2I("LRaa"), label = "日光" }, { __index = t }),
+    moon = setmetatable({ value = J.C2I("LRma"), label = "月光" }, { __index = t }),
+    shield = setmetatable({ value = J.C2I("MEds"), label = "紫光盾" }, { __index = t }),
+    rain = setmetatable({ value = J.C2I("RAlr"), label = "雨" }, { __index = t }),
+    rainstorm = setmetatable({ value = J.C2I("RAhr"), label = "大雨" }, { __index = t }),
+    snow = setmetatable({ value = J.C2I("SNls"), label = "雪" }, { __index = t }),
+    snowstorm = setmetatable({ value = J.C2I("SNhs"), label = "大雪" }, { __index = t }),
+    wind = setmetatable({ value = J.C2I("WOlw"), label = "风" }, { __index = t }),
+    windstorm = setmetatable({ value = J.C2I("WNcw"), label = "大风" }, { __index = t }),
+    mistWhiteLight = setmetatable({ value = J.C2I("FDwl"), label = "薄白雾" }, { __index = t }),
+    mistWhiteHeave = setmetatable({ value = J.C2I("FDwh"), label = "厚白雾" }, { __index = t }),
+    mistGreenLight = setmetatable({ value = J.C2I("FDgl"), label = "薄绿雾" }, { __index = t }),
+    mistGreenHeave = setmetatable({ value = J.C2I("FDgh"), label = "厚绿雾" }, { __index = t }),
+    mistBlueLight = setmetatable({ value = J.C2I("FDbl"), label = "薄蓝雾" }, { __index = t }),
+    mistBlueHeave = setmetatable({ value = J.C2I("FDbh"), label = "厚蓝雾" }, { __index = t }),
+    mistRedLight = setmetatable({ value = J.C2I("FDrl"), label = "薄红雾" }, { __index = t }),
+    mistRedHeave = setmetatable({ value = J.C2I("FDrh"), label = "厚红雾" }, { __index = t }),
 }
 
 --- 检测是否属于有效的类型
 ---@param value table
 ---@return boolean
 function weather.isValid(value)
-    return nil ~= weather.kind[value]
+    return type(value) == "table" and value._type == "weather"
 end
 
 --- 生成一片天气
@@ -50,9 +51,7 @@ end
 function weather.create(kind, bindRegion)
     sync.must()
     must(weather.isValid(kind), "kind@weather.kind")
-    local realType = J.C2I(kind.value)
-    must(nil ~= realType, "Invalid weather kind")
-    local w = J.AddWeatherEffect(bindRegion:handle(), realType)
+    local w = J.AddWeatherEffect(bindRegion:handle(), kind.value)
     J.EnableWeatherEffect(w, true)
     weather._record[w] = kind
     return w
@@ -60,7 +59,7 @@ end
 
 --- 获取某片天气的类型
 ---@see weather#kind
----@param whichWeather number
+---@param whichWeather number 天气ID
 ---@return table|nil
 function weather.getKind(whichWeather)
     sync.must()

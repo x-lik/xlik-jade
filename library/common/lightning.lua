@@ -4,28 +4,29 @@
 lightning = lightning or {}
 
 --- 闪电效果类型
+local t = { _type = "lightning" }
 lightning.kind = {
-    thunder = { value = "CLPB", label = "闪电链主", model = "BoltImpact" },
-    thunderLite = { value = "CLSB", label = "闪电链次", model = "BoltImpact" },
-    thunderShot = { value = "CHIM", label = "闪电攻击", model = "BoltImpact" },
-    thunderFork = { value = "FORK", label = "叉状闪电", model = "Abilities\\Spells\\Orc\\Purge\\PurgeBuffTarget.mdl" },
-    thunderRed = { value = "AFOD", label = "死亡之指", model = "Abilities\\Spells\\Demon\\DemonBoltImpact\\DemonBoltImpact.mdl" },
-    suck = { value = "DRAB", label = "汲取", model = "Abilities\\Spells\\Human\\Feedback\\ArcaneTowerAttack.mdl" },
-    suckGreen = { value = "DRAL", label = "生命汲取", model = "Abilities\\Spells\\Human\\Feedback\\ArcaneTowerAttack.mdl" },
-    suckBlue = { value = "DRAM", label = "魔法汲取", model = "Abilities\\Spells\\Human\\Feedback\\ArcaneTowerAttack.mdl" },
-    cure = { value = "HWPB", label = "医疗波主", model = "Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl" },
-    cureLite = { value = "HWSB", label = "医疗波次", model = "Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl" },
-    soul = { value = "SPLK", label = "灵魂锁链", model = "Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl" },
-    manaBurn = { value = "MBUR", label = "法力燃烧", model = "Abilities\\Spells\\Human\\ManaFlare\\ManaFlareBoltImpact.mdl" },
-    manaFrame = { value = "MFPB", label = "魔力之焰", model = "Abilities\\Spells\\Human\\ManaFlare\\ManaFlareBoltImpact.mdl" },
-    manaChain = { value = "LEAS", label = "魔法镣铐", model = "Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl" },
+    thunder = setmetatable({ value = "CLPB", label = "闪电链主", model = "BoltImpact" }, { __index = t }),
+    thunderLite = setmetatable({ value = "CLSB", label = "闪电链次", model = "BoltImpact" }, { __index = t }),
+    thunderShot = setmetatable({ value = "CHIM", label = "闪电攻击", model = "BoltImpact" }, { __index = t }),
+    thunderFork = setmetatable({ value = "FORK", label = "叉状闪电", model = "Abilities\\Spells\\Orc\\Purge\\PurgeBuffTarget.mdl" }, { __index = t }),
+    thunderRed = setmetatable({ value = "AFOD", label = "死亡之指", model = "Abilities\\Spells\\Demon\\DemonBoltImpact\\DemonBoltImpact.mdl" }, { __index = t }),
+    suck = setmetatable({ value = "DRAB", label = "汲取", model = "Abilities\\Spells\\Human\\Feedback\\ArcaneTowerAttack.mdl" }, { __index = t }),
+    suckGreen = setmetatable({ value = "DRAL", label = "生命汲取", model = "Abilities\\Spells\\Human\\Feedback\\ArcaneTowerAttack.mdl" }, { __index = t }),
+    suckBlue = setmetatable({ value = "DRAM", label = "魔法汲取", model = "Abilities\\Spells\\Human\\Feedback\\ArcaneTowerAttack.mdl" }, { __index = t }),
+    cure = setmetatable({ value = "HWPB", label = "医疗波主", model = "Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl" }, { __index = t }),
+    cureLite = setmetatable({ value = "HWSB", label = "医疗波次", model = "Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl" }, { __index = t }),
+    soul = setmetatable({ value = "SPLK", label = "灵魂锁链", model = "Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl" }, { __index = t }),
+    manaBurn = setmetatable({ value = "MBUR", label = "法力燃烧", model = "Abilities\\Spells\\Human\\ManaFlare\\ManaFlareBoltImpact.mdl" }, { __index = t }),
+    manaFrame = setmetatable({ value = "MFPB", label = "魔力之焰", model = "Abilities\\Spells\\Human\\ManaFlare\\ManaFlareBoltImpact.mdl" }, { __index = t }),
+    manaChain = setmetatable({ value = "LEAS", label = "魔法镣铐", model = "Abilities\\Spells\\Human\\Feedback\\SpellBreakerAttack.mdl" }, { __index = t }),
 }
 
 --- 检测是否属于有效的类型
 ---@param value table
 ---@return boolean
 function lightning.isValid(value)
-    return nil ~= lightning.kind[value]
+    return type(value) == "table" and value._type == "lightning"
 end
 
 --- 创建精简闪电特效
