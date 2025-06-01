@@ -53,25 +53,12 @@ func hotHandler(app *App, kind string, path string) {
 		// 如果是对temp内的生成文件进行修改，去掉根路径前缀
 		isHook = true
 		name = strings.Replace(name, app.Path.Temp+"/"+app.BuildModeName+"/"+app.ProjectName+"/map/", "", 1)
-	} else if strings.Index(name, app.Path.Assets) != -1 {
-		// 如果是对assets内的生成文件进行修改，去掉资源路径前缀
-		if strings.Index(name, "war3mapFont") != -1 {
-			// 如果是字体资源
-			isHook = true
-			name = "projects.fonts"
-		} else {
-			name = strings.Replace(name, app.Path.Assets+"/", "", 1)
-		}
 	} else {
 		// 如果是对root根目录内的项目文件进行修改，去掉根路径前缀
 		name = strings.Replace(name, app.Pwd+"/", "", -1)
 	}
 	if app.BuildModeName == "_test" || app.BuildModeName == "_build" {
 		isHook = true
-		// 如果修改的是project的library文件
-		if strings.Index(name, "projects/"+app.ProjectName+"/library/") != -1 {
-			name = strings.Replace(name, "projects/"+app.ProjectName+"/library", "librpro", 1)
-		}
 	}
 	name = strings.Replace(name, "/", ".", -1)
 	code := ""
@@ -135,15 +122,20 @@ func (app *App) Hot() {
 	}
 	defer watcher.Close()
 	// watcher directories
-	directories := []string{
-		app.Pwd + "/library",
-		app.Path.Assets + "/war3mapFont",
-		app.Path.Assets + "/war3mapUI",
-		app.Pwd + "/projects/" + app.ProjectName,
-		app.BuildDstPath + "/map/library",
-		app.BuildDstPath + "/map/librpro",
-		app.BuildDstPath + "/map/war3mapUI",
-		app.BuildDstPath + "/map/projects" + app.ProjectName,
+	assetsRoot := strings.Replace(app.Path.Assets, app.Pwd+"/", "", 1)
+	listenDir := []string{
+		app.Pwd,
+		app.BuildDstPath + "/map",
+	}
+	var directories []string
+	for _, ld := range listenDir {
+		directories = append(directories, []string{
+			ld + "/library",
+			ld + "/projects/" + app.ProjectName + "/library",
+			ld + "/projects/" + app.ProjectName + "/scripts",
+			ld + "/" + assetsRoot + "/war3mapFont",
+			ld + "/" + assetsRoot + "/war3mapUI",
+		}...)
 	}
 	for _, dir := range directories {
 		if fileutil.IsDir(dir) {

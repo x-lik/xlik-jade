@@ -117,6 +117,7 @@ function sync.hasQuery(key)
 end
 
 --- 默认游戏同步操作
+---[[:use library/common/game]]
 game.onPhase("process", function()
     sync.receive("lk_sync_g", function(syncData)
         local resetFollow = false
@@ -256,7 +257,7 @@ game.onPhase("process", function()
             ---@type Item
             local it = class.i2o(itId)
             if (class.isObject(it, ItemClass) and it:dropable()) then
-                local eff = datum.ternary(syncPlayer:handle() == player.localHandle, 'UI\\Feedback\\Confirmation\\Confirmation.mdl', '')
+                local eff = datum.ternary(syncPlayer == PlayerLocal(), 'UI\\Feedback\\Confirmation\\Confirmation.mdl', '')
                 effector.force(eff, mx, my, 2 + japi.Z(mx, my), 1)
                 it:drop(mx, my, 1 == isTask)
             end
@@ -271,7 +272,7 @@ game.onPhase("process", function()
             if (class.isObject(it, ItemClass) and it:dropable() and class.isObject(u, UnitClass)) then
                 if (u:isAlive()) then
                     local mx, my = u:x(), u:y()
-                    local eff = datum.ternary(syncPlayer:handle() == player.localHandle, 'UI\\Feedback\\Confirmation\\Confirmation.mdl', '')
+                    local eff = datum.ternary(syncPlayer == PlayerLocal(), 'UI\\Feedback\\Confirmation\\Confirmation.mdl', '')
                     effector.force(eff, mx, my, 2 + japi.Z(mx, my), 1)
                     it:deliver(u, 1 == isTask)
                 end

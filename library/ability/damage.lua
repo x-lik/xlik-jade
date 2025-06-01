@@ -38,6 +38,7 @@ function ability.damage(options)
     end
     -- 禁用错误的伤害来源
     options.damageSrc = options.damageSrc or injury.damageSrc.common
+    must(injury.isValidDamageSrc(options.damageSrc), "options.damageSrc@injury.damageSrc")
     if (options.damageSrc == injury.damageSrc.attack and nil ~= options.sourceUnit and options.sourceUnit:isUnArming()) then
         return
     elseif (options.damageSrc == injury.damageSrc.ability and nil ~= options.sourceUnit and options.sourceUnit:isSilencing()) then
@@ -47,9 +48,22 @@ function ability.damage(options)
     event.syncTrigger(options.targetUnit, eventKind.unitBeforeHurt, options)
     -- 修正伤害类型
     options.damageType = options.damageType or injury.damageType.common
+    must(injury.isValidDamageType(options.damageType), "options.damageType@injury.damageType")
     options.damageTypeLevel = options.damageTypeLevel or 0
     -- 修正破防类型
     options.breakArmor = options.breakArmor or {}
+    if (#options.breakArmor > 0) then
+        local notType = -1
+        for bi, ba in ipairs(options.breakArmor) do
+            if (false == injury.isValidBreakArmorType(ba)) then
+                notType = bi
+                break
+            end
+        end
+        if (notType > 0) then
+            must(false, "options.breakArmor[" .. notType .. "]@injury.breakArmorType")
+        end
+    end
     --- 对接伤害过程
     if (isFlow("damage")) then
         Flow("damage"):run(options)

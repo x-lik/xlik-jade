@@ -3,34 +3,34 @@
 terrain = terrain or {}
 
 -- 地表贴图类型
-local t = { _type = "terrain" }
+local _tk = { _type = "terrainKind" }
 terrain.kind = {
     -- 地形类型（这里只写默认的16个，如果你改动了地形，请自行补充）
     -- 对应地形样式取决于we内配置的16个样式
-    lords_dirt = setmetatable({ value = J.C2I("Ldrt"), label = "洛丹伦(夏) 泥地 [泥土]" }, { __index = t }),
-    lords_dirtrough = setmetatable({ value = J.C2I("Ldro"), label = "洛丹伦(夏) 坑洼的泥土 [遗迹地砖]" }, { __index = t }),
-    lords_dirtgrass = setmetatable({ value = J.C2I("Ldrg"), label = "洛丹伦(夏) 草色泥土 [沙地]" }, { __index = t }),
-    lords_rock = setmetatable({ value = J.C2I("Lrok"), label = "洛丹伦(夏) 岩石 [黑冰]" }, { __index = t }),
-    lords_grass = setmetatable({ value = J.C2I("Lgrs"), label = "洛丹伦(夏) 草地 [白雪]" }, { __index = t }),
-    lords_grassdark = setmetatable({ value = J.C2I("Lgrd"), label = "洛丹伦(夏) 深色草地 [森林]" }, { __index = t }),
-    city_dirtrough = setmetatable({ value = J.C2I("Ydtr"), label = "城邦 坑洼的泥土 [秋草]" }, { __index = t }),
-    city_blackmarble = setmetatable({ value = J.C2I("Yblm"), label = "城邦 黑色大理石 [黄土]" }, { __index = t }),
-    city_bricktiles = setmetatable({ value = J.C2I("Ybtl"), label = "城邦 砖 [红色地砖]" }, { __index = t }),
-    city_roundtiles = setmetatable({ value = J.C2I("Yrtl"), label = "城邦 圆形地形 [火焰]" }, { __index = t }),
-    city_grass = setmetatable({ value = J.C2I("Ygsb"), label = "城邦 草地 [青草]" }, { __index = t }),
-    city_grasstrim = setmetatable({ value = J.C2I("Yhdg"), label = "城邦 平整草地 [败草]" }, { __index = t }),
-    city_whitemarble = setmetatable({ value = J.C2I("Ywmb"), label = "城邦 白色大理石 [熔岩]" }, { __index = t }),
-    dalaran_dirtrough = setmetatable({ value = J.C2I("Xdtr"), label = "达拉然 坑洼的泥土 [荒地]" }, { __index = t }),
-    dalaran_blackmarble = setmetatable({ value = J.C2I("Xblm"), label = "达拉然 黑色大理石 [藤蔓]" }, { __index = t }),
-    dalaran_bricktiles = setmetatable({ value = J.C2I("Xbtl"), label = "达拉然 砖 [蓝冰]" }, { __index = t }),
+    lords_dirt = setmetatable({ value = J.C2I("Ldrt"), label = "洛丹伦(夏) 泥地 [泥土]" }, { __index = _tk }),
+    lords_dirtrough = setmetatable({ value = J.C2I("Ldro"), label = "洛丹伦(夏) 坑洼的泥土 [遗迹地砖]" }, { __index = _tk }),
+    lords_dirtgrass = setmetatable({ value = J.C2I("Ldrg"), label = "洛丹伦(夏) 草色泥土 [沙地]" }, { __index = _tk }),
+    lords_rock = setmetatable({ value = J.C2I("Lrok"), label = "洛丹伦(夏) 岩石 [黑冰]" }, { __index = _tk }),
+    lords_grass = setmetatable({ value = J.C2I("Lgrs"), label = "洛丹伦(夏) 草地 [白雪]" }, { __index = _tk }),
+    lords_grassdark = setmetatable({ value = J.C2I("Lgrd"), label = "洛丹伦(夏) 深色草地 [森林]" }, { __index = _tk }),
+    city_dirtrough = setmetatable({ value = J.C2I("Ydtr"), label = "城邦 坑洼的泥土 [秋草]" }, { __index = _tk }),
+    city_blackmarble = setmetatable({ value = J.C2I("Yblm"), label = "城邦 黑色大理石 [黄土]" }, { __index = _tk }),
+    city_bricktiles = setmetatable({ value = J.C2I("Ybtl"), label = "城邦 砖 [红色地砖]" }, { __index = _tk }),
+    city_roundtiles = setmetatable({ value = J.C2I("Yrtl"), label = "城邦 圆形地形 [火焰]" }, { __index = _tk }),
+    city_grass = setmetatable({ value = J.C2I("Ygsb"), label = "城邦 草地 [青草]" }, { __index = _tk }),
+    city_grasstrim = setmetatable({ value = J.C2I("Yhdg"), label = "城邦 平整草地 [败草]" }, { __index = _tk }),
+    city_whitemarble = setmetatable({ value = J.C2I("Ywmb"), label = "城邦 白色大理石 [熔岩]" }, { __index = _tk }),
+    dalaran_dirtrough = setmetatable({ value = J.C2I("Xdtr"), label = "达拉然 坑洼的泥土 [荒地]" }, { __index = _tk }),
+    dalaran_blackmarble = setmetatable({ value = J.C2I("Xblm"), label = "达拉然 黑色大理石 [藤蔓]" }, { __index = _tk }),
+    dalaran_bricktiles = setmetatable({ value = J.C2I("Xbtl"), label = "达拉然 砖 [蓝冰]" }, { __index = _tk }),
 }
 
 --- 检测是否有效的并已经备注的类型
 --- 此方法并不能判定所有地形是否有效，你可以补充terrain.kind达到检测所有的范围
----@param value table
+---@param whichKind table lightning.kind.*
 ---@return boolean
-function terrain.isValid(value)
-    return type(value) == "table" and value._type == "terrain"
+function terrain.isValidKind(whichKind)
+    return type(whichKind) == "table" and whichKind._type == _tk._type
 end
 
 --- 设置水颜色
@@ -54,31 +54,31 @@ end
 --- 设置x，y坐标的地形地表贴图类型
 ---@param x number
 ---@param y number
----@param kind number 可以使用数字ID或terrain.kind，自动转为number
+---@param whichKind number 可以使用数字ID或terrain.kind.*，自动转为number
 ---@param radius number 默认128，改变的半径范围，实际会转为刷子大小，1刷子等于128
 ---@param shape number 默认0，0圆形|1方形
 ---@param style number 默认-1，随机样式
 ---@return void
-function terrain.setKind(x, y, kind, radius, shape, style)
-    if (terrain.isValid(kind)) then
-        kind = kind.value
+function terrain.setKind(x, y, whichKind, radius, shape, style)
+    if (terrain.isValidKind(whichKind)) then
+        whichKind = whichKind.value
     end
     radius = radius or 128
     radius = math.floor(radius / 128)
     if (radius < 1) then
         return
     end
-    J.SetTerrainType(x, y, kind, style or -1, radius, shape or 0)
+    J.SetTerrainType(x, y, whichKind, style or -1, radius, shape or 0)
 end
 
 --- 是否某类型
 ---@see terrain#kind
 ---@param x number
 ---@param y number
----@param whichKind number terrain.kind
+---@param whichKind number terrain.kind.*
 ---@return boolean
 function terrain.isKind(x, y, whichKind)
-    if (terrain.isValid(whichKind)) then
+    if (terrain.isValidKind(whichKind)) then
         whichKind = whichKind.value
     end
     return whichKind == terrain.getKind(x, y)

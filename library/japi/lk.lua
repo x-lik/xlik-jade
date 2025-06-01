@@ -21,8 +21,6 @@ japi._blackBordersInner = japi._blackBordersInner or 0.45
 ---@protected
 japi._blackBordersTop = japi._blackBordersTop or 0.020
 ---@protected
-japi._cameraFieldDelay = japi._cameraFieldDelay or {}
----@protected
 japi._cameraField = japi._cameraField or {}
 ---@protected
 japi._cameraF2S = japi._cameraF2S or {
@@ -33,6 +31,16 @@ japi._cameraF2S = japi._cameraF2S or {
     traY = CAMERA_FIELD_ROLL,
     traZ = CAMERA_FIELD_ROTATION,
     zOffset = CAMERA_FIELD_ZOFFSET,
+}
+---@protected
+japi._cameraF2M = japi._cameraF2M or {
+    distance = { 400, 3000 },
+    farZ = { 100, 3000 },
+    fov = { 20, 120 },
+    traX = { 270, 350 },
+    traY = { 80, 280 },
+    traZ = { 80, 280 },
+    zOffset = { -1000, 3000 },
 }
 ---@protected
 japi._clientHeight = japi._clientHeight or 0
@@ -559,21 +567,27 @@ end
 --- 设置镜头属性
 ---@param key string cameraField表的key
 ---@param value number
----@param min number 下限值
+---@param duration number 持续时间，默认0
 ---@param max number 上限值
 ---@return void
-function japi.CameraSetField(key, value, min, max)
+function japi.CameraSetField(key, value, duration)
     if (nil ~= japi._cameraField[key]) then
-        if (type(min) == "number") then
-            value = math.max(min, value)
+        if (type(duration) ~= "number") then
+            duration = 0
         end
-        if (type(max) == "number") then
-            value = math.min(max, value)
+        -- min & max
+        local f2m = japi._cameraF2M[key]
+        if (nil ~= f2m) then
+            value = math.max(f2m[1], value)
+            value = math.min(f2m[2], value)
         end
-        japi._cameraField[key] = value
         local state = japi._cameraF2S[key]
         if (nil ~= state) then
-            J.SetCameraField(state, value, 0)
+            J.SetCameraField(state, value, duration)
+            if (key == "fov" or key == "traX" or key == "traY" or key == "traZ") then
+                value = math._d2r * value
+            end
+            japi._cameraField[key] = value
             if (key == "distance" or key == "fov" or key == "farZ" or key == "zOffset") then
                 event.asyncTrigger("camera", eventKind.cameraZoom)
                 event.asyncTrigger("camera", eventKind.cameraChange)
@@ -704,7 +718,7 @@ function japi.AsyncExec(playerIndex, callFunc)
         return
     end
     if (type(playerIndex) ~= "number") then
-        playerIndex = player.localIndex
+        playerIndex = PlayerLocal():index()
     end
     if (nil == japi._asyncExec[playerIndex]) then
         japi._asyncExec[playerIndex] = {}
@@ -722,7 +736,7 @@ function japi.AsyncExecDelay(frame, playerIndex, callFunc)
         callFunc = nil
     end
     if (type(playerIndex) ~= "number") then
-        playerIndex = player.localIndex
+        playerIndex = PlayerLocal():index()
     end
     frame = math.max(1, math.round(frame))
     local inc = japi._asyncInc + frame

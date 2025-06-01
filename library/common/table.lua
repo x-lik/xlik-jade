@@ -85,6 +85,23 @@ function table.shuffle(arr)
     return result
 end
 
+--- 自洗牌
+---@param arr any[]
+---@return void
+function table.selfShuffle(arr)
+    local length = #arr
+    local times = length
+    local temp = nil
+    local random = nil
+    while (times > 1) do
+        random = math.rand(1, length)
+        temp = arr[times]
+        arr[times] = arr[random]
+        arr[random] = temp
+        times = times - 1
+    end
+end
+
 --- 倒序
 ---@param arr any[]
 ---@return any[]

@@ -82,8 +82,8 @@ func (app *App) Run() {
 			temProjectDir := app.Path.Temp + "/" + app.ProjectName
 			temProjectW3xFire := app.Path.Temp + "/" + app.ProjectName + ".w3x"
 			buoyFire := app.Path.Temp + "/" + app.ProjectName + "/.we"
-			mtW := GetModTime(temProjectW3xFire)
-			mtB := GetModTime(buoyFire)
+			mtW := FileGetModTime(temProjectW3xFire)
+			mtB := FileGetModTime(buoyFire)
 			if mtW > mtB {
 				// 如果地图文件比we打开时新（说明有额外保存过）把保存后的文件拆包并同步
 				cmd := exec.Command(app.Path.W3x2lni+"/w2l.exe", "lni", temProjectW3xFire)
@@ -107,7 +107,7 @@ func (app *App) Run() {
 				_ = os.RemoveAll(app.BuildDstPath + "/map")
 				_ = os.RemoveAll(app.BuildDstPath + "/table")
 			}
-			CopyPath(temProjectDir, app.BuildDstPath)
+			CopyDir(temProjectDir, app.BuildDstPath)
 			pterm.Success.Println("构建地图完毕：" + app.BuildModeName)
 		}
 		// 调整代码，以支持war3
@@ -123,7 +123,7 @@ func (app *App) Run() {
 			Panic(err)
 		}
 		// 检查标志
-		spinner.Success(`打包地图完成[` + modeLni + `]，耗时` + time.Since(t).String())
+		spinner.Success(`打包地图完成[` + modeLni + `]，耗时` + time.Since(t).String() + `，大小` + FileGetSizeString(dstW3xFire))
 		if isSemi {
 			pterm.Info.Println(`>>> 临时地图已生成，位置:` + dstW3xFire + ` <<<`)
 			return
@@ -146,7 +146,7 @@ func (app *App) Run() {
 			Panic(err)
 		}
 		pterm.Info.Println(`使用最近一次[` + app.BuildModeName + `]地图资源缓存数据`)
-		spinner.Success(`打包地图完成[` + modeLni + `]，耗时` + time.Since(t).String())
+		spinner.Success(`打包地图完成[` + modeLni + `]，耗时` + time.Since(t).String() + `，大小` + FileGetSizeString(dstW3xFire))
 	}
 	_ = os.Remove(app.Path.War3 + "/fwht.txt")
 	_ = os.Remove(app.Path.War3 + "/fwhc.txt")

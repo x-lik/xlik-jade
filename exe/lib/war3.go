@@ -67,7 +67,8 @@ func (app *App) War3map() {
 						Panic(err2)
 					}
 				}
-				if strings.Trim(str, " ")[0:2] == "//" {
+				trimStr := strings.Trim(str, " ")
+				if len(trimStr) < 2 || trimStr[0:2] == "//" {
 					continue
 				}
 				if strings.HasSuffix(str, " \r\n") {
@@ -116,8 +117,7 @@ func (app *App) War3map() {
 
 			reLua := "call Cheat(" + strings.Join(execLua, "+") + "+\"\\\"\"+" + strings.Join(execCheatSha1, "+") + "+\"\\\"\")"
 			reContent = "function InitGlobals takes nothing returns nothing\r\n    " + "set prevReadToken = CreateUnit(Player(15),'hfoo',0,0,0)\r\n    " + reLua
-			reg = regexp.MustCompile("function InitGlobals takes nothing returns nothing")
-			war3mapContent = reg.ReplaceAllString(war3mapContent, reContent)
+			war3mapContent = strings.Replace(war3mapContent, "function InitGlobals takes nothing returns nothing", reContent, 1)
 
 			// merge
 			err = fileutil.WriteStringToFile(war3mapJass, war3mapContent, false)

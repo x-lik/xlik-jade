@@ -1,9 +1,7 @@
 --- AsyncExec
-if (nil ~= japi._asyncExec[player.localIndex]) then
-    for _, f in ipairs(japi._asyncExec[player.localIndex]) do
-        async._id = player.localIndex
+if (nil ~= japi._asyncExec[localPlayerIndex]) then
+    for _, f in ipairs(japi._asyncExec[localPlayerIndex]) do
         promise(f)
-        async._id = 0
     end
 end
 japi._asyncExec = {}

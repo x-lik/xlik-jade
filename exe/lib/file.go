@@ -1,29 +1,18 @@
 package cmd
 
 import (
-	"errors"
 	"github.com/duke-git/lancet/v2/fileutil"
 	"github.com/pterm/pterm"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
-// GetFileInfo 判断文件或目录是否存在
-func GetFileInfo(src string) os.FileInfo {
-	if fileInfo, e := os.Stat(src); e != nil {
-		if os.IsNotExist(e) {
-			return nil
-		}
-		return nil
-	} else {
-		return fileInfo
-	}
-}
-
-func DirCheck(path string) bool {
+// FileCheck with directory
+// when directory is not exist, create it
+func FileCheck(path string) bool {
 	if len(path) == 0 {
 		return false
 	}
@@ -31,7 +20,7 @@ func DirCheck(path string) bool {
 	pathArr := strings.Split(path, "/")
 	pathArr = pathArr[0 : len(pathArr)-1]
 	dstPath := strings.Join(pathArr, "/")
-	dstFileInfo := GetFileInfo(dstPath)
+	dstFileInfo := FileGetInfo(dstPath)
 	if nil == dstFileInfo {
 		if e := os.MkdirAll(dstPath, fs.ModePerm); e != nil {
 			pterm.Error.Println("path:", path, dstPath)
@@ -42,8 +31,37 @@ func DirCheck(path string) bool {
 	return true
 }
 
-// GetModTime 获取文件(夹)修改时间 返回unix时间戳
-func GetModTime(path string) int64 {
+// FileToString This function takes a string as an argument and returns a string
+func FileToString(src string) string {
+	if 0 == strings.Index(src, "embeds/") {
+		b, err := Embeds.ReadFile(src)
+		if err != nil {
+			Panic(err)
+		}
+		return string(b)
+	} else {
+		b, err := fileutil.ReadFileToString(src)
+		if err != nil {
+			Panic(err)
+		}
+		return b
+	}
+}
+
+// FileGetInfo 判断文件或目录是否存在
+func FileGetInfo(src string) os.FileInfo {
+	if fileInfo, e := os.Stat(src); e != nil {
+		if os.IsNotExist(e) {
+			return nil
+		}
+		return nil
+	} else {
+		return fileInfo
+	}
+}
+
+// FileGetModTime 获取文件(夹)修改时间 返回unix时间戳
+func FileGetModTime(path string) int64 {
 	modTime := int64(0)
 	if fileutil.IsExist(path) {
 		if fileutil.IsDir(path) {
@@ -61,67 +79,80 @@ func GetModTime(path string) int64 {
 				return 0
 			}
 		} else {
-			info := GetFileInfo(path)
+			info := FileGetInfo(path)
 			modTime = info.ModTime().Unix()
 		}
 	}
 	return modTime
 }
 
-// GetSize 获取文件(夹)总大小
-func GetSize(path string) int64 {
+// FileGetSize 获取文件(夹)总大小
+func FileGetSize(src string) int64 {
 	size := int64(0)
-	if fileutil.IsExist(path) {
-		if fileutil.IsDir(path) {
-			err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-				if err != nil {
+	if 0 == strings.Index(src, "embeds/") {
+		f, erre := Embeds.Open(src)
+		if erre == nil {
+			stat, _ := f.Stat()
+			stat.Size()
+			if stat.IsDir() {
+				err := fs.WalkDir(Embeds, src, func(path string, d fs.DirEntry, err error) error {
+					if err != nil {
+						return err
+					}
+					info, _ := d.Info()
+					size += info.Size()
 					return nil
-				}
-				size += info.Size()
-				return nil
-			})
-			if err != nil {
-				return 0
-			}
-		} else {
-			info := GetFileInfo(path)
-			size = info.Size()
-		}
-	}
-	return size
-}
-
-// GetSizeEmbed 获取内置文件(夹)总大小
-func GetSizeEmbed(src string) int64 {
-	size := int64(0)
-	f, erre := Embeds.Open(src)
-	if erre == nil {
-		stat, _ := f.Stat()
-		stat.Size()
-		if stat.IsDir() {
-			err := fs.WalkDir(Embeds, src, func(path string, d fs.DirEntry, err error) error {
+				})
 				if err != nil {
-					return err
+					Panic(err)
 				}
-				info, _ := d.Info()
-				size += info.Size()
-				return nil
-			})
-			if err != nil {
-				Panic(err)
+			} else {
+				size = stat.Size()
 			}
-		} else {
-			size = stat.Size()
+		}
+	} else {
+		if fileutil.IsExist(src) {
+			if fileutil.IsDir(src) {
+				err := filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
+					if err != nil {
+						return nil
+					}
+					size += info.Size()
+					return nil
+				})
+				if err != nil {
+					return 0
+				}
+			} else {
+				info := FileGetInfo(src)
+				size = info.Size()
+			}
 		}
 	}
 	return size
 }
 
-// IsDiffFile 简单判定新文件是否值得替换当前文件
-func IsDiffFile(new string, now string) bool {
-	var n1, n2, s1, s2 int64
-	isE1 := -1 != strings.Index(new, "embeds/")
-	isE2 := -1 != strings.Index(now, "embeds/")
+// FileGetSizeString 获取文件(夹)总大小的字符串，自动转换单位
+func FileGetSizeString(src string) string {
+	size := FileGetSize(src)
+	if size < 1024 {
+		return strconv.FormatInt(size, 10) + "B"
+	} else if size < 1024*1024 {
+		return strconv.FormatFloat(float64(size)/1024, 'f', 2, 64) + "KB"
+	} else if size < 1024*1024*1024 {
+		return strconv.FormatFloat(float64(size)/(1024*1024), 'f', 2, 64) + "MB"
+	} else {
+		return strconv.FormatFloat(float64(size)/(1024*1024*1024), 'f', 2, 64) + "GB"
+	}
+}
+
+// FileIsDiff 简单判定新文件是否值得替换当前文件
+func FileIsDiff(new string, now string) bool {
+	var n1, n2 int64
+	isE1 := strings.Contains(new, "embeds/")
+	isE2 := strings.Contains(now, "embeds/")
+	s1 := FileGetSize(new)
+	s2 := FileGetSize(now)
 	if isE1 {
 		_, err := Embeds.Open(new)
 		if err == nil {
@@ -129,10 +160,8 @@ func IsDiffFile(new string, now string) bool {
 		} else {
 			n1 = 0
 		}
-		s1 = GetSizeEmbed(new)
 	} else {
-		n1 = GetModTime(new)
-		s1 = GetSize(new)
+		n1 = FileGetModTime(new)
 	}
 	if isE2 {
 		_, err := Embeds.Open(now)
@@ -141,10 +170,8 @@ func IsDiffFile(new string, now string) bool {
 		} else {
 			n2 = 0
 		}
-		s2 = GetSizeEmbed(now)
 	} else {
-		n2 = GetModTime(now)
-		s2 = GetSize(now)
+		n2 = FileGetModTime(now)
 	}
 	res := n1 > n2 || s1 != s2
 	if !res {
@@ -168,126 +195,4 @@ func IsDiffFile(new string, now string) bool {
 		}
 	}
 	return res
-}
-
-// CopyFile 拷贝文件
-func CopyFile(src, dst string) bool {
-	if len(src) == 0 || len(dst) == 0 {
-		return false
-	}
-	DirCheck(dst)
-	if -1 != strings.Index(src, "embeds/") {
-		if IsDiffFile(src, dst) {
-			b, err := Embeds.ReadFile(src)
-			if err != nil {
-				return false
-			}
-			return nil == os.WriteFile(dst, b, fs.ModePerm)
-		}
-	} else {
-		if !fileutil.IsExist(src) {
-			return false
-		}
-		srcFile, e := os.OpenFile(src, os.O_RDONLY, fs.ModePerm)
-		if e != nil {
-			Panic(e.Error())
-			return false
-		}
-		defer srcFile.Close()
-		if IsDiffFile(src, dst) {
-			// 这里要把O_TRUNC 加上，否则会出现新旧文件内容出现重叠现象
-			dstFile, e2 := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_RDWR, fs.ModePerm)
-			if e2 != nil {
-				Panic(e2.Error())
-				return false
-			}
-			defer dstFile.Close()
-			if _, e2 = io.Copy(dstFile, srcFile); e != nil {
-				Panic(e2.Error())
-				return false
-			}
-		}
-	}
-	return true
-}
-
-// CopyPath 拷贝目录
-func CopyPath(src string, dst string) bool {
-	di := strings.TrimRight(strings.TrimRight(dst, "/"), "\\")
-	var err error
-	if -1 != strings.Index(src, "embeds/") {
-		err = fs.WalkDir(Embeds, ".", func(path string, d fs.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if strings.Index(path, src) == -1 {
-				return nil
-			}
-			relationPath := strings.Replace(path, src, "/", -1)
-			info, _ := d.Info()
-			dstPath := strings.TrimRight(strings.TrimRight(dst, "/"), "\\") + relationPath
-			if !info.IsDir() {
-				if CopyFile(path, dstPath) {
-					return nil
-				} else {
-					return errors.New(path + " copy failed")
-				}
-			} else {
-				if _, err2 := os.Stat(dstPath); err2 != nil {
-					if os.IsNotExist(err2) {
-						if err3 := os.MkdirAll(dstPath, fs.ModePerm); err3 != nil {
-							return err3
-						} else {
-							return nil
-						}
-					} else {
-						return err2
-					}
-				} else {
-					return nil
-				}
-			}
-		})
-	} else {
-		srcFileInfo := GetFileInfo(src)
-		if nil == srcFileInfo || !srcFileInfo.IsDir() {
-			return false
-		}
-		src, err = filepath.Abs(src)
-		if err != nil {
-			Panic(err)
-		}
-		err = filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			relationPath := strings.Replace(path, src, "/", -1)
-			dstPath := di + relationPath
-			if !info.IsDir() {
-				if CopyFile(path, dstPath) {
-					return nil
-				} else {
-					return errors.New(path + " copy failed")
-				}
-			} else {
-				if _, err2 := os.Stat(dstPath); err2 != nil {
-					if os.IsNotExist(err2) {
-						if err3 := os.MkdirAll(dstPath, fs.ModePerm); err3 != nil {
-							return err3
-						} else {
-							return nil
-						}
-					} else {
-						return err2
-					}
-				} else {
-					return nil
-				}
-			}
-		})
-	}
-	if err != nil {
-		Panic(err)
-	}
-	return true
 }

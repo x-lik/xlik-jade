@@ -1,3 +1,6 @@
+--- current class name
+TaskClass = "Task"
+
 --- 任务执行
 --- 构建业务队列，按序执行
 ---@class Task:Meta

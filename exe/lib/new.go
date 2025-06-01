@@ -31,11 +31,11 @@ func (app *App) New() {
 	projectDir := app.Path.Projects + "/" + app.ProjectName
 	err = os.Mkdir(projectDir, fs.ModePerm)
 	// 复制初始文件
-	CopyPath("embeds/lni/map", projectDir+"/w3x/map")
-	CopyPath("embeds/lni/table", projectDir+"/w3x/table")
+	CopyDir("embeds/lni/map", projectDir+"/w3x/map")
+	CopyDir("embeds/lni/table", projectDir+"/w3x/table")
 	CopyFile("embeds/lni/war3mapMap.blp", projectDir+"/w3x/war3mapMap.blp")
 	// 复制初始脚本
-	CopyPath("embeds/new", projectDir)
+	CopyDir("embeds/new", projectDir)
 	// 生成备份w3x目录
 	app.Backup()
 	pterm.Success.Println("项目创建完成！")

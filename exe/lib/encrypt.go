@@ -45,7 +45,7 @@ func EncryptPrintResult() {
 // Encrypt2Csv csv测试文件
 func Encrypt2Csv(dstDir string, filename string) {
 	dstDir = strings.Replace(dstDir, `\`, `/`, -1)
-	DirCheck(dstDir)
+	FileCheck(dstDir)
 	csvFile := dstDir + `/` + filename + `.csv`
 	_ = os.Remove(csvFile)
 	_ = fileutil.WriteStringToFile(csvFile, CsvMapSSS(_results), false)

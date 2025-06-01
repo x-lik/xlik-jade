@@ -1,3 +1,6 @@
+--- current class name
+UIBlockClass = "UIBlock"
+
 --- 阻碍UI
 ---@class UIBlock:UI
 local _index = UI(UIBlockClass, {

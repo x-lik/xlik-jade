@@ -7,7 +7,7 @@ class = class or {}
 ---@private
 class._ids = class._ids or {}
 ---@private
-class._i2o = class._i2o or setmetatable({}, { __mode = "v" })
+class._i2o = class._i2o or {}
 ---@private
 class._h2o = class._h2o or {}
 ---@private
@@ -53,26 +53,6 @@ function class.cache(key)
         class._cache[key] = {}
     end
     return class._cache[key]
-end
-
---- 继承寄存
----@protected
----@param key string
----@return table
-function class.extends(key, set)
-    sync.must()
-    if (false == set) then
-        class._extends[key] = nil
-        return
-    else
-        if (nil == class._extends[key]) then
-            class._extends[key] = {}
-        end
-        if (nil ~= set) then
-            table.insert(class._extends[key], set)
-        end
-        return class._extends[key]
-    end
 end
 
 --- 实例化ID
@@ -317,6 +297,9 @@ function class.destroy(obj)
     if (true == obj._protect) then
         print(obj._id .. "IsProtecting")
         return
+    end
+    if (true ~= obj._isAsync) then
+        sync.must()
     end
     if (nil ~= obj._id) then
         class._i2o[obj._id] = nil

@@ -1,3 +1,6 @@
+--- current class name
+GroupClass = "Group"
+
 --- 群数据集，常用于区域内选取对象
 ---@class Group:Meta
 local _index = Meta(GroupClass)
@@ -142,30 +145,34 @@ function _index:rand(options, n)
 end
 
 --- 获取域内离选定的(x,y)最近的对象
---- 必须设定filter里面的x,y参数,radius默认600
+--- 会尝试从options中的circle或square分析出(x,y)坐标，这种情况视为离条件区域内中心点作为判定目标
+--- 也可以设定(x,y)坐标值作为判定目标而不是以条件中心作为判定目标
 ---@param options GroupOptions
+---@param x number
+---@param y number
 ---@return datumEnum
-function _index:closest(options)
-    local x, y
-    if (nil ~= options.circle) then
-        x = x or options.circle.x
-        y = y or options.circle.y
-    end
-    if (nil ~= options.square) then
-        x = x or options.square.x
-        y = y or options.square.y
-    end
-    if (nil == x or nil == y) then
-        return nil
+function _index:closest(options, x, y)
+    if (type(x) ~= "number" or type(y) ~= "number") then
+        if (nil ~= options.circle) then
+            x = options.circle.x
+            y = options.circle.y
+        elseif (nil ~= options.square) then
+            x = options.square.x
+            y = options.square.y
+        end
+        if (type(x) ~= "number" or type(y) ~= "number") then
+            return nil
+        end
     end
     local catch = self:catch(options)
     if (#catch <= 0) then
         return nil
     end
     local closer = nil
-    local closestDst = 99999
+    local closestDst = math.huge
     for _, c in ipairs(catch) do
-        local dst = vector2.distance(x, y, c:x(), c:y())
+        local cx, cy = datum.enumXY(c, self._key)
+        local dst = vector2.distance(x, y, cx, cy)
         if (dst < closestDst) then
             closer = c
             closestDst = dst

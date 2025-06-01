@@ -16,9 +16,9 @@ func (app *App) luaRelease() string {
 	localPath := app.Path.Temp + "/_local/" + app.ProjectName
 	buildPath := app.Path.Temp + "/_build/" + app.ProjectName
 	distPath := app.Path.Temp + "/_dist/" + app.ProjectName
-	localMod := GetModTime(localPath)
-	buildMod := GetModTime(buildPath)
-	distMod := GetModTime(distPath)
+	localMod := FileGetModTime(localPath)
+	buildMod := FileGetModTime(buildPath)
+	distMod := FileGetModTime(distPath)
 	if buildMod > distMod {
 		pterm.Warning.Println("【上线】检测到dist阶段数据或比build阶段数据旧，为确保新代码被打包，建议重新进行dist阶段测试")
 	}
@@ -31,7 +31,7 @@ func (app *App) luaRelease() string {
 	}
 	// clone dist
 	_ = os.RemoveAll(app.BuildDstPath)
-	CopyPath(distPath, app.BuildDstPath)
+	CopyDir(distPath, app.BuildDstPath)
 	// check connect、release
 	connectFile := app.BuildDstPath + "/map/.connect"
 	if !fileutil.IsExist(connectFile) {

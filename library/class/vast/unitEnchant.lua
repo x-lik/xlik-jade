@@ -1,4 +1,8 @@
+--- current class name
+UnitEnchantClass = "UnitEnchant"
+
 --- 单位附魔属性特殊数据
+---[[:use library/class/vast/unitAttr]]
 ---@class UnitEnchantVast:UnitAttrVast
 local _index = Vast(UnitEnchantClass, {
     ---@type number 附魔上身默认持续时间[秒]
@@ -34,7 +38,7 @@ end
 
 --- 附魔强化[%]
 ---@see injury#damageType
----@param eType string|table 附魔类型|injury.damageType
+---@param eType string|table 附魔类型字符串 或 injury.damageType
 ---@param variety number|nil
 ---@return self|number
 function _index:enchantStrengthen(eType, variety)
@@ -47,7 +51,7 @@ end
 
 --- 附魔抵抗[%]
 ---@see injury#damageType
----@param eType string|table 附魔类型|injury.damageType
+---@param eType string|table 附魔类型字符串 或 injury.damageType
 ---@param variety number|nil
 ---@return self|number
 function _index:enchantResistance(eType, variety)
@@ -60,7 +64,7 @@ end
 
 --- 附魔免疫
 ---@see injury#damageType
----@param eType string|table 附魔类型|injury.damageType
+---@param eType string|table 附魔类型字符串 或 injury.damageType
 ---@param variety number|nil
 ---@return self|number
 function _index:enchantImmune(eType, variety)
@@ -81,7 +85,7 @@ end
 
 --- 是否附魔免疫
 ---@see injury#damageType
----@param key string|table 附魔类型|injury.damageType
+---@param key string|table 附魔类型字符串 或 injury.damageType
 ---@return boolean
 function _index:isEnchantImmune(key)
     return self:enchantImmune(key) > 0
@@ -166,7 +170,7 @@ end
 --- 清理某属性伤型附着数据
 --- 只能在实例化后使用
 ---@private
----@param eKey string 附魔类型|injury.damageType
+---@param eKey string 附魔类型字符串 或 injury.damageType
 ---@param isDelete boolean 是否顺便置nil
 ---@return void
 function _index:cls(eKey, isDelete)
@@ -298,7 +302,7 @@ end
 
 --- 强制修改伤型附着等级
 --- 只能在实例化后使用
----@param eType string|table 附魔类型|injury.damageType
+---@param eType string|table 附魔类型字符串 或 injury.damageType
 ---@param targetLevel number 目标等级
 ---@return void
 function _index:enchantSetAppendingLevel(eType, targetLevel)

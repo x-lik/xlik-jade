@@ -1,3 +1,6 @@
+--- current class name
+QuestClass = "Quest"
+
 --- 魔兽自带F9任务控制
 ---@class Quest:Meta
 local _index = Meta(QuestClass)

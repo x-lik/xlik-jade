@@ -86,12 +86,12 @@ function datum.enumKey(enum)
 end
 
 --- 根据选取物获取X坐标
----@param enum any
+---@param enum datumEnum
 ---@param scopeKey string|nil 指引域键值
 ---@return number|nil 无效选取物返回nil
 function datum.enumX(enum, scopeKey)
     local x
-    if (class.inObject(enum, UnitClass, ItemClass) and false == class.isDestroy(enum)) then
+    if ((class.isObject(enum, UnitClass) or class.isObject(enum, ItemClass)) and false == class.isDestroy(enum)) then
         x = enum:x()
     elseif (effector.isAgile(enum)) then
         x = effector.x(enum)
@@ -108,12 +108,12 @@ function datum.enumX(enum, scopeKey)
 end
 
 --- 根据选取物获取Y坐标
----@param enum any
+---@param enum datumEnum
 ---@param scopeKey string|nil 指引域键值
 ---@return number|nil 无效选取物返回nil
 function datum.enumY(enum, scopeKey)
     local y
-    if (class.inObject(enum, UnitClass, ItemClass) and false == class.isDestroy(enum)) then
+    if ((class.isObject(enum, UnitClass) or class.isObject(enum, ItemClass)) and false == class.isDestroy(enum)) then
         y = enum:y()
     elseif (effector.isAgile(enum)) then
         y = effector.y(enum)
@@ -130,11 +130,27 @@ function datum.enumY(enum, scopeKey)
 end
 
 --- 根据选取物获取X,Y坐标
----@param enum any
+---@param enum datumEnum
 ---@param scopeKey string|nil 指引域键值
 ---@return number,number|nil,nil 无效选取物返回nil
 function datum.enumXY(enum, scopeKey)
-    return datum.enumX(enum, scopeKey), datum.enumY(enum, scopeKey)
+    local x, y
+    if ((class.isObject(enum, UnitClass) or class.isObject(enum, ItemClass)) and false == class.isDestroy(enum)) then
+        x, y = enum:x(), enum:y()
+    elseif (effector.isAgile(enum)) then
+        x, y = effector.x(enum), effector.y(enum)
+    elseif (class.isObject(enum, UIBalloonClass) and false == class.isDestroy(enum) and nil ~= enum._options) then
+        x, y = enum._options.x, enum._options.y
+    elseif (type(enum) == "number") then
+        if (scopeKey == "destructable") then
+            x, y = J.GetDestructableX(enum), J.GetDestructableY(enum)
+        elseif (scopeKey == "unit") then
+            x, y = J.GetUnitX(enum), J.GetUnitY(enum)
+        elseif (scopeKey == "item") then
+            x, y = J.GetItemX(enum), J.GetItemY(enum)
+        end
+    end
+    return x, y
 end
 
 --- 寻找未被占用坐标

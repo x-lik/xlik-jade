@@ -1,27 +1,48 @@
 --- 声音管理
+---@class sound
 sound = sound or {}
 
 --- 当前播放BGM
 sound._curBgm = sound._curBgm or nil
 
 --- 音效通道类型
-sound._channel = {
-    normal = { value = 0, label = "普通" },
-    selection = { value = 1, label = "单位选择" },
-    confirm = { value = 2, label = "单位确认" },
-    move = { value = 3, label = "单位移动" },
-    ready = { value = 4, label = "单位准备" },
-    combat = { value = 5, label = "战斗" },
-    error = { value = 6, label = "错误" },
-    music = { value = 7, label = "音乐" },
-    ui = { value = 8, label = "用户界面" },
-    patrol = { value = 9, label = "循环移动" },
-    env = { value = 10, label = "循环环境" },
-    animate = { value = 11, label = "动画" },
-    construct = { value = 12, label = "建筑" },
-    spell = { value = 13, label = "出生" },
-    flame = { value = 14, label = "火焰" },
+local _sc = { _type = "soundChannel" }
+sound.channel = {
+    normal = setmetatable({ value = 0, label = "普通" }, { __index = _sc }),
+    selection = setmetatable({ value = 1, label = "单位选择" }, { __index = _sc }),
+    confirm = setmetatable({ value = 2, label = "单位确认" }, { __index = _sc }),
+    move = setmetatable({ value = 3, label = "单位移动" }, { __index = _sc }),
+    ready = setmetatable({ value = 4, label = "单位准备" }, { __index = _sc }),
+    combat = setmetatable({ value = 5, label = "战斗" }, { __index = _sc }),
+    error = setmetatable({ value = 6, label = "错误" }, { __index = _sc }),
+    music = setmetatable({ value = 7, label = "音乐" }, { __index = _sc }),
+    ui = setmetatable({ value = 8, label = "用户界面" }, { __index = _sc }),
+    patrol = setmetatable({ value = 9, label = "循环移动" }, { __index = _sc }),
+    env = setmetatable({ value = 10, label = "循环环境" }, { __index = _sc }),
+    animate = setmetatable({ value = 11, label = "动画" }, { __index = _sc }),
+    construct = setmetatable({ value = 12, label = "建筑" }, { __index = _sc }),
+    spell = setmetatable({ value = 13, label = "出生" }, { __index = _sc }),
+    flame = setmetatable({ value = 14, label = "火焰" }, { __index = _sc }),
 }
+
+--- 检测是否属于有效的单位核心
+---@param value table sound.channel.*
+---@return boolean
+function sound.isValidChannel(value)
+    return type(value) == "table" and value._type == _sc._type
+end
+
+--- 修改音频播放通道
+---@see sound#channel
+---@param voice number 音频handle
+---@param channel number|table 数字或通道类型，参考sound.channel.*
+---@return void
+function sound.setChannel(voice, channel)
+    if (sound.isValidChannel(channel)) then
+        channel = channel.value
+    end
+    J.SetSoundChannel(voice, channel)
+end
 
 --- 播放vcm音效
 ---@param alias string

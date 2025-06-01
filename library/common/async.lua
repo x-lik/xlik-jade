@@ -32,7 +32,7 @@ end
 ---@param callFunc function
 ---@return void
 function async.loc(callFunc)
-    japi.AsyncExec(player.localIndex, callFunc)
+    japi.AsyncExec(nil, callFunc)
 end
 
 --- 当前异步玩家异步调用

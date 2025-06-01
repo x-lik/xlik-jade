@@ -3,21 +3,6 @@
 ---@class Meta
 local _index = { _type = "Meta" }
 
---- 继承
----@protected
----@param superName string
----@return self
-function _index:extend(superName)
-    must(type(superName) == "string", "superName@string")
-    local cache = class.cache(_index._type)
-    if (nil == cache[superName]) then
-        class.extends(superName, self)
-    else
-        setmetatable(self, { __index = cache[superName] })
-    end
-    return self
-end
-
 --- 构造Meta对象
 ---@param name string
 ---@param prototype table 原型数据
@@ -31,13 +16,6 @@ function Meta(name, prototype)
         end
         prototype._className = name
         cache[name] = setmetatable(prototype, { __index = _index })
-        local extends = class.extends(name)
-        if (type(extends) == "table") then
-            for _, c in ipairs(extends) do
-                setmetatable(c, { __index = cache[name] })
-            end
-            class.extends(name, false)
-        end
     end
     return cache[name]
 end

@@ -7,22 +7,66 @@ injury = injury or {}
 --- 伤害类型keys
 injury.damageTypeKeys = injury.damageTypeKeys or { "common" }
 --- 伤害类型
+local _dt = { _type = "damageType" }
+---@alias damageType {value:string,label:string}
+--- 使用下方@type编写注释方便伤害类型引用，实际上伤害类型需要使用Enchant注册方可正确使用，如Enchant("fire", "火")
+--- 单单加入注释在伤害判定中是无法识别的，必须使用Enchant注册
+--- 当使用未附魔的类型进行伤害时会提示报错，所以不用担心类型忘记注册
+--- 更多Enchant注册例子可参考/new/scripts/globals/setup/enchant.lua
+--- 已编写部分常见类型，如physics:damageType,magic:damageType,fire:damageType，可以继续添加注释支持你的类型
+---@type {common:damageType,physics:damageType,magic:damageType,fire:damageType,rock:damageType,water:damageType,ice:damageType,wind:damageType,light:damageType,dark:damageType,grass:damageType,thunder:damageType,poison:damageType,steel:damageType}
 injury.damageType = injury.damageType or {
-    common = { value = "common", label = "常规" },
+    common = setmetatable({ value = "common", label = "常规" }, { __index = _dt })
 }
 --- 伤害来源
+local _ds = { _type = "damageSrc" }
 injury.damageSrc = {
-    common = { value = "common", label = "常规" },
-    attack = { value = "attack", label = "攻击" },
-    ability = { value = "ability", label = "技能" },
-    item = { value = "item", label = "物品" },
+    common = setmetatable({ value = "common", label = "常规" }, { __index = _ds }),
+    attack = setmetatable({ value = "attack", label = "攻击" }, { __index = _ds }),
+    ability = setmetatable({ value = "ability", label = "技能" }, { __index = _ds }),
+    item = setmetatable({ value = "item", label = "物品" }, { __index = _ds }),
 }
---- 无视防御种类
+--- 无视防御类型
+local _bat = { _type = "breakArmorType" }
 injury.breakArmorType = {
-    defend = { value = "defend", label = "防御" },
-    avoid = { value = "avoid", label = "回避" },
-    invincible = { value = "invincible", label = "无敌" },
+    defend = setmetatable({ value = "defend", label = "防御" }, { __index = _bat }),
+    avoid = setmetatable({ value = "avoid", label = "回避" }, { __index = _bat }),
+    invincible = setmetatable({ value = "invincible", label = "无敌" }, { __index = _bat }),
 }
+
+--- 添加设定额外的damageType
+---@param value string
+---@param label string
+---@return void
+function injury.setDamageType(value, label)
+    must(type(value) == "string", "value@string")
+    must(type(label) == "string", "label@string")
+    if (nil == injury.damageType[value]) then
+        injury.damageTypeKeys[#injury.damageTypeKeys + 1] = value
+    end
+    injury.damageType[value] = setmetatable({ value = value, label = label }, { __index = _dt })
+end
+
+--- 检测是否有效的伤害类型
+---@param whichType table injury.damageType.*
+---@return boolean
+function injury.isValidDamageType(whichType)
+    return type(whichType) == "table" and whichType._type == _dt._type
+end
+
+--- 检测是否有效的伤害来源
+---@param whichSrc table injury.damageSrc.*
+---@return boolean
+function injury.isValidDamageSrc(whichSrc)
+    return type(whichSrc) == "table" and whichSrc._type == _ds._type
+end
+
+--- 检测是否有效的无视防御类型
+---@param whichType table injury.breakArmorType.*
+---@return boolean
+function injury.isValidBreakArmorType(whichType)
+    return type(whichType) == "table" and whichType._type == _bat._type
+end
 
 --- [受伤过程]抵达
 ---@param sourceUnit Unit

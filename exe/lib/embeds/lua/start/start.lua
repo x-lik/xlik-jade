@@ -25,13 +25,13 @@ J.TriggerAddAction(tgr, function()
     
     --- 初始化 异步帧钟
     J.Japi["DzFrameSetUpdateCallbackByCode"](function()
-        if (false == japi.DZ_IsWindowActive()) then
-            return
-        end
+        local localPlayerIndex = PlayerLocal():index()
+        async._id = localPlayerIndex
         ---lk:placeholder start:cameraEvents
         ---lk:placeholder start:asyncRefresh
         ---lk:placeholder start:asyncExec
         ---lk:placeholder start:asyncExecDelay
+        async._id = 0
     end)
     
     --- sync同步处理

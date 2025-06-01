@@ -1,4 +1,8 @@
+--- current class name
+UIDragClass = "UIDrag"
+
 --- 拖拽UI面板
+---[[:use library/class/ui/plate]]
 ---@class UIDrag:UIPlate
 local _index = UI(UIDragClass, {
     ---@type string

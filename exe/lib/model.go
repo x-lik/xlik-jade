@@ -251,13 +251,13 @@ func (app *App) ModelMap(class string, filter string, page int) {
 		}
 
 		pterm.Info.Println(batch + "开始构建虚构 " + filter)
-		CopyPath("embeds/lni/table", tempDir+"/table")
-		CopyPath("embeds/lni/w3x2lni", tempDir+"/w3x2lni")
+		CopyDir("embeds/lni/table", tempDir+"/table")
+		CopyDir("embeds/lni/w3x2lni", tempDir+"/w3x2lni")
 		CopyFile("embeds/lni/x.w3x", tempDir+"/.w3x")
-		CopyPath("embeds/models", tempDir+"/map")
+		CopyDir("embeds/models", tempDir+"/map")
 		CopyFile("embeds/models/w3i.ini", tempDir+"/table/w3i.ini")
 		if app.ProjectName != "" {
-			CopyPath(app.Path.Projects+"/"+app.ProjectName+"/w3x/resource", tempDir+"/resource")
+			CopyDir(app.Path.Projects+"/"+app.ProjectName+"/w3x/resource", tempDir+"/resource")
 		}
 
 		unitIni := tempDir + "/table/unit.ini"

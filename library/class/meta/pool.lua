@@ -1,3 +1,6 @@
+--- current class name
+PoolClass = "Pool"
+
 --- 池数据集，常用于数据整合归类读取
 ---@class Pool:Meta
 local _index = Meta(PoolClass)

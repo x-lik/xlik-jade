@@ -1,3 +1,6 @@
+--- current class name
+UITextClass = "UIText"
+
 --- 文本UI
 ---@class UIText:UI
 local _index = UI(UITextClass, {
@@ -107,6 +110,7 @@ function UIText(key, parent, constructs)
     return cache[key]
 end
 
+---[[:use library/common/game]]
 ---@see alerter#message
 --- 生成一个Text供alerter使用
 game.onPhase("start", function()

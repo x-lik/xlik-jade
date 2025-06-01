@@ -1,3 +1,9 @@
+---[[:use library/class/vast/ability]]
+---[[:use library/class/vast/abilityTpl]]
+---[[:use library/class/vast/item]]
+---[[:use library/class/vast/player]]
+---[[:use library/class/vast/unit]]
+---[[:use library/class/vast/unitTpl]]
 --- Vast对象修改模式
 local modifier = {
     [AbilityTplClass] = {

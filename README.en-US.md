@@ -2,8 +2,10 @@ Language : [CN](./README.md) | US
 
 # X-LIK Jade Version (Completely open source)
 
-- Home Page: [https://www.hunzsig.com/x-lik](https://www.hunzsig.com/x-lik)
-- Sponsor: [https://afdian.com/a/hunzsig](https://afdian.com/a/hunzsig)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/x-lik/xlik-jade)
+
+- HomePage: [https://www.hunzsig.com/x-lik](https://www.hunzsig.com/x-lik)
+- ChangeLog: [https://www.hunzsig.com/x-lik-log](https://www.hunzsig.com/x-lik-log)
 
 ## Introduction
 

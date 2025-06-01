@@ -1,3 +1,6 @@
+--- current class name
+UITooltipsClass = "UITooltips"
+
 --- 提示面板UI
 ---@class UITooltips:UI
 local _index = UI(UITooltipsClass, {

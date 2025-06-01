@@ -1,4 +1,8 @@
+--- current class name
+UITextareaClass = "UITextarea"
+
 --- 文本域UI
+---[[:use library/class/ui/text]]
 ---@class UITextarea:UIText
 local _index = UI(UITextareaClass):extend(UITextClass)
 

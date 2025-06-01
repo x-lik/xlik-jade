@@ -1,8 +1,10 @@
+--- current class name
+EnchantClass = "Enchant"
+
 --- 附魔(元素附着)
 --- 模拟附魔，可以用于模拟不同元素的攻击
 --- 如伤害可附着自定义元素类型的伤害
 --- 在damageFlow中执行伤害类型的判定，并支持附着
-
 --- 可模拟触发不同的元素反应
 ---@class Enchant:Meta
 local _index = Meta(EnchantClass)
@@ -107,12 +109,7 @@ function Enchant(key, name, strengthen, resistance)
     if (nil == cache[key]) then
         sync.must()
         cache[key] = oMeta({ _key = key, _name = name or key, _strengthen = strengthen or 0, _resistance = resistance or 0 }, _index)
-        -- 关联伤害类型
-        table.insert(injury.damageTypeKeys, key)
-        injury.damageType[key] = {
-            value = key,
-            label = name
-        }
+        injury.setDamageType(key, name) -- 关联伤害类型
     end
     return cache[key]
 end

@@ -108,7 +108,7 @@ end
 ---@param forcedOrder boolean 是否强制顺序，也就是主观上必须 1 站在前，2在后
 ---@return boolean
 function vector2.isParallel(x1, y1, x2, y2, facing1, facing2, maxDistance, forcedOrder)
-    maxDistance = maxDistance or 99999
+    maxDistance = maxDistance or math.huge
     if (vector2.distance(x1, y1, x2, y2) > maxDistance) then
         return false
     end
@@ -129,7 +129,7 @@ end
 ---@param face2face boolean 是否【面对面】而不是【背对背】
 ---@return boolean
 function vector2.isIntersect(x1, y1, x2, y2, facing1, facing2, maxDistance, face2face)
-    maxDistance = maxDistance or 99999
+    maxDistance = maxDistance or math.huge
     if (vector2.distance(x1, y1, x2, y2) > maxDistance) then
         return false
     end

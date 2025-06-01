@@ -1,6 +1,12 @@
+--- current class name
+TimerAsyncClass = "TimerAsync"
+
 --- 异步计帧器
 ---@class TimerAsync:Meta
-local _index = Meta(TimerAsyncClass)
+local _index = Meta(TimerAsyncClass, {
+    _isAsync = true,
+    _fin = 0,
+})
 
 ---@protected
 function _index:destruct()
@@ -25,7 +31,7 @@ function _index:remain(frame)
         self:run(frame)
     else
         local remain = self._pause or -1
-        local l = self._fin or 0
+        local l = self._fin
         if (remain == -1) then
             if (l > 0) then
                 remain = l - japi._asyncInc

@@ -1,3 +1,6 @@
+--- current class name
+TplClass = "Tpl"
+
 --- Tpl模版数据
 ---@class Tpl:Vast
 local _index = Vast(TplClass, {

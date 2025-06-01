@@ -1,6 +1,10 @@
+--- current class name
+ItemTplClass = "ItemTpl"
+
 --- 物品Tpl模版数据
 --- 由于需要可能性较少，xlik的物品由模型特效强制模拟而成
 --- 不涉及被攻击、死亡等操作，如有需要，你可沿用原来的魔兽物品或从过去框架中获得旧的物品实现
+---[[:use library/class/vast/tpl]]
 ---@class ItemTpl:Tpl
 local _index = Vast(ItemTplClass, {
     ---@type number 当前经验值

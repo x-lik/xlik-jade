@@ -1,3 +1,6 @@
+--- current class name
+AssaultClass = "Assault"
+
 --- Assault，自定义攻击模式
 ---@class Assault:Meta
 local _index = Meta(AssaultClass, {

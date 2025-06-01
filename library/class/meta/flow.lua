@@ -1,3 +1,6 @@
+--- current class name
+FlowClass = "Flow"
+
 --- 流执行，业务片段顺序执行定义
 ---@class Flow:Meta
 local _index = Meta(FlowClass)

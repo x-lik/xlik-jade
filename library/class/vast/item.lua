@@ -1,3 +1,6 @@
+--- current class name
+ItemClass = "Item"
+
 --- 物品对象
 --- 此对象在实例化时再继承对应的ItemTpl对象
 --- 当Tpl对象数据改动时，也会跟随改动，但独立设置数据后不再变动跟随

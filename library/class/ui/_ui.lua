@@ -55,11 +55,8 @@ local _index = {
 function _index:extend(superName)
     must(type(superName) == "string", "superName@string")
     local cache = class.cache(_index._type)
-    if (nil == cache[superName]) then
-        class.extends(superName, self)
-    else
-        setmetatable(self, { __index = cache[superName] })
-    end
+    must(cache[superName] ~= nil, self._className .. " extended super does not exist")
+    setmetatable(self, { __index = cache[superName] })
     return self
 end
 
@@ -682,13 +679,6 @@ function UI(name, prototype)
         end
         prototype._className = name
         cache[name] = setmetatable(prototype, { __index = _index })
-        local extends = class.extends(name)
-        if (type(extends) == "table") then
-            for _, c in ipairs(extends) do
-                setmetatable(c, { __index = cache[name] })
-            end
-            class.extends(name, false)
-        end
     end
     return cache[name]
 end

@@ -1,5 +1,9 @@
+--- current class name
+UnitAttrClass = "UnitAttr"
+
 --- 单位属性单项模版数据
 --- 方便Unit对象单独设置某个属性
+---[[:use library/class/vast/tpl]]
 ---@class UnitAttrVast:Tpl
 local _index = Vast(UnitAttrClass, {
     ---@type number

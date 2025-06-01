@@ -1,3 +1,6 @@
+--- current class name
+UIModelClass = "UIModel"
+
 --- 模型UI
 ---@class UIModel:UI
 local _index = UI(UIModelClass, {

@@ -1,3 +1,6 @@
+--- current class name
+ItemSlotClass = "ItemSlot"
+
 --- 单位物品栏
 --- 自定义单位物品栏数据结构
 ---@class ItemSlot:Meta

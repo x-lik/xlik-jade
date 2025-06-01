@@ -1,3 +1,6 @@
+--- current class name
+TeamClass = "Team"
+
 --- 组队势力配置
 --- 同一个队伍可视为同一种势力
 ---@class Team:Meta

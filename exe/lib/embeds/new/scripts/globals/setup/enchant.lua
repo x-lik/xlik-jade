@@ -1,29 +1,3 @@
---- 方便伤害类型引用
----@alias damageTypeSetter {value:string,label:string}
-
----@type damageTypeSetter
-injury.damageType.fire = nil
----@type damageTypeSetter
-injury.damageType.rock = nil
----@type damageTypeSetter
-injury.damageType.water = nil
----@type damageTypeSetter
-injury.damageType.ice = nil
----@type damageTypeSetter
-injury.damageType.wind = nil
----@type damageTypeSetter
-injury.damageType.light = nil
----@type damageTypeSetter
-injury.damageType.dark = nil
----@type damageTypeSetter
-injury.damageType.grass = nil
----@type damageTypeSetter
-injury.damageType.thunder = nil
----@type damageTypeSetter
-injury.damageType.poison = nil
----@type damageTypeSetter
-injury.damageType.steel = nil
-
 -- 附魔设定
 local fire = Enchant("fire", "火")
 fire:setEffect("origin", "BreathOfFireDamage")

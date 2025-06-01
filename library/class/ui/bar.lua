@@ -1,3 +1,6 @@
+--- current class name
+UIBarClass = "UIBar"
+
 --- 条UI
 ---@class UIBar:UI
 local _index = UI(UIBarClass, {
@@ -45,6 +48,20 @@ function _index:construct()
                 t:textAlign(TEXT_ALIGN_RIGHT):relation(UI_ALIGN_RIGHT_TOP, self, UI_ALIGN_RIGHT_BOTTOM, 0, -0.002)
             end
             self["_txt" .. v] = t
+        end
+    end
+end
+
+---@protected
+function _index:destruct()
+    class.destroy(self._uiValue)
+    self._uiValue = nil
+    class.destroy(self._uiMark)
+    self._uiMark = nil
+    if (type(self._layouts) == "table") then
+        for _, v in ipairs(self._layouts) do
+            class.destroy(self["_txt" .. v])
+            self["_txt" .. v] = nil
         end
         self._layouts = nil
     end

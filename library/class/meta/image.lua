@@ -1,3 +1,6 @@
+--- current class name
+ImageClass = "Image"
+
 --- 地表图像
 --- 此图像将显示在地形地表上
 ---@class Image:Meta

@@ -31,7 +31,7 @@ function event.source(source, symbol)
             end
             src = event._sync[symbol]
         else
-            if (nil == symbol._eventSync) then
+            if (nil == rawget(symbol, "_eventSync")) then
                 symbol._eventSync = {}
             end
             src = symbol._eventSync
@@ -45,7 +45,7 @@ function event.source(source, symbol)
             end
             src = event._async[symbol]
         else
-            if (nil == symbol._eventAsync) then
+            if (nil == rawget(symbol, "_eventAsync")) then
                 symbol._eventAsync = {}
             end
             src = symbol._eventAsync

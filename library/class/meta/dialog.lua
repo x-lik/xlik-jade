@@ -1,3 +1,6 @@
+--- current class name
+DialogClass = "Dialog"
+
 --- 魔兽自带对话框
 --- 单人游戏时弹出此框会暂停游戏
 ---@class Dialog:Meta

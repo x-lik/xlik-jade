@@ -1,3 +1,6 @@
+--- current class name
+UIHighlightClass = "UIHighlight"
+
 --- 高亮UI
 ---@class UIHighlight:UI
 local _index = UI(UIHighlightClass)

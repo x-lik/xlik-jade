@@ -1,3 +1,6 @@
+--- current class name
+UIBackdropClass = "UIBackdrop"
+
 --- 背景UI
 ---@class UIBackdrop:UI
 local _index = UI(UIBackdropClass)
@@ -10,6 +13,12 @@ function _index:construct()
     -- 阻挡器
     self._blocker = UIBlock(self._key .. ":block", self, { _blocking = false })
         :relation(UI_ALIGN_CENTER, self, UI_ALIGN_CENTER, 0, 0)
+end
+
+---@protected
+function _index:destruct()
+    class.destroy(self._blocker)
+    self._blocker = nil
 end
 
 --- 设置宽高尺寸[0-0.8,0-0.6]

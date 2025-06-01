@@ -1,4 +1,8 @@
+--- current class name
+UnitTplClass = "UnitTpl"
+
 --- 单位Tpl模版数据
+---[[:use library/class/vast/unitEnchant]]
 ---@class UnitTpl:UnitEnchantVast
 local _index = Vast(UnitTplClass, {
     ---@type string
@@ -239,9 +243,13 @@ function _index:rgba(red, green, blue, alpha, duration)
 end
 
 --- 单位身体材质
----@param variety table|nil 看attribute.unitMaterial
+---@see attribute#unitMaterial
+---@param variety table|nil attribute.unitMaterial.*
 ---@return self|table
 function _index:material(variety)
+    if (nil ~= variety) then
+        must(attribute.isValidUnitMaterial(variety), "variety@attribute.unitMaterial")
+    end
     return self:modify("material", variety)
 end
 
@@ -285,9 +293,13 @@ function _index:weaponHeight(variety)
 end
 
 --- 单位移动类型
----@param variety table|nil 看attribute.unitMoveType
+---@see attribute#unitMoveType
+---@param variety table|nil attribute.unitMoveType.*
 ---@return self|table
 function _index:moveType(variety)
+    if (nil ~= variety) then
+        must(attribute.isValidUnitMoveType(variety), "variety@attribute.unitMoveType")
+    end
     return self:modify("moveType", variety)
 end
 
@@ -309,9 +321,13 @@ end
 
 --- 主属性（假设的）
 --- 假定模拟魔兽3属性，实质无功能，框架未做其余任何处理
----@param variety table|nil 看 attribute.unitPrimary
+---@see attribute#unitPrimary
+---@param variety table|nil attribute.unitPrimary.*
 ---@return self|table
 function _index:primary(variety)
+    if (nil ~= variety) then
+        must(attribute.isValidUnitPrimary(variety), "variety@attribute.unitPrimary")
+    end
     return self:modify("primary", variety)
 end
 

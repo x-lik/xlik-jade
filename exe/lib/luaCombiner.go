@@ -5,6 +5,8 @@ import (
 	"github.com/duke-git/lancet/v2/slice"
 	"github.com/pterm/pterm"
 	lua "github.com/yuin/gopher-lua"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -18,9 +20,17 @@ type LuaFile struct {
 }
 
 var (
-	_luaChips   []LuaFile
-	_luaContent string
+	_luaChips         []LuaFile
+	_luaContent       string
+	_luaFiles         map[string]*LuaFile
+	_luaFileSorter    []string
+	_luaFileLoopCheck map[string]bool
 )
+
+func init() {
+	_luaFiles = make(map[string]*LuaFile)
+	_luaFileLoopCheck = make(map[string]bool)
+}
 
 func luaRequire(L *lua.LState, file string) {
 	err := L.DoFile(file)
@@ -65,16 +75,6 @@ func luaZip(src string) string {
 	return strings.Join(ctn, " ")
 }
 
-func luaTrimName(path string, trim string) string {
-	trim = strings.Replace(trim, "\\", "/", -1)
-	name := strings.Replace(path, "\\", "/", -1)
-	name = strings.Replace(name, trim, "", 1)
-	name = name[1:]
-	name = strings.Replace(name, "/", ".", -1)
-	name = strings.Replace(name, ".lua", "", -1)
-	return name
-}
-
 func (app *App) luaAllContent() string {
 	if `` != _luaContent {
 		return _luaContent
@@ -93,6 +93,67 @@ func luaChipsIn(item LuaFile) {
 	_luaChips = append(_luaChips, item)
 	if `` != _luaContent {
 		_luaContent = ``
+	}
+}
+
+func (app *App) luaFileHandler(path string) {
+	// skip handel file
+	l := strings.Replace(path, `\`, `/`, -1)
+	if _, exists := _luaFiles[l]; exists {
+		return
+	}
+	// skip non-lua file
+	if !strings.EqualFold(filepath.Ext(l), ".lua") {
+		return
+	}
+	// code
+	code := FileToString(l)
+	usePattern := regexp.MustCompile(`---\[\[:use\s+(.+?)\s*]]`)
+	matches := usePattern.FindAllStringSubmatch(code, -1)
+	if len(matches) > 0 {
+		for _, match := range matches {
+			useName := strings.Replace(match[1], `\`, `/`, -1)
+			usePath := app.Pwd + "/" + useName + ".lua"
+			if _, exists := _luaFiles[usePath]; !exists {
+				if true == _luaFileLoopCheck[usePath] {
+					pterm.Error.Println("存在循环的use:" + useName)
+					os.Exit(0)
+				}
+				_luaFileLoopCheck[usePath] = true
+				app.luaFileHandler(usePath)
+			}
+		}
+	}
+	// gen
+	gen := "_local" != app.BuildModeName || strings.Contains(l, "embeds/")
+	// anchor
+	anchor := strings.Replace(l, `.lua`, ``, -1)
+	if strings.Contains(anchor, `embeds/lua/engine/`) {
+		// anchor:handle engine
+		anchor = strings.Replace(anchor, `embeds/lua/engine/`, `engine/drive/`, 1)
+	} else if strings.Contains(anchor, `embeds/lua/slk/`) {
+		// anchor:handle slk
+		anchor = strings.Replace(anchor, `embeds/lua/slk/`, `engine/slk/`, 1)
+	} else {
+		// anchor:handle others
+		anchor = strings.Replace(anchor, app.Pwd+"/", "", 1)
+	}
+	// name
+	name := strings.Replace(anchor, `/`, `.`, -1)
+	// dst
+	dst := app.BuildDstPath + "/map/" + anchor + ".lua"
+	_luaFileSorter = append(_luaFileSorter, l)
+	_luaFiles[l] = &LuaFile{
+		name: name,
+		dst:  dst,
+		code: code,
+		gen:  gen,
+	}
+}
+
+func (app *App) luaFileToChips() {
+	for _, name := range _luaFileSorter {
+		luaChipsIn(*_luaFiles[name])
 	}
 }
 

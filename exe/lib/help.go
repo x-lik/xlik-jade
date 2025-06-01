@@ -39,7 +39,6 @@ func (app *App) Help() {
 	fmt.Println("┃ - 关闭所有魔兽客户端")
 	fmt.Println("┃     xlik.exe kill")
 	fmt.Println("┃")
-	fmt.Println("┃ @官方网站 https://www.hunzsig.com")
-	fmt.Println("┃ @发电作者 https://afdian.com/a/hunzsig")
+	fmt.Println("┃ @官网 https://www.hunzsig.com")
 	fmt.Println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 }

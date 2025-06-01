@@ -1,3 +1,6 @@
+--- current class name
+AbilitySlotClass = "AbilitySlot"
+
 --- 单位技能栏
 --- 自定义单位技能栏数据结构
 ---@class AbilitySlot:Meta

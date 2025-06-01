@@ -1,3 +1,6 @@
+--- current class name
+UILabelClass = "UILabel"
+
 --- 标签UI
 ---@class UILabel:UI
 local _index = UI(UILabelClass, {
@@ -18,6 +21,14 @@ function _index:construct()
     if (true == self._autoSize) then
         self:size()
     end
+end
+
+---@protected
+function _index:destruct()
+    class.destroy(self._icon)
+    self._icon = nil
+    class.destroy(self._label)
+    self._label = nil
 end
 
 --- 设置主题宽高尺寸[0-0.8,0-0.6]

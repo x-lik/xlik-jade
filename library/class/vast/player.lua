@@ -1,3 +1,6 @@
+--- current class name
+PlayerClass = "Player"
+
 --- Player玩家
 ---@class Player:Vast
 local _index = Vast(PlayerClass, {
@@ -175,9 +178,12 @@ end
 
 --- 状态值
 ---@see player#status
----@param variety table|nil
+---@param variety table|nil player.status.*
 ---@return self|table
 function _index:status(variety)
+    if (nil ~= variety) then
+        must(player.isValidStatus(variety), "variety@player.status")
+    end
     return self:modify("status", variety)
 end
 
@@ -191,9 +197,12 @@ end
 --- 玩家的捡取模式
 --- 默认捡去物品栏，满了转移至仓库
 ---@see player#pickMode
----@param variety table|nil
+---@param variety table|nil player.pickMode.*
 ---@return self|table
 function _index:pickMode(variety)
+    if (nil ~= variety) then
+        must(player.isValidPickMode(variety), "variety@player.pickMode")
+    end
     return self:modify("pickMode", variety)
 end
 
@@ -357,7 +366,9 @@ end
 ---@return Player
 function PlayerLocal()
     local cache = class.cache(PlayerClass)
-    return cache[player.localIndex]
+    local idx = 1 + J.GetPlayerId(J.Common["GetLocalPlayer"]())
+    must(cache[idx] ~= nil, "")
+    return cache[idx]
 end
 
 --- 玩家对象遍历

@@ -35,8 +35,8 @@ func (app *App) WE() {
 	w3xFire := app.Path.Temp + "/" + app.ProjectName + ".w3x"
 	// 检查上一次we的修改数据是否未保存
 	buoyFire := app.Path.Temp + "/" + app.ProjectName + "/.we"
-	mtW := GetModTime(w3xFire)
-	mtB := GetModTime(buoyFire)
+	mtW := FileGetModTime(w3xFire)
+	mtB := FileGetModTime(buoyFire)
 	if mtW > mtB {
 		// 如果地图文件比we打开时新（说明有额外保存过）把保存后的文件拆包并同步
 		cmd := exec.Command(app.Path.W3x2lni+"/w2l.exe", "lni", w3xFire)
@@ -95,8 +95,8 @@ func (app *App) WE() {
 				if !fileutil.IsDir(cliff) || !fileutil.IsDir(terrainArt) {
 					pterm.Error.Println("地形贴图：" + terrain + " 地形数据错误")
 				}
-				CopyPath(cliff, w3xDir+"/resource/ReplaceableTextures/Cliff")
-				CopyPath(terrainArt, w3xDir+"/resource/TerrainArt")
+				CopyDir(cliff, w3xDir+"/resource/ReplaceableTextures/Cliff")
+				CopyDir(terrainArt, w3xDir+"/resource/TerrainArt")
 				pterm.Info.Println("地形贴图：" + terrain)
 			} else {
 				pterm.Error.Println("地形贴图：" + terrain + " 不存在")

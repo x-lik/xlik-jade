@@ -11,29 +11,50 @@ attribute._antis = attribute._antis or {}
 attribute._forms = attribute._forms or {}
 ---@type table<string,string>
 attribute._icons = attribute._icons or {}
-
 --- 单位材质
+local _um = { _type = "unitMaterial" }
 attribute.unitMaterial = {
-    flesh = { value = "flesh", label = "肉体" },
-    metal = { value = "metal", label = "金属" },
-    rock = { value = "rock", label = "石头" },
-    wood = { value = "wood", label = "木头" },
+    flesh = setmetatable({ value = "flesh", label = "肉体" }, { __index = _um }),
+    metal = setmetatable({ value = "metal", label = "金属" }, { __index = _um }),
+    rock = setmetatable({ value = "rock", label = "石头" }, { __index = _um }),
+    wood = setmetatable({ value = "wood", label = "木头" }, { __index = _um }),
 }
-
 --- 单位移动类型
+local _umt = { _type = "unitMoveType" }
 attribute.unitMoveType = {
-    foot = { value = MOVE_NAME_FOOT, label = "步行" },
-    fly = { value = MOVE_NAME_FLY, label = "飞行" },
-    float = { value = MOVE_NAME_FLOAT, label = "漂浮" },
-    amphibious = { value = MOVE_NAME_AMPH, label = "两栖" },
+    foot = setmetatable({ value = MOVE_NAME_FOOT, label = "步行" }, { __index = _umt }),
+    fly = setmetatable({ value = MOVE_NAME_FLY, label = "飞行" }, { __index = _umt }),
+    float = setmetatable({ value = MOVE_NAME_FLOAT, label = "漂浮" }, { __index = _umt }),
+    amphibious = setmetatable({ value = MOVE_NAME_AMPH, label = "两栖" }, { __index = _umt }),
+}
+--- 单位核心
+local _up = { _type = "unitPrimary" }
+attribute.unitPrimary = {
+    str = setmetatable({ value = "str", label = "力量" }, { __index = _up }),
+    agi = setmetatable({ value = "agi", label = "敏捷" }, { __index = _up }),
+    int = setmetatable({ value = "int", label = "智力" }, { __index = _up }),
 }
 
---- 单位核心
-attribute.unitPrimary = {
-    str = { value = "str", label = "力量" },
-    agi = { value = "agi", label = "敏捷" },
-    int = { value = "int", label = "智力" },
-}
+--- 检测是否属于有效的单位材质
+---@param value table attribute.unitMaterial.*
+---@return boolean
+function attribute.isValidUnitMaterial(value)
+    return type(value) == "table" and value._type == _um._type
+end
+
+--- 检测是否属于有效的单位移动类型
+---@param value table attribute.unitMoveType.*
+---@return boolean
+function attribute.isValidUnitMoveType(value)
+    return type(value) == "table" and value._type == _umt._type
+end
+
+--- 检测是否属于有效的单位核心
+---@param value table attribute.unitPrimary.*
+---@return boolean
+function attribute.isValidUnitPrimary(value)
+    return type(value) == "table" and value._type == _up._type
+end
 
 --- 属性参数名处理
 --- 将无下划线的参数名分析并自动加入下划线，不影响SYMBOL参数

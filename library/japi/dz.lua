@@ -2237,7 +2237,7 @@ end
 ---@param key string 存档key
 ---@return string
 function japi.DZ_Map_Global_GetStoreString(key)
-    return japi.DZ_RequestExtraStringData(36, player.localHandle, key, nil, false, 0, 0, 0)
+    return japi.DZ_RequestExtraStringData(36, PlayerLocal():handle(), key, nil, false, 0, 0, 0)
 end
 
 --- 保存全局存档
@@ -2248,7 +2248,7 @@ end
 ---@param value string
 ---@return void
 function japi.DZ_Map_Global_StoreString(key, value)
-    japi.DZ_RequestExtraBooleanData(37, player.localHandle, key, value, false, 0, 0, 0)
+    japi.DZ_RequestExtraBooleanData(37, PlayerLocal():handle(), key, value, false, 0, 0, 0)
 end
 
 --- 读取服务器存档（区分大小写）

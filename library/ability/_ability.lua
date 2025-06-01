@@ -4,7 +4,6 @@
 ability = ability or {}
 
 -- 技能目标类型数据
----@class abilityTargetType
 ability.targetType = {
     pas = { value = "p", label = "被动" },
     none = { value = "n", label = "无目标" },
@@ -12,6 +11,7 @@ ability.targetType = {
     loc = { value = "l", label = "点目标" },
     circle = { value = "c", label = "圆形范围目标" },
     square = { value = "s", label = "方形范围目标" },
+    build = { value = "b", label = "建造" },
 }
 
 --- [实际]计算整合数值型

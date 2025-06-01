@@ -101,76 +101,85 @@ function superposition.is(mod, key)
 end
 
 -- 默认配置
-superposition.config(UnitClass, "dead",
-    function(obj) superposition.plus(obj, "interrupt") end,
-    function(obj) superposition.minus(obj, "interrupt") end)
-superposition.config(UnitClass, "stun",
-    function(obj) superposition.plus(obj, "interrupt") end,
-    function(obj) superposition.minus(obj, "interrupt") end)
-superposition.config(UnitClass, "silent",
-    function(obj) superposition.plus(obj, "interrupt") end,
-    function(obj) superposition.minus(obj, "interrupt") end)
-superposition.config(UnitClass, "interrupt",
-    function(obj) event.syncTrigger(obj, eventKind.unitInterruptIn) end,
-    function(obj) event.syncTrigger(obj, eventKind.unitInterruptOut) end)
-superposition.config(UnitClass, "pause",
-    function(obj) J.PauseUnit(obj._handle, true) end,
-    function(obj) J.PauseUnit(obj._handle, false) end)
-superposition.config(UnitClass, "hide",
-    function(obj) J.ShowUnit(obj._handle, false) end,
-    function(obj) J.ShowUnit(obj._handle, true) end)
-superposition.config(UnitClass, "noPath",
-    function(obj)
-        J.SetUnitPathing(obj._handle, false)
-        japi.YD_SetUnitCollisionType(false, obj._handle, COLLISION_TYPE_UNIT)
-        japi.YD_SetUnitCollisionType(false, obj._handle, COLLISION_TYPE_BUILDING)
-    end,
-    function(obj)
-        J.SetUnitPathing(obj._handle, true)
-        japi.YD_SetUnitCollisionType(true, obj._handle, COLLISION_TYPE_UNIT)
-        japi.YD_SetUnitCollisionType(true, obj._handle, COLLISION_TYPE_BUILDING)
-    end)
-superposition.config(UnitClass, "noAttack",
-    function(obj)
-        japi.DZ_UnitDisableAttack(obj._handle, true)
-        event.syncTrigger(obj, eventKind.classAfterChange .. "noAttack", { triggerObject = obj, old = false, new = true, name = "noAttack" })
-    end,
-    function(obj)
-        japi.DZ_UnitDisableAttack(obj._handle, false)
-        event.syncTrigger(obj, eventKind.classAfterChange .. "noAttack", { triggerObject = obj, old = true, new = false, name = "noAttack" })
-    end)
-superposition.config(UnitClass, "locust",
-    function(obj)
-        if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_LOCUST) < 1) then
-            J.UnitAddAbility(obj._handle, LK_SLK_ID_ABILITY_LOCUST)
-        end
-    end,
-    function(obj)
-        if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_LOCUST) >= 1) then
-            J.UnitRemoveAbility(obj._handle, LK_SLK_ID_ABILITY_LOCUST)
-        end
-    end)
-superposition.config(UnitClass, "invulnerable",
-    function(obj)
-        if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE) < 1) then
-            J.UnitAddAbility(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE)
-            event.syncTrigger(obj, eventKind.classAfterChange .. "invulnerable", { triggerObject = obj, old = false, new = true, name = "invulnerable" })
-        end
-    end,
-    function(obj)
-        if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE) >= 1) then
-            J.UnitRemoveAbility(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE)
-            event.syncTrigger(obj, eventKind.classAfterChange .. "invulnerable", { triggerObject = obj, old = true, new = false, name = "invulnerable" })
-        end
-    end)
-superposition.config(UnitClass, "invisible",
-    function(obj)
-        if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE) < 1) then
-            J.UnitAddAbility(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE)
-        end
-    end,
-    function(obj)
-        if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE) >= 1) then
-            J.UnitRemoveAbility(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE)
-        end
-    end)
+---[[:use library/common/sync]]
+game.onPhase("process", function()
+    superposition.config(UnitClass, "dead",
+        function(obj) superposition.plus(obj, "interrupt") end,
+        function(obj) superposition.minus(obj, "interrupt") end)
+    superposition.config(UnitClass, "stun",
+        function(obj) superposition.plus(obj, "interrupt") end,
+        function(obj) superposition.minus(obj, "interrupt") end)
+    superposition.config(UnitClass, "crackFly",
+        function(obj) superposition.plus(obj, "interrupt") end,
+        function(obj) superposition.minus(obj, "interrupt") end)
+    superposition.config(UnitClass, "silent",
+        function(obj) superposition.plus(obj, "interrupt") end,
+        function(obj) superposition.minus(obj, "interrupt") end)
+    superposition.config(UnitClass, "whirlwind",
+        function(obj) superposition.plus(obj, "interrupt") end,
+        function(obj) superposition.minus(obj, "interrupt") end)
+    superposition.config(UnitClass, "interrupt",
+        function(obj) event.syncTrigger(obj, eventKind.unitInterruptIn) end,
+        function(obj) event.syncTrigger(obj, eventKind.unitInterruptOut) end)
+    superposition.config(UnitClass, "pause",
+        function(obj) J.PauseUnit(obj._handle, true) end,
+        function(obj) J.PauseUnit(obj._handle, false) end)
+    superposition.config(UnitClass, "hide",
+        function(obj) J.ShowUnit(obj._handle, false) end,
+        function(obj) J.ShowUnit(obj._handle, true) end)
+    superposition.config(UnitClass, "noPath",
+        function(obj)
+            J.SetUnitPathing(obj._handle, false)
+            japi.YD_SetUnitCollisionType(false, obj._handle, COLLISION_TYPE_UNIT)
+            japi.YD_SetUnitCollisionType(false, obj._handle, COLLISION_TYPE_BUILDING)
+        end,
+        function(obj)
+            J.SetUnitPathing(obj._handle, true)
+            japi.YD_SetUnitCollisionType(true, obj._handle, COLLISION_TYPE_UNIT)
+            japi.YD_SetUnitCollisionType(true, obj._handle, COLLISION_TYPE_BUILDING)
+        end)
+    superposition.config(UnitClass, "noAttack",
+        function(obj)
+            japi.DZ_UnitDisableAttack(obj._handle, true)
+            event.syncTrigger(obj, eventKind.classAfterChange .. "noAttack", { triggerObject = obj, old = false, new = true, name = "noAttack" })
+        end,
+        function(obj)
+            japi.DZ_UnitDisableAttack(obj._handle, false)
+            event.syncTrigger(obj, eventKind.classAfterChange .. "noAttack", { triggerObject = obj, old = true, new = false, name = "noAttack" })
+        end)
+    superposition.config(UnitClass, "locust",
+        function(obj)
+            if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_LOCUST) < 1) then
+                J.UnitAddAbility(obj._handle, LK_SLK_ID_ABILITY_LOCUST)
+            end
+        end,
+        function(obj)
+            if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_LOCUST) >= 1) then
+                J.UnitRemoveAbility(obj._handle, LK_SLK_ID_ABILITY_LOCUST)
+            end
+        end)
+    superposition.config(UnitClass, "invulnerable",
+        function(obj)
+            if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE) < 1) then
+                J.UnitAddAbility(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE)
+                event.syncTrigger(obj, eventKind.classAfterChange .. "invulnerable", { triggerObject = obj, old = false, new = true, name = "invulnerable" })
+            end
+        end,
+        function(obj)
+            if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE) >= 1) then
+                J.UnitRemoveAbility(obj._handle, LK_SLK_ID_ABILITY_INVULNERABLE)
+                event.syncTrigger(obj, eventKind.classAfterChange .. "invulnerable", { triggerObject = obj, old = true, new = false, name = "invulnerable" })
+            end
+        end)
+    superposition.config(UnitClass, "invisible",
+        function(obj)
+            if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE) < 1) then
+                J.UnitAddAbility(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE)
+            end
+        end,
+        function(obj)
+            if (J.GetUnitAbilityLevel(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE) >= 1) then
+                J.UnitRemoveAbility(obj._handle, LK_SLK_ID_ABILITY_INVISIBLE)
+            end
+        end)
+end)

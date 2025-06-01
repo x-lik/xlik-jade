@@ -1,3 +1,6 @@
+--- current class name
+AIClass = "AI"
+
 --- AI，自定义设定行为定义
 ---@class AI:Meta
 local _index = Meta(AIClass, {

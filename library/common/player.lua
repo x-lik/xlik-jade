@@ -4,19 +4,16 @@
 ---@class player
 player = player or {}
 
----@type number
-player.localHandle = J.Common["GetLocalPlayer"]()
----@type number
-player.localIndex = 1 + J.GetPlayerId(player.localHandle)
 --- 游戏开始时玩家数
 player.startQuantity = player.startQuantity or 1
 --- 游戏当前玩家数
 player.currentQuantity = player.currentQuantity or 1
 -- 玩家状态
+local _ps = { _type = "playerStatus" }
 player.status = {
-    empty = { value = "empty", label = "空置" },
-    playing = { value = "playing", label = "在线" },
-    leave = { value = "leave", label = "离线" },
+    empty = setmetatable({ value = "empty", label = "空置" }, { __index = _ps }),
+    playing = setmetatable({ value = "playing", label = "在线" }, { __index = _ps }),
+    leave = setmetatable({ value = "leave", label = "离线" }, { __index = _ps }),
 }
 --- 仓库栏默认容量
 player.warehouseSlotVolume = player.warehouseSlotVolume or 12
@@ -25,10 +22,11 @@ player.pickActionRadius = player.pickActionRadius or 200
 --- 游戏物品拾取格子判定范围
 player.pickGridRadius = player.pickGridRadius or 32
 -- 玩家物品拾取模式
+local _pm = { _type = "playerPickMode" }
 player.pickMode = {
-    itemWarehouse = { value = "itemWarehouse", label = "优先物品栏，满则转移至仓库" },
-    itemOnly = { value = "itemOnly", label = "只拾取到物品栏" },
-    warehouseOnly = { value = "warehouseOnly", label = "只拾取到仓库" },
+    itemWarehouse = setmetatable({ value = "itemWarehouse", label = "优先物品栏，满则转移至仓库" }, { __index = _pm }),
+    itemOnly = setmetatable({ value = "itemOnly", label = "只拾取到物品栏" }, { __index = _pm }),
+    warehouseOnly = setmetatable({ value = "warehouseOnly", label = "只拾取到仓库" }, { __index = _pm }),
 }
 -- 玩家聊天正则匹配规则
 ---@type Array
@@ -149,16 +147,21 @@ player._evtAttacked = J.Condition(function()
     local dmgpt = math.trunc(v.slk.dmgpt1, 3)
     local attackSpeed = math.min(math.max(attacker:attackSpeed(), -80), 400)
     local delay = 0.25 + attacker:attackPoint() * dmgpt / (1 + attackSpeed * 0.01)
-    local t = time.setTimeout(delay, function()
-        if (attacker:weaponSoundMode() == 2) then
-            sound.vwp(attacker, target)
-        end
-        injury.attack(attacker, target)
-    end)
     if (nil == attacker._attackTimers) then
-        attacker._attackTimers = setmetatable({}, { __mode = "v" })
+        attacker._attackTimers = {}
     end
-    table.insert(attacker._attackTimers, t)
+    local t = time.setTimeout(delay, function(curTimer)
+        local id = curTimer._id
+        class.destroy(curTimer)
+        if (nil ~= attacker._attackTimers[id]) then
+            attacker._attackTimers[id] = nil
+            if (attacker:weaponSoundMode() == 2) then
+                sound.vwp(attacker, target)
+            end
+            injury.attack(attacker, target)
+        end
+    end)
+    attacker._attackTimers[t._id] = t
 end)
 
 ---@type number
@@ -204,12 +207,8 @@ player._evtOrder = J.Condition(function()
        851993:holdposition 保持原位
     ]]
     if (orderId ~= 851983) then
-        local ag = triggerUnit._attackTimers
-        if (type(ag) == "table") then
-            for _, v in ipairs(ag) do
-                class.destroy(v)
-            end
-            triggerUnit._attackTimers = nil
+        if (nil ~= triggerUnit._attackTimers) then
+            triggerUnit._attackTimers = {}
         end
     end
     if (orderId == 851993) then
@@ -252,6 +251,20 @@ player._evtDead = J.Condition(function()
     end
     injury.kill(deadUnit)
 end)
+
+--- 检测是否属于有效的玩家状态
+---@param whichStatus table player.status.*
+---@return boolean
+function player.isValidStatus(whichStatus)
+    return type(whichStatus) == "table" and whichStatus._type == _ps._type
+end
+
+--- 检测是否属于有效的玩家拾取模式
+---@param whichMode table player.pickMode.*
+---@return boolean
+function player.isValidPickMode(whichMode)
+    return type(whichMode) == "table" and whichMode._type == _pm._type
+end
 
 --- 单位距离过程
 ---@param whichUnit Unit

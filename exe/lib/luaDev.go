@@ -19,13 +19,6 @@ import (
 func (app *App) luaDev() string {
 	var err error
 	pterm.Debug.Println("请稍候...")
-	//
-	var coreScripts []string
-	// coreScripts初始化
-	if app.BuildModeName == "_local" {
-		coreScripts = append(coreScripts, "package.path = package.path .. \";"+strings.Replace(app.Path.Assets, "\\", "/", -1)+"/?.lua\"")
-		coreScripts = append(coreScripts, "package.path = package.path .. \";"+strings.Replace(app.Pwd, "\\", "/", -1)+"/?.lua\"")
-	}
 	// 外置 lua引擎
 	L := lua.NewState()
 	defer L.Close()
@@ -35,107 +28,61 @@ func (app *App) luaDev() string {
 	luaRequireEmbed(L, "embeds/lua/go/slk.lua")
 	luaRequireEmbed(L, "embeds/lua/go/assets.lua")
 	luaRequireEmbed(L, "embeds/lua/go/system.lua")
-	// lua - core1
-	_idxPt := make(map[string]int)
-	cores := []string{"engine", "debug"}
-	if app.BuildModeName == "_dist" {
-		cores = append(cores, "debugRelease")
+	// lni - UI
+	CopyDir("embeds/lni/assets/UI", app.BuildDstPath+"/map/UI")
+	//
+	var coreScripts []string
+	// coreScripts初始化
+	if app.BuildModeName == "_local" {
+		coreScripts = append(coreScripts, "package.path = package.path .. \";"+strings.Replace(app.Pwd, "\\", "/", -1)+"/?.lua\"")
 	}
-	cores = append(cores, []string{"typeof", "promise", "pairx", "blizzard", "setting"}...)
-	for i, v := range cores {
-		dst := app.BuildDstPath + "/map/engine/" + v + ".lua"
-		x, _ := Embeds.ReadFile("embeds/lua/engine/" + v + ".lua")
-		code := string(x)
-		m := LuaFile{
-			name: "engine." + v,
-			dst:  dst,
-			code: code,
-			gen:  true,
-		}
-		luaChipsIn(m)
-		// 记录以下后续需要用到的索引
-		if v == `blizzard` || v == `setting` || v == `debug` || v == `debugRelease` {
-			_idxPt[v] = i
-		}
+	// luaScript (require and parse lua files)
+	// luaScript:embeds/lua/engine
+	app.luaFileHandler(`embeds/lua/engine/engine.lua`)
+	app.luaFileHandler(`embeds/lua/engine/debug.lua`)
+	if app.BuildModeName == `_dist` {
+		app.luaFileHandler(`embeds/lua/engine/debugRelease.lua`)
 	}
-
-	//-------------- library ---------------
-
-	var libSortMain []string
-	yamlFile := app.Path.Library + `/library.yaml`
-	if fileutil.IsExist(yamlFile) {
-		data, _ := os.ReadFile(yamlFile)
-		y := YamlLibrary{}
-		erry := yaml.Unmarshal(data, &y)
-		if nil == erry {
-			libSortMain = y.Require
+	app.luaFileHandler(`embeds/lua/engine/typeof.lua`)
+	app.luaFileHandler(`embeds/lua/engine/promise.lua`)
+	app.luaFileHandler(`embeds/lua/engine/pairx.lua`)
+	app.luaFileHandler(`embeds/lua/engine/blizzard.lua`)
+	app.luaFileHandler(`embeds/lua/engine/setting.lua`)
+	// luaScript:library project/library
+	luaLibDirs := []string{app.Path.Library, app.Path.Projects + "/" + app.ProjectName + "/library"}
+	var luaLibSrc []string
+	for _, lib := range luaLibDirs {
+		if !fileutil.IsDir(lib) {
+			continue
 		}
-	}
-	var librarySrc []string
-	if len(libSortMain) == 0 {
-		if fileutil.IsDir(app.Path.Library) {
-			librarySrc = append(librarySrc, app.Path.Library)
-		}
-	} else {
-		for _, n := range libSortMain {
-			p := app.Path.Library + `/` + n
-			if fileutil.IsDir(p) {
-				librarySrc = append(librarySrc, p)
+		yamlFile := lib + `/library.yaml`
+		if fileutil.IsExist(yamlFile) {
+			data, _ := os.ReadFile(yamlFile)
+			y := YamlLibrary{}
+			erry := yaml.Unmarshal(data, &y)
+			if nil == erry {
+				if len(y.Require) == 0 {
+					luaLibSrc = append(luaLibSrc, lib)
+				} else {
+					for _, n := range y.Require {
+						p := lib + `/` + n
+						if fileutil.IsDir(p) {
+							luaLibSrc = append(luaLibSrc, p)
+						}
+					}
+				}
 			}
+		} else {
+			luaLibSrc = append(luaLibSrc, lib)
 		}
 	}
-	var libSortSub []string
-	subRoot := app.Path.Projects + "/" + app.ProjectName + `/library`
-	yamlFile = subRoot + `/library.yaml`
-	if fileutil.IsExist(yamlFile) {
-		data, _ := os.ReadFile(yamlFile)
-		y := YamlLibrary{}
-		erry := yaml.Unmarshal(data, &y)
-		if nil == erry {
-			libSortSub = y.Require
-		}
-	}
-	if len(libSortSub) == 0 {
-		if fileutil.IsDir(subRoot) {
-			librarySrc = append(librarySrc, subRoot)
-		}
-	} else {
-		for _, n := range libSortSub {
-			p := subRoot + `/` + n
-			if fileutil.IsDir(p) {
-				librarySrc = append(librarySrc, p)
-			}
-		}
-	}
-	for _, src := range librarySrc {
+	for _, src := range luaLibSrc {
 		err = filepath.Walk(src, func(path string, info fs.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
-			if filepath.Ext(path) == ".lua" {
-				code, err2 := fileutil.ReadFileToString(path)
-				if err2 != nil {
-					Panic(err2)
-				}
-				isGen := "_local" != app.BuildModeName
-				name := luaTrimName(path, app.Pwd)
-				dst := ""
-				if isGen {
-					ns := strings.Split(name, ".")
-					if ns[1] == app.ProjectName {
-						// 处理 project 内 library
-						n3 := strings.Join(ns[0:3], ".")
-						name = strings.Replace(name, n3, "librpro", 1)
-					}
-					n := strings.Replace(name, `.`, `/`, -1)
-					dst = app.BuildDstPath + "/map/" + n + ".lua"
-				}
-				luaChipsIn(LuaFile{
-					name: name,
-					dst:  dst,
-					code: code,
-					gen:  isGen,
-				})
+			if strings.EqualFold(filepath.Ext(path), ".lua") {
+				app.luaFileHandler(path)
 			}
 			return nil
 		})
@@ -143,58 +90,32 @@ func (app *App) luaDev() string {
 			Panic(err)
 		}
 	}
-
-	// lua - core2
-	cores = []string{"slk", "assets", "system", "ids"}
-	for _, v := range cores {
-		dst := app.BuildDstPath + "/map/projects/" + v + ".lua"
-		x, _ := Embeds.ReadFile("embeds/lua/slk/" + v + ".lua")
-		code := string(x)
-		luaChipsIn(LuaFile{
-			name: "projects." + v,
-			dst:  dst,
-			code: code,
-			gen:  true,
-		})
-	}
-
-	//-------------- assets ---------------
-
-	// lni - UI
-	CopyPath("embeds/lni/assets/UI", app.BuildDstPath+"/map/UI")
-
-	// 加载 项目 assets
-	assetsDir, _ := filepath.Abs(app.Path.Projects + "/" + app.ProjectName + "/assets")
-	hasAssets := fileutil.IsDir(assetsDir)
-	if hasAssets {
-		err = filepath.Walk(assetsDir, func(path string, info fs.FileInfo, err error) error {
+	// luaScript:embeds/lua/slk
+	app.luaFileHandler(`embeds/lua/slk/slk.lua`)
+	app.luaFileHandler(`embeds/lua/slk/assets.lua`)
+	app.luaFileHandler(`embeds/lua/slk/system.lua`)
+	app.luaFileHandler(`embeds/lua/slk/ids.lua`)
+	// luaScript:project/assets project/slk
+	proInput := []string{app.Path.Projects + "/" + app.ProjectName + "/assets", app.Path.Projects + "/" + app.ProjectName + "/slk"}
+	for _, ipt := range proInput {
+		if fileutil.IsDir(ipt) {
+			err = filepath.Walk(ipt, func(path string, info fs.FileInfo, err error) error {
+				if err != nil {
+					return err
+				}
+				if strings.EqualFold(filepath.Ext(path), ".lua") {
+					luaRequire(L, path)
+					app.luaFileHandler(path)
+				}
+				return nil
+			})
 			if err != nil {
-				return err
+				Panic(err)
 			}
-			if filepath.Ext(path) == ".lua" {
-				luaRequire(L, path)
-				name := luaTrimName(path, app.Pwd)
-				n := strings.Replace(name, `.`, `/`, -1)
-				dst := app.BuildDstPath + "/map/" + n + ".lua"
-				code, err2 := fileutil.ReadFileToString(path)
-				if err2 != nil {
-					Panic(err2)
-				}
-				luaChipsIn(LuaFile{
-					name: name,
-					dst:  dst,
-					code: code,
-					gen:  "_local" != app.BuildModeName,
-				})
-			}
-			return nil
-		})
-		if err != nil {
-			Panic(err)
 		}
 	}
 
-	// assets文件处理
+	// luaAssets:处理 GO_ASSETS_ALL
 	fn := L.GetGlobal("GO_ASSETS_ALL")
 	if err = L.CallByParam(lua.P{Fn: fn, NRet: 1, Protect: true}); err != nil {
 		Panic(err)
@@ -204,53 +125,37 @@ func (app *App) luaDev() string {
 	if err != nil {
 		Panic(err)
 	}
-	asCodes, asFdfs := app.luaAssets(ga)
-
-	//-------------- SLK ----------------
-
-	// 加载 项目 slk
-	slkDir, _ := filepath.Abs(app.Path.Projects + "/" + app.ProjectName + "/slk")
-	hasSlk := fileutil.IsDir(slkDir)
-	if hasSlk {
-		err = filepath.Walk(slkDir, func(path string, info fs.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if filepath.Ext(path) == ".lua" {
-				luaRequire(L, path)
-				name := luaTrimName(path, app.Pwd)
-				n := strings.Replace(name, `.`, `/`, -1)
-				dst := app.BuildDstPath + "/map/" + n + ".lua"
-				code, err2 := fileutil.ReadFileToString(path)
-				if err2 != nil {
-					Panic(err2)
-				}
-				luaChipsIn(LuaFile{
-					name: name,
-					dst:  dst,
-					code: code,
-					gen:  "_local" != app.BuildModeName,
-				})
-			}
-			return nil
-		})
-		if err != nil {
-			Panic(err)
-		}
+	// luaAssets:读取resources
+	assetsCodes, assetsFdf := app.luaAssets(ga)
+	// luaAssets:合并toc
+	tocFile := app.BuildDstPath + "/map/UI/xlik.toc"
+	if !fileutil.IsExist(tocFile) {
+		Panic("xlik.toc not exist")
 	}
-	//
+	toc, err2 := fileutil.ReadFileToString(tocFile)
+	if err2 != nil {
+		Panic(err2)
+	}
+	if len(assetsFdf) > 0 {
+		toc += "\r\n" + strings.Join(assetsFdf, "\r\n")
+	}
+	err = fileutil.WriteStringToFile(tocFile, toc+"\r\n", false)
+	if err != nil {
+		Panic(err)
+	}
+	// luaSlk:处理 GO_SLK_ALL
 	fn = L.GetGlobal("GO_SLK_ALL")
 	if err = L.CallByParam(lua.P{Fn: fn, NRet: 1, Protect: true}); err != nil {
 		Panic(err)
 	}
-	// get lua function results
+	// luaSlk:get lua function results
 	slkData := L.ToString(-1)
 	var slData []map[string]interface{}
 	err = json.Unmarshal([]byte(slkData), &slData)
 	if err != nil {
 		Panic(err)
 	}
-	// 拼接 slk ini
+	// luaSlk:拼接ini
 	iniKeys := []string{"ability", "unit", "item", "destructable", "doodad", "buff", "upgrade"}
 	iniF6 := make(map[string]string)
 	reg := regexp.MustCompile("\\[[A-Za-z][A-Za-z\\d]{3}]")
@@ -372,8 +277,7 @@ func (app *App) luaDev() string {
 			sbr.WriteString("\n\n")
 		}
 	}
-
-	// 合并 slk ini
+	// luaSlk:写入ini
 	csTableDir := app.BuildDstPath + "/table"
 	for k, v := range slkIniBuilder {
 		if iniF6[k] == "" {
@@ -386,110 +290,76 @@ func (app *App) luaDev() string {
 			Panic(err)
 		}
 	}
-
-	// lua - init
-	x, _ := Embeds.ReadFile("embeds/lua/engine/init.lua")
-	initCodes := string(x)
-	luaChipsIn(LuaFile{
-		name: "projects.init",
-		dst:  app.BuildDstPath + "/map/projects/init.lua",
-		code: initCodes,
-		gen:  true,
-	})
-
-	// project scripts
-	sDir, _ := filepath.Abs(app.Path.Projects + "/" + app.ProjectName + "/scripts")
-	err = filepath.Walk(sDir, func(path string, info fs.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if filepath.Ext(path) == ".lua" {
-			lc, err2 := fileutil.ReadFileToString(path)
-			if err2 != nil {
-				Panic(err2)
-			}
-			name := luaTrimName(path, app.Pwd)
-			n := strings.Replace(name, `.`, `/`, -1)
-			dst := app.BuildDstPath + "/map/" + n + ".lua"
-			code := lc
-			luaChipsIn(LuaFile{
-				name: name,
-				dst:  dst,
-				code: code,
-				gen:  "_local" != app.BuildModeName,
-			})
-		}
-		return nil
-	})
-	if err != nil {
-		Panic(err)
-	}
-
-	// 为 setting 补充：物编ID
-	settingCode := _luaChips[_idxPt[`setting`]].code
+	// luaSlk:补充setting中的物编ID
+	_luaSettingKey := "embeds/lua/engine/setting.lua"
+	_luaSettingCode := _luaFiles[_luaSettingKey].code
 	if len(slkIdCli) > 0 {
 		for k, v := range slkIdCli {
 			slkIdCli[k] = "'" + v + "'"
 		}
-		settingCode = strings.Replace(settingCode, "LK_GO_IDS = {}", "LK_GO_IDS = {"+strings.Join(slkIdCli, ",")+"}", 1)
+		_luaSettingCode = strings.Replace(_luaSettingCode, "LK_GO_IDS = {}", "LK_GO_IDS = {"+strings.Join(slkIdCli, ",")+"}", 1)
 	}
 	// import assets codes
-	settingCode = strings.Replace(settingCode, "---lk:placeholder assets", asCodes, 1)
+	_luaSettingCode = strings.Replace(_luaSettingCode, "---lk:placeholder assets", assetsCodes, 1)
 	// map name
 	wj, _ := fileutil.ReadFileToString(app.BuildDstPath + "/map/war3map.j")
 	reg = regexp.MustCompile("SetMapName\\(\"(.*)\"\\)")
 	sm := reg.FindAllStringSubmatch(wj, 1)
 	if len(sm) > 0 {
 		mapName := sm[0][1]
-		settingCode = strings.Replace(settingCode, "LK_MAP_NAME = '(name)'", `LK_MAP_NAME = "`+mapName+`"`, 1)
+		_luaSettingCode = strings.Replace(_luaSettingCode, "LK_MAP_NAME = '(name)'", `LK_MAP_NAME = "`+mapName+`"`, 1)
 	}
-	_luaChips[_idxPt[`setting`]].code = settingCode
+	_luaFiles[_luaSettingKey].code = _luaSettingCode
+	// luaScript:embeds/lua/engine/init
+	app.luaFileHandler(`embeds/lua/engine/init.lua`)
+	// luaScript:project/scripts
+	proScripts := app.Path.Projects + "/" + app.ProjectName + "/scripts"
+	if fileutil.IsDir(proScripts) {
+		err = filepath.Walk(proScripts, func(path string, info fs.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if strings.EqualFold(filepath.Ext(path), ".lua") {
+				app.luaFileHandler(path)
+			}
+			return nil
+		})
+		if err != nil {
+			Panic(err)
+		}
+	}
 
-	// toc
-	tocFile := app.BuildDstPath + "/map/UI/xlik.toc"
-	if !fileutil.IsExist(tocFile) {
-		Panic("xlik.toc not exist")
-	}
-	toc, err2 := fileutil.ReadFileToString(tocFile)
-	if err2 != nil {
-		Panic(err2)
-	}
-	if len(asFdfs) > 0 {
-		toc += "\r\n" + strings.Join(asFdfs, "\r\n")
-	}
-	err = fileutil.WriteStringToFile(tocFile, toc+"\r\n", false)
-	if err != nil {
-		Panic(err)
-	}
+	// luaScript:ChipsIn
+	app.luaFileToChips()
 
-	// lua - setup
+	// luaScript:final chips
+	// luaScript:setup
 	luaChipsIn(LuaFile{
 		name: "projects.setup",
 		dst:  app.BuildDstPath + "/map/projects/setup.lua",
 		code: app.luaSetup(),
 		gen:  true,
 	})
-
-	// lua - start
+	// luaScript:start
 	luaChipsIn(LuaFile{
 		name: "projects.start",
 		dst:  app.BuildDstPath + "/map/projects/start.lua",
 		code: app.luaStart(),
 		gen:  true,
 	})
-
-	// core
+	// luaChipsIn to coreScripts
 	coreName := "core"
-	// 处理代码
 	if app.BuildModeName == "_dist" {
 		coreName = Nano(23)
 		connect := []string{coreName}
 		for i := 0; i < len(_luaChips); i++ {
 			nano := Nano(23)
-			if i == _idxPt[`debug`] || i == _idxPt[`debugRelease`] {
+			if _luaChips[i].name == "engine.drive.debugRelease" {
 				connect = append(connect, nano)
-			}
-			if i != _idxPt[`debugRelease`] {
+			} else {
+				if _luaChips[i].name == "engine.drive.debug" {
+					connect = append(connect, nano)
+				}
 				coreScripts = append(coreScripts, luaRequireStr(nano))
 			}
 			_luaChips[i].name = nano
@@ -503,8 +373,7 @@ func (app *App) luaDev() string {
 			coreScripts = append(coreScripts, luaRequireStr(v.name))
 		}
 	}
-
-	// core
+	// luaScript:core
 	coreDst := app.BuildDstPath + "/map/" + coreName + ".lua"
 	coreCode := strings.Join(coreScripts, "\n")
 	coreMap := LuaFile{
@@ -528,7 +397,7 @@ func (app *App) luaDev() string {
 			dst = app.BuildDstPath + "/map/" + v.name + ".lua"
 		}
 		if dst != "" && v.gen {
-			DirCheck(dst)
+			FileCheck(dst)
 			err = fileutil.WriteStringToFile(dst, code, false)
 			if err != nil {
 				Panic(err)

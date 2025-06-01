@@ -25,7 +25,7 @@ if (false == LK_DEBUG) then
                 local cx2, cy2 = camera.x(), camera.y()
                 if (true ~= click and cx == cx2 and cy == cy2) then
                     class.destroy(curTimer)
-                    sync.send("negativeHangUp", { player.localIndex })
+                    sync.send("negativeHangUp", { PlayerLocal():index() })
                     return
                 end
                 cx, cy = cx2, cy2

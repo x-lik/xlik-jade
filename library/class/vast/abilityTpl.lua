@@ -1,4 +1,8 @@
+--- current class name
+AbilityTplClass = "AbilityTpl"
+
 --- 技能Tpl模版数据
+---[[:use library/class/vast/tpl]]
 ---@class AbilityTpl:Tpl
 local _index = Vast(AbilityTplClass, {
     ---@type string 施法动作

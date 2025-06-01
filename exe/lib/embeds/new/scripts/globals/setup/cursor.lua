@@ -11,9 +11,9 @@ game.onPhase("process", function()
                 ---@type Image
                 sel:size(s, s)
                 sel:position(o:x(), o:y())
-                if (o:owner():handle() == player.localHandle) then
+                if (o:owner():handle() == PlayerLocal():index()) then
                     sel:rgba(0, 255, 0, 255)
-                elseif (J.IsUnitEnemy(o:handle(), player.localHandle)) then
+                elseif (J.IsUnitEnemy(o:handle(), PlayerLocal():handle())) then
                     sel:rgba(255, 0, 0, 255)
                 else
                     sel:rgba(255, 255, 0, 255)

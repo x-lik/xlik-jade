@@ -1,3 +1,6 @@
+--- current class name
+UIKitClass = "UIKit"
+
 --- UI套件
 ---@class UIKit:Meta
 local _index = Meta(UIKitClass, {

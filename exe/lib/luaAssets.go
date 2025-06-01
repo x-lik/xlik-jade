@@ -353,10 +353,10 @@ func (app *App) asSelection(data string) {
 	dir := app.Path.Assets + "/war3mapSelection/" + data
 	if !fileutil.IsDir(dir) {
 		pterm.Warning.Println("【选择圈】组件 " + data + " 不存在")
-		CopyPath("embeds/lni/assets/Selection", app.BuildDstPath+"/resource/ReplaceableTextures/Selection")
+		CopyDir("embeds/lni/assets/Selection", app.BuildDstPath+"/resource/ReplaceableTextures/Selection")
 		pterm.Info.Println("【选择圈】引入：Lni")
 	} else {
-		CopyPath(dir, app.BuildDstPath+"/resource/ReplaceableTextures/Selection")
+		CopyDir(dir, app.BuildDstPath+"/resource/ReplaceableTextures/Selection")
 		pterm.Info.Println("【选择圈】引入：" + data)
 	}
 }
@@ -378,8 +378,8 @@ func (app *App) asTerrain(data string) {
 				ok = false
 			}
 			if ok {
-				CopyPath(cliff, app.BuildDstPath+"/resource/ReplaceableTextures/Cliff")
-				CopyPath(terrainArt, app.BuildDstPath+"/resource/TerrainArt")
+				CopyDir(cliff, app.BuildDstPath+"/resource/ReplaceableTextures/Cliff")
+				CopyDir(terrainArt, app.BuildDstPath+"/resource/TerrainArt")
 				pterm.Info.Println("【地形贴图】引入：" + data)
 			} else {
 				pterm.Error.Println("【地形贴图】引入：" + data + " 存在问题已中止")
@@ -413,19 +413,8 @@ func (app *App) asFont(data string) string {
 	if !isDefault {
 		luaFile := app.Path.Assets + "/war3mapFont/" + data + ".lua"
 		if fileutil.IsExist(luaFile) {
-			fontLua, err := fileutil.ReadFileToString(luaFile)
-			if err != nil {
-				Panic(err)
-			}
-			if fontLua != "" {
-				pterm.Debug.Println("【字体】载入lua配置")
-				luaChipsIn(LuaFile{
-					name: "projects.fonts",
-					dst:  app.BuildDstPath + "/map/projects/fonts.lua",
-					code: fontLua,
-					gen:  true,
-				})
-			}
+			pterm.Debug.Println("【字体】载入lua配置")
+			app.luaFileHandler(luaFile)
 		}
 	}
 	asScriptIn(`font`, ``, data, ``)
@@ -754,20 +743,7 @@ func (app *App) asUI(data []string) []string {
 							return err
 						}
 						if filepath.Ext(path) == ".lua" {
-							lc, errl := fileutil.ReadFileToString(path)
-							if errl != nil {
-								Panic(errl)
-							}
-							name := luaTrimName(path, app.Path.Assets)
-							n := strings.Replace(name, `.`, `/`, -1)
-							dst := app.BuildDstPath + "/map/" + n + ".lua"
-							code := lc
-							luaChipsIn(LuaFile{
-								name: name,
-								dst:  dst,
-								code: code,
-								gen:  "_local" != app.BuildModeName,
-							})
+							app.luaFileHandler(path)
 						}
 						return nil
 					})
@@ -777,19 +753,7 @@ func (app *App) asUI(data []string) []string {
 					uiTips += `，已引入scripts`
 				}
 				// main
-				name := luaTrimName(mainLua, app.Path.Assets)
-				n := strings.Replace(name, `.`, `/`, -1)
-				dst := app.BuildDstPath + "/map/" + n + ".lua"
-				code, err2 := fileutil.ReadFileToString(mainLua)
-				if err2 != nil {
-					Panic(err2)
-				}
-				luaChipsIn(LuaFile{
-					name: name,
-					dst:  dst,
-					code: code,
-					gen:  "_local" != app.BuildModeName,
-				})
+				app.luaFileHandler(mainLua)
 			}
 			pterm.Info.Println(uiTips)
 		} else {

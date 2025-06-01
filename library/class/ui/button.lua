@@ -1,3 +1,6 @@
+--- current class name
+UIButtonClass = "UIButton"
+
 --- 按钮UI
 ---@class UIButton:UI
 local _index = UI(UIButtonClass, {
@@ -60,6 +63,16 @@ end
 function _index:destruct()
     class.destroy(self._borderTimer)
     self._borderTimer = nil
+    class.destroy(self._highlight)
+    self._highlight = nil
+    class.destroy(self._border)
+    self._border = nil
+    class.destroy(self._blocker)
+    self._blocker = nil
+    class.destroy(self._text)
+    self._text = nil
+    class.destroy(self._hotkey)
+    self._hotkey = nil
 end
 
 --- 设置宽高尺寸[0-0.8,0-0.6]

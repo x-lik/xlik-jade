@@ -1,7 +1,11 @@
+--- current class name
+UIPlateClass = "UIPlate"
+
 --- 面板UI
 --- 支持esc、close的Backdrop
 --- esc 指面板打开后支持按Esc键将以出栈的方式隐藏面板
 --- close 指面板右上角带有关闭按钮
+---[[:use library/class/ui/backdrop]]
 ---@class UIPlate:UIBackdrop
 local _index = UI(UIPlateClass, {
     -----@type boolean 支持esc关闭状态状态
@@ -20,6 +24,12 @@ function _index:construct()
     end)
     closer:show(false)
     self._closer = closer
+end
+
+---@protected
+function _index:destruct()
+    class.destroy(self._closer)
+    self._closer = nil
 end
 
 --- 设定ESC隐藏功能绑定

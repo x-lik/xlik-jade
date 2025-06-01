@@ -1,3 +1,6 @@
+--- current class name
+TimerClass = "Timer"
+
 --- 计时器
 ---@class Timer:Meta
 local _index = Meta(TimerClass, {

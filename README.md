@@ -2,8 +2,10 @@ Language : CN | [US](./README.en-US.md)
 
 # X-LIK 璞玉版本（完全开源）
 
+[![查看 DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/x-lik/xlik-jade)
+
 - 首页: [https://www.hunzsig.com/x-lik](https://www.hunzsig.com/x-lik)
-- 发电: [https://afdian.com/a/hunzsig](https://afdian.com/a/hunzsig)
+- 更新: [https://www.hunzsig.com/x-lik-log](https://www.hunzsig.com/x-lik-log)
 
 ## 框架结构
 

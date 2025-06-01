@@ -1,3 +1,6 @@
+--- current class name
+ProcessClass = "Process"
+
 --- 流程管理
 --- 游戏进度段的管理切片
 ---@type Process 当前运行流程

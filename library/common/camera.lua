@@ -43,7 +43,7 @@ end
 ---@return number
 function camera.farZ(value)
     if (type(value) == "number") then
-        japi.CameraSetField("farZ", value, 100, 3000)
+        japi.CameraSetField("farZ", value, 0)
         return
     end
     return japi.CameraGetField("farZ")
@@ -54,7 +54,7 @@ end
 ---@return number
 function camera.zOffset(value)
     if (type(value) == "number") then
-        japi.CameraSetField("zOffset", value, -1000, 3000)
+        japi.CameraSetField("zOffset", value, 0)
         return
     end
     return japi.CameraGetField("zOffset")
@@ -65,7 +65,7 @@ end
 ---@return number
 function camera.fov(value)
     if (type(value) == "number") then
-        japi.CameraSetField("fov", value, 20, 120)
+        japi.CameraSetField("fov", value, 0)
         return
     end
     return math._r2d * japi.CameraGetField("fov")
@@ -76,7 +76,7 @@ end
 ---@return number
 function camera.traX(value)
     if (type(value) == "number") then
-        japi.CameraSetField("traX", value, 270, 350)
+        japi.CameraSetField("traX", value, 0)
         return
     end
     return math._r2d * japi.CameraGetField("traX")
@@ -87,7 +87,7 @@ end
 ---@return number
 function camera.traY(value)
     if (type(value) == "number") then
-        japi.CameraSetField("traY", value, 80, 280)
+        japi.CameraSetField("traY", value, 0)
         return
     end
     return math._r2d * japi.CameraGetField("traY")
@@ -98,7 +98,7 @@ end
 ---@return number
 function camera.traZ(value)
     if (type(value) == "number") then
-        japi.CameraSetField("traZ", value, 80, 280)
+        japi.CameraSetField("traZ", value, 0)
         return
     end
     return math._r2d * japi.CameraGetField("traZ")
@@ -109,7 +109,7 @@ end
 ---@return number
 function camera.distance(value)
     if (type(value) == "number") then
-        japi.CameraSetField("distance", value, 400, 3000)
+        japi.CameraSetField("distance", value, 0)
         return
     end
     return japi.CameraGetField("distance")

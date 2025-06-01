@@ -1,4 +1,5 @@
---- Buff状态控制，控制状态的执行与回滚
+--- current class name
+BuffClass = "Buff"
 
 --- buff标识
 buffSignal = {
@@ -7,6 +8,7 @@ buffSignal = {
 }
 
 --- Buff对象
+--- 状态控制，控制状态的执行与回滚
 ---@class Buff:Meta
 local _index = Meta(BuffClass, {
     ---@type string 凸显文本（一般用不到）

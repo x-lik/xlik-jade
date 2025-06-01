@@ -1,3 +1,6 @@
+--- current class name
+WarehouseSlotClass = "WarehouseSlot"
+
 --- 玩家仓库，自定义玩家仓库栏数据结构
 ---@class WarehouseSlot:Meta
 local _index = Meta(WarehouseSlotClass)

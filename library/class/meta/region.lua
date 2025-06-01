@@ -1,3 +1,6 @@
+--- current class name
+RegionClass = "Region"
+
 --- 方/圆区域，用于划定范围及管理
 ---@class Region:Meta
 local _index = Meta(RegionClass, {
@@ -172,7 +175,7 @@ end
 ---@param weatherKind weather 参考 weather.kind，当设为nil且status为false时，去除所有天气，否则只去除1对应数量级
 ---@return number
 function _index:weatherInsert(weatherKind)
-    must(weather.isValid(weatherKind), "weatherKind@weather.kind")
+    must(weather.isValidKind(weatherKind), "weatherKind@weather.kind")
     ---@type number[]
     local ws = self._weathers
     if (nil == ws) then
