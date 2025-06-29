@@ -109,7 +109,8 @@ function Enchant(key, name, strengthen, resistance)
     if (nil == cache[key]) then
         sync.must()
         cache[key] = oMeta({ _key = key, _name = name or key, _strengthen = strengthen or 0, _resistance = resistance or 0 }, _index)
-        injury.setDamageType(key, name) -- 关联伤害类型
+        local m = Mapping("damageType") -- 引用伤害类型mapping
+        injury.damageType[key] = m:set(key, name) -- 关联injury.damageType并写入mapping数据
     end
     return cache[key]
 end
@@ -128,12 +129,12 @@ end
 ---@param call fun(eKey:string):void
 ---@return Enchant
 function EnchantForeach(call)
-    local dtk = injury.damageTypeKeys
-    local l = #dtk
+    local dt_values = Mapping("damageType"):values()
+    local l = #dt_values
     if (l < 1) then
         return
     end
     for i = 2, l, 1 do
-        call(dtk[i])
+        call(dt_values[i])
     end
 end

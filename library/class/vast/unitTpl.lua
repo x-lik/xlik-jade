@@ -244,7 +244,7 @@ end
 
 --- 单位身体材质
 ---@see attribute#unitMaterial
----@param variety table|nil attribute.unitMaterial.*
+---@param variety MappingValue|nil attribute.unitMaterial.*
 ---@return self|table
 function _index:material(variety)
     if (nil ~= variety) then
@@ -294,7 +294,7 @@ end
 
 --- 单位移动类型
 ---@see attribute#unitMoveType
----@param variety table|nil attribute.unitMoveType.*
+---@param variety MappingValue|nil attribute.unitMoveType.*
 ---@return self|table
 function _index:moveType(variety)
     if (nil ~= variety) then
@@ -322,7 +322,7 @@ end
 --- 主属性（假设的）
 --- 假定模拟魔兽3属性，实质无功能，框架未做其余任何处理
 ---@see attribute#unitPrimary
----@param variety table|nil attribute.unitPrimary.*
+---@param variety MappingValue|nil attribute.unitPrimary.*
 ---@return self|table
 function _index:primary(variety)
     if (nil ~= variety) then

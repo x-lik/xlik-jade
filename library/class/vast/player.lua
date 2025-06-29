@@ -16,7 +16,7 @@ local _index = Vast(PlayerClass, {
     _worthRatio = 100,
     ---@type number 回收折价率
     _recoveryRatio = 50,
-    ---@type table 拾取模式
+    ---@type MappingValue 拾取模式
     _pickMode = player.pickMode.itemWarehouse,
 })
 
@@ -178,7 +178,7 @@ end
 
 --- 状态值
 ---@see player#status
----@param variety table|nil player.status.*
+---@param variety MappingValue|nil player.status.*
 ---@return self|table
 function _index:status(variety)
     if (nil ~= variety) then
@@ -197,7 +197,7 @@ end
 --- 玩家的捡取模式
 --- 默认捡去物品栏，满了转移至仓库
 ---@see player#pickMode
----@param variety table|nil player.pickMode.*
+---@param variety MappingValue|nil player.pickMode.*
 ---@return self|table
 function _index:pickMode(variety)
     if (nil ~= variety) then

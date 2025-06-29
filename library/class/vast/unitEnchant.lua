@@ -38,7 +38,7 @@ end
 
 --- 附魔强化[%]
 ---@see injury#damageType
----@param eType string|table 附魔类型字符串 或 injury.damageType
+---@param eType string|MappingValue 附魔类型字符串 或 injury.damageType
 ---@param variety number|nil
 ---@return self|number
 function _index:enchantStrengthen(eType, variety)
@@ -51,7 +51,7 @@ end
 
 --- 附魔抵抗[%]
 ---@see injury#damageType
----@param eType string|table 附魔类型字符串 或 injury.damageType
+---@param eType string|MappingValue 附魔类型字符串 或 injury.damageType
 ---@param variety number|nil
 ---@return self|number
 function _index:enchantResistance(eType, variety)
@@ -64,7 +64,7 @@ end
 
 --- 附魔免疫
 ---@see injury#damageType
----@param eType string|table 附魔类型字符串 或 injury.damageType
+---@param eType string|MappingValue 附魔类型字符串 或 injury.damageType
 ---@param variety number|nil
 ---@return self|number
 function _index:enchantImmune(eType, variety)
@@ -85,7 +85,7 @@ end
 
 --- 是否附魔免疫
 ---@see injury#damageType
----@param key string|table 附魔类型字符串 或 injury.damageType
+---@param key string|MappingValue 附魔类型字符串 或 injury.damageType
 ---@return boolean
 function _index:isEnchantImmune(key)
     return self:enchantImmune(key) > 0
@@ -103,7 +103,7 @@ end
 --- 如火史莱姆之类的会用这方法在初始化就绑定1种属性
 --- 只能设置1种元素属性，后设置会替换先设置的属性
 ---@see injury#damageType
----@param eType table|string|boolean 附魔元素，可以设为false移除属性
+---@param eType MappingValue|string|boolean 附魔元素，可以设为false移除属性
 ---@return self|any
 function _index:enchantMaterial(eType)
     if (nil == eType) then

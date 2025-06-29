@@ -9,11 +9,11 @@ player.startQuantity = player.startQuantity or 1
 --- 游戏当前玩家数
 player.currentQuantity = player.currentQuantity or 1
 -- 玩家状态
-local _ps = { _type = "playerStatus" }
+local m_ps = Mapping("playerStatus")
 player.status = {
-    empty = setmetatable({ value = "empty", label = "空置" }, { __index = _ps }),
-    playing = setmetatable({ value = "playing", label = "在线" }, { __index = _ps }),
-    leave = setmetatable({ value = "leave", label = "离线" }, { __index = _ps }),
+    empty = m_ps:set("empty", "空置"),
+    playing = m_ps:set("playing", "在线"),
+    leave = m_ps:set("leave", "离线"),
 }
 --- 仓库栏默认容量
 player.warehouseSlotVolume = player.warehouseSlotVolume or 12
@@ -22,11 +22,11 @@ player.pickActionRadius = player.pickActionRadius or 200
 --- 游戏物品拾取格子判定范围
 player.pickGridRadius = player.pickGridRadius or 32
 -- 玩家物品拾取模式
-local _pm = { _type = "playerPickMode" }
+local m_pm = Mapping("playerPickMode")
 player.pickMode = {
-    itemWarehouse = setmetatable({ value = "itemWarehouse", label = "优先物品栏，满则转移至仓库" }, { __index = _pm }),
-    itemOnly = setmetatable({ value = "itemOnly", label = "只拾取到物品栏" }, { __index = _pm }),
-    warehouseOnly = setmetatable({ value = "warehouseOnly", label = "只拾取到仓库" }, { __index = _pm }),
+    itemWarehouse = m_pm:set("itemWarehouse", "优先物品栏，满则转移至仓库"),
+    itemOnly = m_pm:set("itemOnly", "只拾取到物品栏"),
+    warehouseOnly = m_pm:set("warehouseOnly", "只拾取到仓库"),
 }
 -- 玩家聊天正则匹配规则
 ---@type Array

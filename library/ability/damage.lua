@@ -7,17 +7,17 @@
         sourceUnit = Unit, --[可选]源单位
         targetUnit = Unit, --[必须]目标单位
         damage = number, --[可选]伤害值，默认0
-        damageSrc = table, --[可选]伤害来源，默认injury.damageSrc.common（详情查看injury.damageSrc）
-        damageType = table, --[可选]伤害类型，默认injury.damageType.common （详情查看injury.damageType）
+        damageSrc = MappingValue, --[可选]伤害来源，默认injury.damageSrc.common（详情查看injury.damageSrc）
+        damageType = MappingValue, --[可选]伤害类型，默认injury.damageType.common （详情查看injury.damageType）
         damageTypeLevel = number, --[可选]伤害类级别（影响元素附着或自定义效果），默认0
-        breakArmor = table, --[可选]破防类型，默认{}（详情查看injury.breakArmor）
+        breakArmor = MappingValue[], --[可选]破防类型，默认{}（详情查看injury.breakArmor）
         extra = table, --[可选]自定义额外数据
     }
 ]]
 ---@see injury#damageType
 ---@see injury#damageSrc
 ---@see injury#breakArmorType
----@param options {sourceUnit:Unit,targetUnit:Unit,damage:number,damageSrc:table,damageType:table,damageTypeLevel:number,breakArmor:table[],extra:table}
+---@param options {sourceUnit:Unit,targetUnit:Unit,damage:number,damageSrc:MappingValue,damageType:MappingValue,damageTypeLevel:number,breakArmor:MappingValue[],extra:table}
 ---@return void
 function ability.damage(options)
     sync.must()

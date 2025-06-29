@@ -6,36 +6,36 @@ sound = sound or {}
 sound._curBgm = sound._curBgm or nil
 
 --- 音效通道类型
-local _sc = { _type = "soundChannel" }
+local m_sc = Mapping("soundChannel")
 sound.channel = {
-    normal = setmetatable({ value = 0, label = "普通" }, { __index = _sc }),
-    selection = setmetatable({ value = 1, label = "单位选择" }, { __index = _sc }),
-    confirm = setmetatable({ value = 2, label = "单位确认" }, { __index = _sc }),
-    move = setmetatable({ value = 3, label = "单位移动" }, { __index = _sc }),
-    ready = setmetatable({ value = 4, label = "单位准备" }, { __index = _sc }),
-    combat = setmetatable({ value = 5, label = "战斗" }, { __index = _sc }),
-    error = setmetatable({ value = 6, label = "错误" }, { __index = _sc }),
-    music = setmetatable({ value = 7, label = "音乐" }, { __index = _sc }),
-    ui = setmetatable({ value = 8, label = "用户界面" }, { __index = _sc }),
-    patrol = setmetatable({ value = 9, label = "循环移动" }, { __index = _sc }),
-    env = setmetatable({ value = 10, label = "循环环境" }, { __index = _sc }),
-    animate = setmetatable({ value = 11, label = "动画" }, { __index = _sc }),
-    construct = setmetatable({ value = 12, label = "建筑" }, { __index = _sc }),
-    spell = setmetatable({ value = 13, label = "出生" }, { __index = _sc }),
-    flame = setmetatable({ value = 14, label = "火焰" }, { __index = _sc }),
+    normal = m_sc:set(0, "普通"),
+    selection = m_sc:set(1, "单位选择"),
+    confirm = m_sc:set(2, "单位确认"),
+    move = m_sc:set(3, "单位移动"),
+    ready = m_sc:set(4, "单位准备"),
+    combat = m_sc:set(5, "战斗"),
+    error = m_sc:set(6, "错误"),
+    music = m_sc:set(7, "音乐"),
+    ui = m_sc:set(8, "用户界面"),
+    patrol = m_sc:set(9, "循环移动"),
+    env = m_sc:set(10, "循环环境"),
+    animate = m_sc:set(11, "动画"),
+    construct = m_sc:set(12, "建筑"),
+    spell = m_sc:set(13, "出生"),
+    flame = m_sc:set(14, "火焰"),
 }
 
 --- 检测是否属于有效的单位核心
 ---@param value table sound.channel.*
 ---@return boolean
 function sound.isValidChannel(value)
-    return type(value) == "table" and value._type == _sc._type
+    return isMapping(value, m_sc._kind)
 end
 
 --- 修改音频播放通道
 ---@see sound#channel
 ---@param voice number 音频handle
----@param channel number|table 数字或通道类型，参考sound.channel.*
+---@param channel number|MappingValue 数字或通道类型，参考sound.channel.*
 ---@return void
 function sound.setChannel(voice, channel)
     if (sound.isValidChannel(channel)) then

@@ -47,6 +47,7 @@ func (app *App) luaDev() string {
 	app.luaFileHandler(`embeds/lua/engine/promise.lua`)
 	app.luaFileHandler(`embeds/lua/engine/pairx.lua`)
 	app.luaFileHandler(`embeds/lua/engine/blizzard.lua`)
+	app.luaFileHandler(`embeds/lua/engine/mapping.lua`)
 	app.luaFileHandler(`embeds/lua/engine/setting.lua`)
 	// luaScript:library project/library
 	luaLibDirs := []string{app.Path.Library, app.Path.Projects + "/" + app.ProjectName + "/library"}

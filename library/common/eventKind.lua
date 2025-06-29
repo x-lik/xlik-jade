@@ -3,7 +3,7 @@
 ---@class eventKind
 eventKind = eventKind or {}
 
---todo 对象 Class[框架默认只注册了Vast类] --------------------------------------------------------------------------------------------------
+-- 对象 Class[框架默认只注册了Vast类] --------------------------------------------------------------------------------------------------
 
 --- [Class]创建
 --- triggerObject 触发对象
@@ -38,7 +38,7 @@ eventKind.classBeforeChange = "classBeforeChange"
 ---@alias eventOnClassAfterChange eventOnClassObject|{old:any, new:any,name:string}
 eventKind.classAfterChange = "classAfterChange"
 
---todo 时间 time --------------------------------------------------------------------------------------------------
+-- 时间 time --------------------------------------------------------------------------------------------------
 
 --- [时间]进入凌晨
 ---@alias eventOnTimeDawn table
@@ -56,7 +56,7 @@ eventKind.timeNoon = "timeNoon"
 ---@alias eventOnTimeNight table
 eventKind.timeNight = "timeNight"
 
---todo 玩家 player ---------------------------------------------------------------------------------------
+-- 玩家 player ---------------------------------------------------------------------------------------
 --- triggerPlayer 触发玩家
 ---@alias eventOnPlayerBase {triggerPlayer:Player}
 
@@ -101,7 +101,7 @@ eventKind.playerWarehouseChange = "playerWarehouseChange"
 ---@alias eventOnPlayerWorthChange eventOnPlayerBase|{old:table, new:table}
 eventKind.playerWorthChange = "playerWorthChange"
 
---todo 可破坏物 destructable ---------------------------------------------------------------------------------------
+-- 可破坏物 destructable ---------------------------------------------------------------------------------------
 --- triggerDestructable 触发可破坏物（原生handle）
 ---@alias eventOnDestructableBase {triggerDestructable:number}
 
@@ -109,7 +109,7 @@ eventKind.playerWorthChange = "playerWorthChange"
 ---@alias eventOnDestructableDead eventOnDestructableBase
 eventKind.destructableDead = "destructableDead"
 
---todo 区域 region --------------------------------------------------------------------------------------------------
+-- 区域 region --------------------------------------------------------------------------------------------------
 --- triggerRegion 触发区域
 ---@alias eventOnRegionBase {triggerRegion:Region}
 
@@ -123,7 +123,7 @@ eventKind.regionEnter = "regionEnter"
 ---@alias eventOnRegionLeave eventOnRegionBase|{triggerUnit:Unit}
 eventKind.regionLeave = "regionLeave"
 
---todo [单位]unit --------------------------------------------------------------------------------------------------
+-- 单位 unit --------------------------------------------------------------------------------------------------
 --- triggerUnit 触发单位
 --- triggerAbility 触发技能（当在Ability中使用onUnitEvent时存在）
 --- triggerItem 触发物品（当在Item中使用onUnitEvent时存在）
@@ -156,7 +156,7 @@ eventKind.unitOrderAttack = "unitOrderAttack"
 --- damageType 伤害类型
 ---@see injury#damageSrc
 ---@see injury#damageType
----@alias eventOnUnitDamage eventOnUnitBase|{targetUnit:Unit,damage:number,damageSrc:table,damageType:table}
+---@alias eventOnUnitDamage eventOnUnitBase|{targetUnit:Unit,damage:number,damageSrc:MappingValue,damageType:MappingValue}
 eventKind.unitDamage = "unitDamage"
 
 --- [单位]出生
@@ -190,7 +190,7 @@ eventKind.unitLevelChange = "unitLevelChange"
 --- damageType 伤害类型
 ---@see injury#damageSrc
 ---@see injury#damageType
----@alias eventOnUnitHurt eventOnUnitBase|{sourceUnit:Unit,targetUnit:Unit,damage:number,damageSrc:table,damageType:table}
+---@alias eventOnUnitHurt eventOnUnitBase|{sourceUnit:Unit,targetUnit:Unit,damage:number,damageSrc:MappingValue,damageType:MappingValue}
 eventKind.unitHurt = "unitHurt"
 
 --- [单位]受伤前
@@ -229,14 +229,14 @@ eventKind.unitBeKill = "unitBeKill"
 --- targetUnit 目标单位（被破防单位）
 --- breakArmorType 无视防御种类
 ---@see injury#breakArmorType
----@alias eventOnUnitBreakArmor eventOnUnitBase|{targetUnit:Unit,breakArmorType:table}
+---@alias eventOnUnitBreakArmor eventOnUnitBase|{targetUnit:Unit,breakArmorType:MappingValue}
 eventKind.unitBreakArmor = "unitBreakArmor"
 
 --- [单位]被破防
 --- sourceUnit 来源单位（破防单位）
 --- breakArmorType 无视防御种类
 ---@see injury#breakArmorType
----@alias eventOnUnitBeBreakArmor eventOnUnitBase|{sourceUnit:Unit,breakArmorType:table}
+---@alias eventOnUnitBeBreakArmor eventOnUnitBase|{sourceUnit:Unit,breakArmorType:MappingValue}
 eventKind.unitBeBreakArmor = "unitBeBreakArmor"
 
 --- [单位]陷入中止
@@ -252,7 +252,7 @@ eventKind.unitInterruptOut = "unitInterruptOut"
 --- enchantType 附魔类型 同damageType
 --- percent 加成百分比
 ---@see injury#damageType
----@alias eventOnUnitEnchant eventOnUnitBase|{sourceUnit:Unit,enchantType:table,percent:number}
+---@alias eventOnUnitEnchant eventOnUnitBase|{sourceUnit:Unit,enchantType:MappingValue,percent:number}
 eventKind.unitEnchant = "unitEnchant"
 
 --- [单位]全抵抗[防御]
@@ -269,7 +269,7 @@ eventKind.unitImmuneInvincible = "unitImmuneInvincible"
 --- sourceUnit 来源单位（伤害来源）
 --- enchantType 附魔类型 同damageType
 ---@see injury#damageType
----@alias eventOnUnitImmuneEnchant eventOnUnitBase|{sourceUnit:Unit,enchantType:table}
+---@alias eventOnUnitImmuneEnchant eventOnUnitBase|{sourceUnit:Unit,enchantType:MappingValue}
 eventKind.unitImmuneEnchant = "unitImmuneEnchant"
 
 -- [单位]获得技能
@@ -360,7 +360,8 @@ eventKind.unitItemLevelChange = "unitItemLevelChange"
 ---@alias eventOnUnitItemChange eventOnUnitBase|{triggerItem:Item|nil,triggerSlot:ItemSlot|nil}
 eventKind.unitItemChange = "unitItemChange"
 
---todo 技能 ability -------------------------------------------------------------------------------------------
+-- 技能 ability -------------------------------------------------------------------------------------------
+
 --- triggerAbility 触发技能
 --- triggerUnit 触发单位
 --- increaseRatio 效果增幅比率（技能效果乘以此值就是蓄力效果）
@@ -416,7 +417,7 @@ eventKind.abilityOver = "abilityOver"
 ---@alias eventOnAbilityLevelChange eventOnAbilityBase|{old:number, new:number}
 eventKind.abilityLevelChange = "abilityLevelChange"
 
---todo 物品 item -------------------------------------------------------------------------------------------
+-- 物品 item -------------------------------------------------------------------------------------------
 --- triggerItem 触发物品
 --- triggerUnit 触发单位
 ---@alias eventOnItemBase {triggerItem:Item,triggerUnit:Unit}
@@ -474,14 +475,14 @@ eventKind.itemPawn = "itemPawn"
 ---@alias eventOnItemLevelChange eventOnItemBase|{old:number, new:number}
 eventKind.itemLevelChange = "itemLevelChange"
 
---todo 窗口 window --------------------------------------------------------------------------------------------------
+-- 窗口 window --------------------------------------------------------------------------------------------------
 
 --- [窗口]大小改变
 --- triggerPlayer 触发玩家
 ---@alias eventOnWindowResize eventOnPlayerBase
 eventKind.windowResize = "windowResize"
 
---todo 镜头 camera --------------------------------------------------------------------------------------------------
+-- 镜头 camera --------------------------------------------------------------------------------------------------
 
 --- [镜头]移动
 eventKind.cameraMove = "cameraMove"
@@ -495,7 +496,7 @@ eventKind.cameraRotate = "cameraRotate"
 --- [镜头]变动
 eventKind.cameraChange = "cameraChange"
 
---todo 鼠标 mouse --------------------------------------------------------------------------------------------------
+-- 鼠标 mouse --------------------------------------------------------------------------------------------------
 
 --- [鼠标]左键点击
 --- triggerPlayer 触发玩家
@@ -582,7 +583,7 @@ eventKind.mouseMove = "mouseMove"
 ---@alias eventOnMouseWheel eventOnPlayerBase|{delta:number}
 eventKind.mouseWheel = "mouseWheel"
 
---todo 键盘 keyboard --------------------------------------------------------------------------------------------------
+-- 键盘 keyboard --------------------------------------------------------------------------------------------------
 
 --- [键盘]按下
 --- triggerPlayer 触发玩家
@@ -617,7 +618,7 @@ eventKind.keyboardLongPressStart = "keyboardLongPressStart"
 ---@alias eventOnKeyboardLongPressOver {triggerPlayer:Player,triggerKey:number,frame:number,duration:number}
 eventKind.keyboardLongPressOver = "keyboardLongPressOver"
 
---todo UI ui -------------------------------------------------------------------------------------------
+-- UI ui -------------------------------------------------------------------------------------------
 --- triggerUI 触发UI
 ---@alias eventOnUIBase {triggerUI:UI}
 

@@ -172,7 +172,7 @@ end
 
 --- 添加天气
 ---@see weather#kind
----@param weatherKind weather 参考 weather.kind，当设为nil且status为false时，去除所有天气，否则只去除1对应数量级
+---@param weatherKind MappingValue 参考 weather.kind，当设为nil且status为false时，去除所有天气，否则只去除1对应数量级
 ---@return number
 function _index:weatherInsert(weatherKind)
     must(weather.isValidKind(weatherKind), "weatherKind@weather.kind")
@@ -189,7 +189,7 @@ end
 
 --- 删除天气
 ---@see weather#kind
----@param weatherKind nil|weather 参考 weather.kind，当设为nil时，去除所有天气，否则只去除对应类型的1个数量级的天气
+---@param weatherKind nil|MappingValue 参考 weather.kind，当设为nil时，去除所有天气，否则只去除对应类型的1个数量级的天气
 ---@return void
 function _index:weatherRemove(weatherKind)
     ---@type number[]

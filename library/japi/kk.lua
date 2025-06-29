@@ -258,6 +258,39 @@ function japi.KK_Map_IsRedVIP(whichPlayer)
     return japi.KK_IsPlayerIdentityType(whichPlayer, 4)
 end
 
+--- 转换时间戳为具体时间
+--- 以时间戳1736413480例，返回值类似：2025-1-9 17:4:40
+---@param timestamp number integer
+---@return string
+function japi.KK_GetTimeDateFromTimestamp(timestamp)
+    local tt = os.date("*t", timestamp)
+    return string.format("%d-%d-%d %d:%d:%d", tt.year, tt.month, tt.day, tt.hour, tt.min, tt.sec)
+end
+
+--- 获取时间戳年份
+--- 以时间戳1736413480例，返回值类似：2025
+---@param timestamp number integer
+---@return number integer
+function japi.KK_GetTimestampYear(timestamp)
+    return os.date("*t", timestamp).year
+end
+
+--- 获取时间戳月份
+--- 以时间戳1736413480例，返回值类似：1
+---@param timestamp number integer
+---@return number integer
+function japi.KK_GetTimestampMonth(timestamp)
+    return os.date("*t", timestamp).month
+end
+
+--- 获取时间戳日份
+--- 以时间戳1736413480例，返回值类似：9
+---@param timestamp number integer
+---@return number integer
+function japi.KK_GetTimestampDay(timestamp)
+    return os.date("*t", timestamp).day
+end
+
 --- 获取玩家的平台ID
 --- 返回的是一个32位的字符串
 ---@param whichPlayer number
@@ -389,6 +422,33 @@ end
 ---@return number integer 最后更新的数量
 function japi.KK_GetMallItemUpdateCount(whichPlayer, key)
     return japi.DZ_RequestExtraIntegerData(110, whichPlayer, key, nil, false, 0, 0, 0)
+end
+
+--- 获取地图版本号
+---@return string
+function japi.KK_GetMapVersion()
+    return japi.DZ_RequestExtraStringData(111, nil, nil, nil, false, 0, 0, 0)
+end
+
+--- 获取赛事RPG地图游戏模式
+---@return string
+function japi.KK_GetCompetitionGameMode()
+    return japi.DZ_RequestExtraStringData(112, nil, nil, nil, false, 0, 0, 0)
+end
+
+--- 获取当天游戏局数
+---@param whichPlayer number 玩家
+---@return number integer
+function japi.KK_DayRounds(whichPlayer)
+    return japi.DZ_RequestExtraIntegerData(113, whichPlayer, nil, nil, false, 0, 0, 0)
+end
+
+--- 获取会员等级（测试功能）
+---@param whichPlayer number 玩家
+---@param mapId number integer 地图ID
+---@return number integer
+function japi.KK_ConsumeLevel(whichPlayer, mapId)
+    return japi.DZ_RequestExtraIntegerData(115, whichPlayer, nil, nil, false, mapId, 0, 0)
 end
 
 --- 发送云脚本数据

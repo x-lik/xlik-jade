@@ -74,7 +74,7 @@ function destructable.h2i(whichDest, toCode)
     return id
 end
 
---- 获取闭塞高度
+--- 获取可破坏物名
 ---@param whichDest number
 ---@return string
 function destructable.getName(whichDest)

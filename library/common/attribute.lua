@@ -12,48 +12,48 @@ attribute._forms = attribute._forms or {}
 ---@type table<string,string>
 attribute._icons = attribute._icons or {}
 --- 单位材质
-local _um = { _type = "unitMaterial" }
+local m_um = Mapping("unitMaterial")
 attribute.unitMaterial = {
-    flesh = setmetatable({ value = "flesh", label = "肉体" }, { __index = _um }),
-    metal = setmetatable({ value = "metal", label = "金属" }, { __index = _um }),
-    rock = setmetatable({ value = "rock", label = "石头" }, { __index = _um }),
-    wood = setmetatable({ value = "wood", label = "木头" }, { __index = _um }),
+    flesh = m_um:set("flesh", "肉体"),
+    metal = m_um:set("metal", "金属"),
+    rock = m_um:set("rock", "石头"),
+    wood = m_um:set("wood", "木头"),
 }
 --- 单位移动类型
-local _umt = { _type = "unitMoveType" }
+local m_umt = Mapping("unitMoveType")
 attribute.unitMoveType = {
-    foot = setmetatable({ value = MOVE_NAME_FOOT, label = "步行" }, { __index = _umt }),
-    fly = setmetatable({ value = MOVE_NAME_FLY, label = "飞行" }, { __index = _umt }),
-    float = setmetatable({ value = MOVE_NAME_FLOAT, label = "漂浮" }, { __index = _umt }),
-    amphibious = setmetatable({ value = MOVE_NAME_AMPH, label = "两栖" }, { __index = _umt }),
+    foot = m_umt:set(MOVE_NAME_FOOT, "步行"),
+    fly = m_umt:set(MOVE_NAME_FLY, "飞行"),
+    float = m_umt:set(MOVE_NAME_FLOAT, "漂浮"),
+    amphibious = m_umt:set(MOVE_NAME_AMPH, "两栖"),
 }
 --- 单位核心
-local _up = { _type = "unitPrimary" }
+local m_up = Mapping("unitPrimary")
 attribute.unitPrimary = {
-    str = setmetatable({ value = "str", label = "力量" }, { __index = _up }),
-    agi = setmetatable({ value = "agi", label = "敏捷" }, { __index = _up }),
-    int = setmetatable({ value = "int", label = "智力" }, { __index = _up }),
+    str = m_up:set("str", "力量"),
+    agi = m_up:set("agi", "敏捷"),
+    int = m_up:set("int", "智力"),
 }
 
 --- 检测是否属于有效的单位材质
 ---@param value table attribute.unitMaterial.*
 ---@return boolean
 function attribute.isValidUnitMaterial(value)
-    return type(value) == "table" and value._type == _um._type
+    return isMapping(value, m_um._kind)
 end
 
 --- 检测是否属于有效的单位移动类型
 ---@param value table attribute.unitMoveType.*
 ---@return boolean
 function attribute.isValidUnitMoveType(value)
-    return type(value) == "table" and value._type == _umt._type
+    return isMapping(value, m_umt._kind)
 end
 
 --- 检测是否属于有效的单位核心
 ---@param value table attribute.unitPrimary.*
 ---@return boolean
 function attribute.isValidUnitPrimary(value)
-    return type(value) == "table" and value._type == _up._type
+    return isMapping(value, m_up._kind)
 end
 
 --- 属性参数名处理

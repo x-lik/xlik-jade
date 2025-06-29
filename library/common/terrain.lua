@@ -3,34 +3,34 @@
 terrain = terrain or {}
 
 -- 地表贴图类型
-local _tk = { _type = "terrainKind" }
+local m_tk = Mapping("terrainKind")
 terrain.kind = {
     -- 地形类型（这里只写默认的16个，如果你改动了地形，请自行补充）
     -- 对应地形样式取决于we内配置的16个样式
-    lords_dirt = setmetatable({ value = J.C2I("Ldrt"), label = "洛丹伦(夏) 泥地 [泥土]" }, { __index = _tk }),
-    lords_dirtrough = setmetatable({ value = J.C2I("Ldro"), label = "洛丹伦(夏) 坑洼的泥土 [遗迹地砖]" }, { __index = _tk }),
-    lords_dirtgrass = setmetatable({ value = J.C2I("Ldrg"), label = "洛丹伦(夏) 草色泥土 [沙地]" }, { __index = _tk }),
-    lords_rock = setmetatable({ value = J.C2I("Lrok"), label = "洛丹伦(夏) 岩石 [黑冰]" }, { __index = _tk }),
-    lords_grass = setmetatable({ value = J.C2I("Lgrs"), label = "洛丹伦(夏) 草地 [白雪]" }, { __index = _tk }),
-    lords_grassdark = setmetatable({ value = J.C2I("Lgrd"), label = "洛丹伦(夏) 深色草地 [森林]" }, { __index = _tk }),
-    city_dirtrough = setmetatable({ value = J.C2I("Ydtr"), label = "城邦 坑洼的泥土 [秋草]" }, { __index = _tk }),
-    city_blackmarble = setmetatable({ value = J.C2I("Yblm"), label = "城邦 黑色大理石 [黄土]" }, { __index = _tk }),
-    city_bricktiles = setmetatable({ value = J.C2I("Ybtl"), label = "城邦 砖 [红色地砖]" }, { __index = _tk }),
-    city_roundtiles = setmetatable({ value = J.C2I("Yrtl"), label = "城邦 圆形地形 [火焰]" }, { __index = _tk }),
-    city_grass = setmetatable({ value = J.C2I("Ygsb"), label = "城邦 草地 [青草]" }, { __index = _tk }),
-    city_grasstrim = setmetatable({ value = J.C2I("Yhdg"), label = "城邦 平整草地 [败草]" }, { __index = _tk }),
-    city_whitemarble = setmetatable({ value = J.C2I("Ywmb"), label = "城邦 白色大理石 [熔岩]" }, { __index = _tk }),
-    dalaran_dirtrough = setmetatable({ value = J.C2I("Xdtr"), label = "达拉然 坑洼的泥土 [荒地]" }, { __index = _tk }),
-    dalaran_blackmarble = setmetatable({ value = J.C2I("Xblm"), label = "达拉然 黑色大理石 [藤蔓]" }, { __index = _tk }),
-    dalaran_bricktiles = setmetatable({ value = J.C2I("Xbtl"), label = "达拉然 砖 [蓝冰]" }, { __index = _tk }),
+    lords_dirt = m_tk:set(J.C2I("Ldrt"), "洛丹伦(夏) 泥地 [泥土]"),
+    lords_dirtrough = m_tk:set(J.C2I("Ldro"), "洛丹伦(夏) 坑洼的泥土 [遗迹地砖]"),
+    lords_dirtgrass = m_tk:set(J.C2I("Ldrg"), "洛丹伦(夏) 草色泥土 [沙地]"),
+    lords_rock = m_tk:set(J.C2I("Lrok"), "洛丹伦(夏) 岩石 [黑冰]"),
+    lords_grass = m_tk:set(J.C2I("Lgrs"), "洛丹伦(夏) 草地 [白雪]"),
+    lords_grassdark = m_tk:set(J.C2I("Lgrd"), "洛丹伦(夏) 深色草地 [森林]"),
+    city_dirtrough = m_tk:set(J.C2I("Ydtr"), "城邦 坑洼的泥土 [秋草]"),
+    city_blackmarble = m_tk:set(J.C2I("Yblm"), "城邦 黑色大理石 [黄土]"),
+    city_bricktiles = m_tk:set(J.C2I("Ybtl"), "城邦 砖 [红色地砖]"),
+    city_roundtiles = m_tk:set(J.C2I("Yrtl"), "城邦 圆形地形 [火焰]"),
+    city_grass = m_tk:set(J.C2I("Ygsb"), "城邦 草地 [青草]"),
+    city_grasstrim = m_tk:set(J.C2I("Yhdg"), "城邦 平整草地 [败草]"),
+    city_whitemarble = m_tk:set(J.C2I("Ywmb"), "城邦 白色大理石 [熔岩]"),
+    dalaran_dirtrough = m_tk:set(J.C2I("Xdtr"), "达拉然 坑洼的泥土 [荒地]"),
+    dalaran_blackmarble = m_tk:set(J.C2I("Xblm"), "达拉然 黑色大理石 [藤蔓]"),
+    dalaran_bricktiles = m_tk:set(J.C2I("Xbtl"), "达拉然 砖 [蓝冰]"),
 }
 
 --- 检测是否有效的并已经备注的类型
 --- 此方法并不能判定所有地形是否有效，你可以补充terrain.kind达到检测所有的范围
----@param whichKind table lightning.kind.*
+---@param whichKind MappingValue lightning.kind.*
 ---@return boolean
 function terrain.isValidKind(whichKind)
-    return type(whichKind) == "table" and whichKind._type == _tk._type
+    return isMapping(whichKind, m_tk._kind)
 end
 
 --- 设置水颜色
@@ -75,7 +75,7 @@ end
 ---@see terrain#kind
 ---@param x number
 ---@param y number
----@param whichKind number terrain.kind.*
+---@param whichKind MappingValue|number terrain.kind.*
 ---@return boolean
 function terrain.isKind(x, y, whichKind)
     if (terrain.isValidKind(whichKind)) then

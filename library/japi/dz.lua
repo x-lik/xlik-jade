@@ -195,6 +195,76 @@ function japi.DZ_SimpleMessageFrameClear(frame)
     japi.Exec("DzSimpleMessageFrameClear", frame)
 end
 
+--- 显示/隐藏SimpleFrame
+--- 只针对SimpleFrame类型控件
+---@param frame number integer 消息界面
+---@param enable boolean 显示/隐藏
+---@return void
+function japi.DZ_SimpleFrameShow(frame, enable)
+    japi.Exec("DzSimpleFrameShow", frame, enable)
+end
+
+--- 注册UI事件回调(func name)
+---@param frame number integer 消息界面
+---@param eventId number integer 事件类型
+---@param funcName string 回调函数名称
+---@param sync boolean 是否同步
+---@return void
+function japi.DZ_FrameSetScript(frame, eventId, funcName, sync)
+    japi.Exec("DzFrameSetScript", frame, eventId, funcName, sync)
+end
+
+--- 注册UI事件回调-异步(func name)[观战、录像可响应]
+---@param frame number integer 消息界面
+---@param eventId number integer 事件类型
+---@param funcName string 回调函数名称
+---@return void
+function japi.DZ_FrameSetScriptAsync(frame, eventId, funcName)
+    japi.Exec("DzFrameSetScriptAsync", frame, eventId, funcName)
+end
+
+--- 注册UI事件回调(func handle)[观战、录像不响应]
+--- 运行触发器时需要打开同步
+---@param frame number integer 消息界面
+---@param eventId number integer 事件类型
+---@param funcHandle function 回调函数
+---@param sync boolean 是否同步
+---@return void
+function japi.DZ_FrameSetScriptByCode(frame, eventId, funcHandle, sync)
+    japi.Exec("DzFrameSetScriptByCode", frame, eventId, funcHandle, sync)
+end
+
+--- 注册UI事件回调-异步(func handle)[观战、录像可响应]
+--- 可以在游戏、录像、观战等所有模式响应
+---@param frame number integer 消息界面
+---@param eventId number integer 事件类型
+---@param funcHandle function 回调函数
+---@return void
+function japi.DZ_FrameSetScriptByCodeAsync(frame, eventId, funcHandle)
+    japi.Exec("DzFrameSetScriptByCodeAsync", frame, eventId, funcHandle)
+end
+
+--- 注册UI事件回调-异步(func handle)[观战、录像不响应]
+--- 可以在游戏、录像、观战等所有模式响应
+---@param frame number integer 消息界面
+---@param eventId number integer 事件类型
+---@param funcHandle function 回调函数
+---@param sync boolean 是否同步
+---@return void
+function japi.DZ_FrameSetScriptBlock(frame, eventId, funcHandle, sync)
+    japi.Exec("DzFrameSetScriptBlock", frame, eventId, funcHandle, sync)
+end
+
+--- 注册UI事件回调-异步(func handle)[观战、录像不响应]
+--- 可以在游戏、录像、观战等所有模式响应，该函数执行会阻止它原本的功能继续响应
+---@param frame number integer 消息界面
+---@param eventId number integer 事件类型
+---@param funcHandle function 回调函数
+---@return void
+function japi.DZ_FrameSetScriptBlockAsync(frame, eventId, funcHandle)
+    japi.Exec("DzFrameSetScriptBlockAsync", frame, eventId, funcHandle)
+end
+
 --- 新建Frame
 --- 名字为fdf文件中的名字，ID默认填0。重复创建同名Frame会导致游戏退出时显示崩溃消息，如需避免可以使用Tag创建
 ---@param frame string
@@ -519,11 +589,23 @@ function japi.DZ_FrameSetTextAlignment(frame, align)
     japi.Exec("DzFrameSetTextAlignment", frame, align)
 end
 
+--- 设置frame文本颜色
 ---@param frame number integer
 ---@param color number integer
 ---@return void
 function japi.DZ_FrameSetTextColor(frame, color)
     japi.Exec("DzFrameSetTextColor", frame, color)
+end
+
+--- 设置frame文本RGBA颜色
+---@param frame number integer
+---@param r number 红0-255
+---@param g number 绿0-255
+---@param b number 蓝0-255
+---@param a number 透明度0-255
+---@return void
+function japi.DZ_FrameSetTextRGBA(frame, r, g, b, a)
+    japi.DZ_FrameSetTextColor(frame, japi.DZ_GetColor(r, g, b, a))
 end
 
 --- 设置frame字数限制
@@ -588,13 +670,134 @@ function japi.DZ_FrameEnableClipRect(enable)
     japi.Exec("DzFrameEnableClipRect", enable)
 end
 
---- 获取子SimpleFontString
---- ID默认填0，同名时优先获取最后被创建的。SimpleFontString为fdf中的Frame类型
----@param name string
----@param id number integer
+--- 隐藏界面元素
+--- 不在地图初始化时调用则会残留小地图和时钟模型
+---@return void
+function japi.DZ_FrameHideInterface()
+    japi.Exec("DzFrameHideInterface")
+end
+
+--- 修改游戏渲染黑边
+--- 上下加起来不要大于0.6
+---@param upperHeight number 上方高度
+---@param bottomHeight number 下方高度
+---@return void
+function japi.DZ_FrameEditBlackBorders(upperHeight, bottomHeight)
+    japi.Exec("DzFrameEditBlackBorders", upperHeight, bottomHeight)
+end
+
+--- 血条刷新事件
+---@param func function
+---@return void
+function japi.DZ_FrameHookHpBar(func)
+    japi.Exec("DzFrameHookHpBar", func)
+end
+
+--- 触发血条的单位
+--- 用于血条刷新事件下
+---@return number integer handle
+function japi.DZ_FrameGetTriggerHpBarUnit()
+    return japi.Exec("DzFrameGetTriggerHpBarUnit")
+end
+
+--- 触发的血条触发的血条
+--- 用于血条刷新事件下
+---@return number integer
+function japi.DZ_FrameGetTriggerHpBar()
+    return japi.Exec("DzFrameGetTriggerHpBar")
+end
+
+--- 获取单位血条
+---@param whichUnit number integer handle
+---@return number integer
+function japi.DZ_FrameGetUnitHpBar(whichUnit)
+    return japi.Exec("DzFrameGetUnitHpBar", whichUnit)
+end
+
+--- 是否有指定锚点
+---@param frame number integer
+---@param anchor number integer
+---@return boolean
+function japi.DZ_FrameGetPointValid(frame, anchor)
+    return japi.Exec("DzFrameGetPointValid", frame, anchor)
+end
+
+--- 获取相对锚点所在界面
+---@param frame number integer
+---@param anchor number integer
+---@return number integer
+function japi.DZ_FrameGetPointRelative(frame, anchor)
+    return japi.Exec("DzFrameGetPointRelative", frame, anchor)
+end
+
+--- 获取相对锚点的界面锚点
+---@param frame number integer
+---@param anchor number integer
+---@return number integer
+function japi.DZ_FrameGetPointRelativePoint(frame, anchor)
+    return japi.Exec("DzFrameGetPointRelativePoint", frame, anchor)
+end
+
+--- 获取锚点X坐标
+---@param frame number integer
+---@param anchor number integer
 ---@return number
-function japi.DZ_SimpleFontStringFindByName(name, id)
-    return japi.Exec("DzSimpleFontStringFindByName", name, id)
+function japi.DZ_FrameGetPointX(frame, anchor)
+    return japi.Exec("DzFrameGetPointX", frame, anchor)
+end
+
+--- 获取锚点Y坐标
+---@param frame number integer
+---@param anchor number integer
+---@return number
+function japi.DZ_FrameGetPointY(frame, anchor)
+    return japi.Exec("DzFrameGetPointY", frame, anchor)
+end
+
+--- [PRE]设置界面纹理坐标
+--- 设置frame的纹理坐标为(left,top,right,bottom)
+---@param frame number integer
+---@param left number
+---@param top number
+---@param right number
+---@param bottom number
+---@return void
+function japi.DZ_FrameSetTexCoord(frame, left, top, right, bottom)
+    japi.Exec("DzFrameSetTexCoord", frame, left, top, right, bottom)
+end
+
+--- 鼠标界面
+---@return number integer
+function japi.DZ_GetCursorFrame()
+    return japi.Exec("DzGetCursorFrame")
+end
+
+--- 设置游戏提示信息
+--- 设置游戏提示信息，如建造完成，技能没有目标等
+---@param frame number integer 消息界面
+---@param text string 消息内容
+---@param color number integer 颜色
+---@param duration number 时间
+---@param permanent boolean 是否永久显示
+---@return void
+function japi.DZ_SimpleMessageFrameAddMessage(frame, text, color, duration, permanent)
+    japi.Exec("DzSimpleMessageFrameAddMessage", frame, text, color, duration, permanent)
+end
+
+--- 清理游戏提示信息
+---@param frame number integer 消息界面
+---@return void
+function japi.DZ_SimpleMessageFrameClear(frame)
+    japi.Exec("DzSimpleMessageFrameClear", frame)
+end
+
+--- 显示/隐藏SimpleFrame
+--- 只针对SimpleFrame类型控件
+---@param frame number integer 消息界面
+---@param enable boolean 显示/隐藏
+---@return void
+function japi.DZ_SimpleFrameShow(frame, enable)
+    japi.Exec("DzSimpleFrameShow", frame, enable)
 end
 
 --- 获取子SimpleFrame
@@ -604,6 +807,15 @@ end
 ---@return number
 function japi.DZ_SimpleFrameFindByName(name, id)
     return japi.Exec("DzSimpleFrameFindByName", name, id)
+end
+
+--- 获取子SimpleFontString
+--- ID默认填0，同名时优先获取最后被创建的。SimpleFontString为fdf中的Frame类型
+---@param name string
+---@param id number integer
+---@return number
+function japi.DZ_SimpleFontStringFindByName(name, id)
+    return japi.Exec("DzSimpleFontStringFindByName", name, id)
 end
 
 --- 获取子SimpleTexture
@@ -620,22 +832,6 @@ end
 ---@return void
 function japi.DZ_OriginalUIAutoResetPoint(enable)
     japi.Exec("DzOriginalUIAutoResetPoint", enable)
-end
-
---- 隐藏界面元素
---- 不在地图初始化时调用则会残留小地图和时钟模型
----@return void
-function japi.DZ_FrameHideInterface()
-    japi.Exec("DzFrameHideInterface")
-end
-
---- 修改游戏渲染黑边
---- 上下加起来不要大于0.6
----@param upperHeight number 上方高度
----@param bottomHeight number 下方高度
----@return void
-function japi.DZ_FrameEditBlackBorders(upperHeight, bottomHeight)
-    japi.Exec("DzFrameEditBlackBorders", upperHeight, bottomHeight)
 end
 
 --- 使用宽屏模式
@@ -869,13 +1065,21 @@ end
 
 --- 设置装饰物颜色
 ---@param doodad number integer 地形装饰物
+---@param color number integer
+---@return void
+function japi.DZ_DoodadSetColor(doodad, color)
+    japi.Exec("DzDoodadSetColor", doodad, color)
+end
+
+--- 设置装饰物RGBA颜色
+---@param doodad number integer 地形装饰物
 ---@param r number 红0-255
 ---@param g number 绿0-255
 ---@param b number 蓝0-255
 ---@param a number 透明度0-255
 ---@return void
-function japi.DZ_DoodadSetColor(doodad, r, g, b, a)
-    japi.Exec("DzDoodadSetColor", doodad, japi.DZ_GetColor(r, g, b, a))
+function japi.DZ_DoodadSetRGBA(doodad, r, g, b, a)
+    japi.DZ_DoodadSetColor(doodad, japi.DZ_GetColor(r, g, b, a))
 end
 
 --- 设置装饰物显示/隐藏
@@ -888,10 +1092,10 @@ end
 
 --- 设置装饰物队伍颜色
 ---@param doodad number integer 地形装饰物
----@param color any PLAYER_COLOR_*
+---@param teamColor any PLAYER_COLOR_*
 ---@return void
-function japi.DZ_DoodadSetTeamColor(doodad, color)
-    japi.Exec("DzDoodadSetTeamColor", doodad, color)
+function japi.DZ_DoodadSetTeamColor(doodad, teamColor)
+    japi.Exec("DzDoodadSetTeamColor", doodad, teamColor)
 end
 
 --- 设置装饰物尺寸
@@ -987,6 +1191,200 @@ end
 ---@return void
 function japi.DZ_RemovePlayerTechResearched(whichPlayer, techId, removeLevels)
     japi.Exec("DzRemovePlayerTechResearched", whichPlayer, techId, removeLevels)
+end
+
+--- 设置道具模型
+---@param whichItem number
+---@param path string 模型路径
+---@return void
+function japi.DZ_ItemSetModel(whichItem, path)
+    japi.Exec("DzItemSetModel", whichItem, path)
+end
+
+--- 设置道具颜色
+---@param whichItem number
+---@param color number integer
+---@return void
+function japi.DZ_ItemSetVertexColor(whichItem, color)
+    japi.Exec("DzItemSetVertexColor", whichItem, color)
+end
+
+--- 设置道具颜色
+---@param whichItem number
+---@param r number 红0-255
+---@param g number 绿0-255
+---@param b number 蓝0-255
+---@param a number 透明度0-255
+---@return void
+function japi.DZ_ItemSetVertexRGBA(whichItem, r, g, b, a)
+    japi.DZ_ItemSetVertexColor(whichItem, japi.DZ_GetColor(r, g, b, a))
+end
+
+--- 设置道具透明度
+---@param whichItem number
+---@param alpha number integer [0-255]
+---@return void
+function japi.DZ_ItemSetAlpha(whichItem, alpha)
+    japi.Exec("DzItemSetAlpha", whichItem, alpha)
+end
+
+--- 设置物品头像
+---@param whichItem number
+---@param modelPath string 模型路径
+---@return void
+function japi.DZ_ItemSetPortrait(whichItem, modelPath)
+    japi.Exec("DzItemSetPortrait", whichItem, modelPath)
+end
+
+--- 设置技能数据-字符串
+---@param whichAbility number 技能
+---@param key string 名字
+---@param value string 内容
+---@return void
+function japi.DZ_AbilitySetStringData(whichAbility, key, value)
+    japi.Exec("DzAbilitySetStringData", whichAbility, key, value)
+end
+
+--- 设置技能启用/禁用
+--- 只对主动技能有效，可以对不同单位使用。
+---@param whichAbility number
+---@param enable boolean 启用状态
+---@param hideUI boolean 隐藏UI
+---@return void
+function japi.DZ_AbilitySetEnable(whichAbility, enable, hideUI)
+    japi.Exec("DzAbilitySetEnable", whichAbility, enable, hideUI)
+end
+
+-- 获取单位组里单位数量
+---@param g number integer handle
+---@return number integer
+function japi.DZ_GroupGetCount(g)
+    return japi.Exec("DzGroupGetCount", g)
+end
+
+--- 获取单位组里指定索引（第index个）的单位
+---@param g number integer handle
+---@param index number integer
+---@return number integer handle
+function japi.DZ_GroupGetUnitAt(g, index)
+    return japi.Exec("DzGroupGetUnitAt", g, index)
+end
+
+--- 对单位组添加命令到队列(无目标)
+---@param whichGroup number integer handle
+---@param order number integer
+---@return boolean
+function japi.DZ_QueueGroupImmediateOrderById(whichGroup, order)
+    return japi.Exec("DzQueueGroupImmediateOrderById", whichGroup, order)
+end
+
+--- 对单位组添加命令到队列(指定坐标)
+---@param whichGroup number integer handle
+---@param order number integer
+---@param x number x坐标
+---@param y number y坐标
+---@return boolean
+function japi.DZ_QueueGroupPointOrderById(whichGroup, order, x, y)
+    return japi.Exec("DzQueueGroupPointOrderById", whichGroup, order, x, y)
+end
+
+--- 对单位组添加命令到队列(指定对象)
+---@param whichGroup number integer handle
+---@param orderId number integer 命令ID
+---@param targetWidget number integer handle 指定对象，如单位、可破坏物、物品
+---@return boolean
+function japi.DZ_QueueGroupTargetOrderById(whichGroup, orderId, targetWidget)
+    return japi.Exec("DzQueueGroupTargetOrderById", whichGroup, orderId, targetWidget)
+end
+
+--- 对单位添加命令到队列(无目标)
+---@param whichUnit number integer handle
+---@param orderId number integer 命令ID
+---@return boolean
+function japi.DZ_QueueIssueImmediateOrderById(whichUnit, orderId)
+    return japi.Exec("DzQueueIssueImmediateOrderById", whichUnit, orderId)
+end
+
+--- 对单位添加命令到队列(指定坐标)
+---@param whichUnit number integer handle
+---@param orderId number integer 命令ID
+---@param x number x坐标
+---@param y number y坐标
+---@return boolean
+function japi.DZ_QueueIssuePointOrderById(whichUnit, orderId, x, y)
+    return japi.Exec("DzQueueIssuePointOrderById", whichUnit, orderId, x, y)
+end
+
+--- 对单位添加命令到队列(指定对象)
+---@param whichUnit number integer handle
+---@param orderId number integer 命令ID
+---@param targetWidget number integer handle 指定对象，如单位、可破坏物、物品
+---@return boolean
+function japi.DZ_QueueIssueTargetOrderById(whichUnit, orderId, targetWidget)
+    return japi.Exec("DzQueueIssueTargetOrderById", whichUnit, orderId, targetWidget)
+end
+
+--- [不明]对单位添加命令到队列(指定位置和瞬发目标)
+--- 猜测该命令会让单位对目标位置(x,y)使用使用指定对象(instantTargetWidget)来执行瞬发动作的orderId命令
+---@param whichUnit number integer handle
+---@param orderId number integer 命令ID
+---@param x number x坐标
+---@param y number y坐标
+---@param instantTargetWidget number integer handle 如单位、可破坏物、物品
+---@return boolean
+function japi.DZ_QueueIssueInstantPointOrderById(whichUnit, orderId, x, y, instantTargetWidget)
+    return japi.Exec("DzQueueIssueInstantPointOrderById", whichUnit, orderId, x, y, instantTargetWidget)
+end
+
+--- [不明]对单位添加命令到队列(指定目标和瞬发目标)
+--- 猜测该命令会让单位会对目标对象(targetWidget)使用指定对象(instantTargetWidget)来执行瞬发动作的orderId命令
+---@param whichUnit number integer handle
+---@param orderId number integer 命令ID
+---@param targetWidget number integer handle 如单位、可破坏物、物品
+---@param instantTargetWidget number integer handle 如单位、可破坏物、物品
+---@return boolean
+function japi.DZ_QueueIssueInstantTargetOrderById(whichUnit, orderId, targetWidget, instantTargetWidget)
+    return japi.Exec("DzQueueIssueInstantTargetOrderById", whichUnit, orderId, targetWidget, instantTargetWidget)
+end
+
+--- 对单位添加建造命令到队列
+---@param whichPeon number integer handle 建造单位
+---@param unitId number integer handle 建造单位ID
+---@param x number x坐标
+---@param y number y坐标
+---@return boolean
+function japi.DZ_QueueIssueBuildOrderById(whichPeon, unitId, x, y)
+    return japi.Exec("DzQueueIssueBuildOrderById", whichPeon, unitId, x, y)
+end
+
+--- 添加中介命令到队列(无目标)
+---@param forWhichPlayer player integer handle 中介玩家
+---@param neutralStructure number integer handle 中介单位
+---@param orderId number integer 命令ID
+---@return boolean
+function japi.DZ_QueueIssueNeutralImmediateOrderById(forWhichPlayer, neutralStructure, orderId)
+    return japi.Exec("DzQueueIssueNeutralImmediateOrderById", forWhichPlayer, neutralStructure, orderId)
+end
+
+--- 添加中介命令到队列(指定坐标)
+---@param forWhichPlayer player integer handle 中介玩家
+---@param neutralStructure number integer handle 中介单位
+---@param orderId number integer 命令ID
+---@param x number x坐标
+---@param y number y坐标
+---@return boolean
+function japi.DZ_QueueIssueNeutralPointOrderById(forWhichPlayer, neutralStructure, orderId, x, y)
+    return japi.Exec("DzQueueIssueNeutralPointOrderById", forWhichPlayer, neutralStructure, orderId, x, y)
+end
+
+--- 添加中介命令到队列(指定对象)
+---@param forWhichPlayer player integer handle 中介玩家
+---@param neutralStructure number integer handle 中介单位
+---@param orderId number integer 命令ID
+---@param target number integer handle 指定对象，如单位、可破坏物、物品
+---@return boolean
+function japi.DZ_QueueIssueNeutralTargetOrderById(forWhichPlayer, neutralStructure, orderId, target)
+    return japi.Exec("DzQueueIssueNeutralTargetOrderById", forWhichPlayer, neutralStructure, orderId, target)
 end
 
 --- 替换单位类型
@@ -1254,57 +1652,6 @@ function japi.DZ_AttackAbilityEndCoolDown(whichUnit)
     japi.Exec("DzAttackAbilityEndCooldown", japi.DZ_GetAttackAbility(whichUnit))
 end
 
---- 设置道具模型
----@param whichItem number
----@param path string 模型路径
----@return void
-function japi.DZ_ItemSetModel(whichItem, path)
-    japi.Exec("DzItemSetModel", whichItem, path)
-end
-
---- 设置道具颜色
----@param whichItem number
----@param color number integer [0-255]
----@return void
-function japi.DZ_ItemSetVertexColor(whichItem, color)
-    japi.Exec("DzItemSetVertexColor", whichItem, color)
-end
-
---- 设置道具透明度
----@param whichItem number
----@param alpha number integer [0-255]
----@return void
-function japi.DZ_ItemSetAlpha(whichItem, alpha)
-    japi.Exec("DzItemSetAlpha", whichItem, alpha)
-end
-
---- 设置物品头像
----@param whichItem number
----@param modelPath string 模型路径
----@return void
-function japi.DZ_ItemSetPortrait(whichItem, modelPath)
-    japi.Exec("DzItemSetPortrait", whichItem, modelPath)
-end
-
---- 设置技能数据-字符串
----@param whichAbility number 技能
----@param key string 名字
----@param value string 内容
----@return void
-function japi.DZ_AbilitySetStringData(whichAbility, key, value)
-    japi.Exec("DzAbilitySetStringData", whichAbility, key, value)
-end
-
---- 设置技能启用/禁用
---- 只对主动技能有效，可以对不同单位使用。
----@param whichAbility number
----@param enable boolean 启用状态
----@param hideUI boolean 隐藏UI
----@return void
-function japi.DZ_AbilitySetEnable(whichAbility, enable, hideUI)
-    japi.Exec("DzAbilitySetEnable", whichAbility, enable, hideUI)
-end
-
 --- 复活单位/英雄
 ---@param whichUnit number
 ---@param hp number 生命值
@@ -1352,6 +1699,162 @@ function japi.DZ_UnbindEffect(whichEffect)
     japi.Exec("DzUnbindEffect", whichEffect)
 end
 
+--- 创建幻象单位
+---@param p player
+---@param unitId number integer
+---@param x number
+---@param y number
+---@param face number 面向角度
+---@return number integer handle
+function japi.DZ_UnitCreateIllusion(p, unitId, x, y, face)
+    return japi.Exec("DzUnitCreateIllusion", p, unitId, x, y, face)
+end
+
+--- 为单位创建幻象
+---@param u number integer handle
+---@return number integer handle
+function japi.DZ_UnitCreateIllusionFromUnit(u)
+    return japi.Exec("DzUnitCreateIllusionFromUnit", u)
+end
+
+--- 获取单位的命令数量
+---@param u number integer handle
+---@return number integer
+function japi.DZ_UnitOrdersCount(u)
+    return japi.Exec("DzUnitOrdersCount", u)
+end
+
+--- 清除单位命令队列
+---@param u number integer handle
+---@param onlyQueued boolean 是否仅清理队列里的命令
+---@return void
+function japi.DZ_UnitOrdersClear(u, onlyQueued)
+    japi.Exec("DzUnitOrdersClear", u, onlyQueued)
+end
+
+--- 执行单位的命令队列
+---@param u number integer handle
+---@return void
+function japi.DZ_UnitOrdersExec(u)
+    japi.Exec("DzUnitOrdersExec", u)
+end
+
+--- 强制停止单位当前命令
+---@param u number integer handle
+---@param clearQueue boolean 是否清理队列里的命令
+---@return void
+function japi.DZ_UnitOrdersForceStop(u, clearQueue)
+    japi.Exec("DzUnitOrdersForceStop", u, clearQueue)
+end
+
+--- 反转单位命令队列
+---@param u number integer handle
+---@return void
+function japi.DZ_UnitOrdersReverse(u)
+    japi.Exec("DzUnitOrdersReverse", u)
+end
+
+--- 获取商店目标
+--- 获取指定商店选中指定玩家的哪个单位
+---@param whichStore number 商店单位拥有出售物品选择英雄的单位
+---@param whichPlayer number 玩家
+---@return number 目标单位
+function japi.DZ_GetActivePatron(whichStore, whichPlayer)
+    return japi.Exec("DzGetActivePatron", whichStore, whichPlayer)
+end
+
+--- 获取玩家选中的第n个单位
+--- 异步返回玩家选中的单位
+---@param index number integer
+---@return number 选中单位
+function japi.DZ_GetLocalSelectUnit(index)
+    return japi.Exec("DzGetLocalSelectUnit", index)
+end
+
+--- 获取玩家选中的单位数量
+--- 异步获取玩家选中的单位数量，返回整数
+---@return number integer
+function japi.DZ_GetLocalSelectUnitCount()
+    return japi.Exec("DzGetLocalSelectUnitCount")
+end
+
+--- 获取当前选择的单位
+--- 异步获取当前预览窗口显示的单位
+---@return number integer
+function japi.DZ_GetSelectedLeaderUnit()
+    return japi.Exec("DzGetSelectedLeaderUnit")
+end
+
+--- 监听建筑选位置
+---@param func function
+---@return void
+function japi.DZ_RegisterOnBuildLocal(func)
+    japi.Exec("DzRegisterOnBuildLocal", func)
+end
+
+--- 获取建造的命令id
+--- 用于监听建筑选位置后
+---@return number
+function japi.DZ_GetOnBuildOrderId()
+    return japi.Exec("DzGetOnBuildOrderId")
+end
+
+--- 获取建造的命令类型
+--- 用于监听建筑选位置后
+---@return number
+function japi.DZ_GetOnBuildOrderType()
+    return japi.Exec("DzGetOnBuildOrderType")
+end
+
+--- 获取预建造对象
+--- 用于监听建筑选位置后
+---@return number
+function japi.DZ_GetOnBuildAgent()
+    return japi.Exec("DzGetOnBuildAgent")
+end
+
+--- 监听技能预选目标
+---@param func function
+---@return void
+function japi.DZ_RegisterOnTargetLocal(func)
+    japi.Exec("DzRegisterOnTargetLocal", func)
+end
+
+--- 获取监听到的技能
+--- 用于监听技能预选后
+---@return number
+function japi.DZ_GetOnTargetAbilityId()
+    return japi.Exec("DzGetOnTargetAbilId")
+end
+
+--- 获取监听到技能预选命令
+--- 用于监听技能预选后
+---@return number
+function japi.DZ_GetOnTargetOrderId()
+    return japi.Exec("DzGetOnTargetOrderId")
+end
+
+--- 获取监听到技能预选命令类型
+--- 用于监听技能预选后
+---@return number
+function japi.DZ_GetOnTargetOrderType()
+    return japi.Exec("DzGetOnTargetOrderType")
+end
+
+--- 获取监听到技能预选目标
+--- 用于监听技能预选后
+---@return number
+function japi.DZ_GetOnTargetAgent()
+    return japi.Exec("DzGetOnTargetAgent")
+end
+
+--- 获取监听到技能预选目标
+--- 用于监听技能预选后
+---@return number
+function japi.DZ_GetOnTargetInstantTarget()
+    return japi.Exec("DzGetOnTargetInstantTarget")
+end
+
 --- 设置特效透明度
 ---@param whichEffect number handle
 ---@param alpha number 透明度0-255
@@ -1370,13 +1873,22 @@ end
 --- 设置特效颜色
 --- 设置特效颜色，透明无效
 ---@param whichEffect number handle
+---@param color number integer 颜色
+---@return void
+function japi.DZ_SetEffectVertexColor(whichEffect, color)
+    japi.Exec("DzSetEffectVertexColor", whichEffect, color)
+end
+
+--- 设置特效颜色
+--- 设置特效颜色，透明无效
+---@param whichEffect number handle
 ---@param r number 红0-255
 ---@param g number 绿0-255
 ---@param b number 蓝0-255
 ---@param a number 透明度0-255
 ---@return void
-function japi.DZ_SetEffectVertexColor(whichEffect, r, g, b, a)
-    japi.Exec("DzSetEffectVertexColor", whichEffect, japi.DZ_GetColor(r, g, b, a))
+function japi.DZ_SetEffectVertexRGBA(whichEffect, r, g, b, a)
+    japi.DZ_SetEffectVertexColor(whichEffect, japi.DZ_GetColor(r, g, b, a))
 end
 
 --- 获取特效颜色
@@ -1446,6 +1958,45 @@ end
 ---@return void
 function japi.DZ_SetEffectTeamColor(whichEffect, playerId)
     japi.Exec("DzSetEffectTeamColor", whichEffect, playerId)
+end
+
+--- 获取当前漂浮文字的字体
+---@return string
+function japi.DZ_TextTagGetFont()
+    return japi.Exec("DzTextTagGetFont")
+end
+
+--- 设置漂浮文字字体
+---@param fileName string
+---@return void
+function japi.DZ_TextTagSetFont(fileName)
+    japi.Exec("DzTextTagSetFont", fileName)
+end
+
+--- 设置漂浮文字透明度
+---@param t number integer texttag handle
+---@param alpha number integer 透明度0-255
+---@return void
+function japi.DZ_TextTagSetStartAlpha(t, alpha)
+    japi.Exec("DzTextTagSetStartAlpha", t, alpha)
+end
+
+--- 获取漂浮文字的阴影颜色
+---@param t number integer texttag handle
+---@return number integer
+function japi.DZ_TextTagGetShadowColor(t)
+    return japi.Exec("DzTextTagGetShadowColor", t)
+end
+
+--- 设置漂浮文字阴影颜色
+---@param t number integer texttag handle
+---@param r number 红0-255
+---@param g number 绿0-255
+---@param b number 蓝0-255
+---@param a number 透明度0-255
+---@return void
+function japi.DZ_TextTagSetShadowColor(t, r, g, b, a)
+    japi.Exec("DzTextTagSetShadowColor", t, japi.DZ_GetColor(r, g, b, a))
 end
 
 --- 转换屏幕坐标到世界x坐标
@@ -1552,6 +2103,286 @@ function japi.DZ_WidgetSetMinimapIcon(whichUnit, path)
     return japi.Exec("DzWidgetSetMinimapIcon", whichUnit, path)
 end
 
+--- 检查字符串是否包含指定的子字符串
+---@param s string 字符串
+---@param whichString string 目标字符串
+---@param caseSensitive boolean 是否区分大小写
+---@return boolean
+function japi.DZ_StringContains(s, whichString, caseSensitive)
+    return japi.Exec("DzStringContains", s, whichString, caseSensitive)
+end
+
+--- 字符串中查找子字符串并返回其位置
+---@param s string 字符串
+---@param whichString string 子字符串
+---@param off number integer 从第几个位开始
+---@param caseSensitive boolean 是否区分大小写
+---@return number integer
+function japi.DZ_StringFind(s, whichString, off, caseSensitive)
+    return japi.Exec("DzStringFind", s, whichString, off, caseSensitive)
+end
+
+--- 检测字符串里第一个包含指定字符串里任意字符的位置
+---@param s string 字符串
+---@param whichString string 指定字符串
+---@param off number integer 从第几个位开始
+---@param caseSensitive boolean 是否区分大小写
+---@return number integer
+function japi.DZ_StringFindFirstOf(s, whichString, off, caseSensitive)
+    return japi.Exec("DzStringFindFirstOf", s, whichString, off, caseSensitive)
+end
+
+--- 检查字符串第一个不包含指定字符串里任意字符的位置
+---@param s string 字符串
+---@param whichString string 指定字符串
+---@param off number integer 从第几个位开始
+---@param caseSensitive boolean 是否区分大小写
+---@return number integer
+function japi.DZ_StringFindFirstNotOf(s, whichString, off, caseSensitive)
+    return japi.Exec("DzStringFindFirstNotOf", s, whichString, off, caseSensitive)
+end
+
+--- 从后往前查找字符串中包含指定字符串任意字符的所在位置
+---@param s string 字符串
+---@param whichString string 指定字符串
+---@param off number integer 从第几个位开始
+---@param caseSensitive boolean 是否区分大小写
+---@return number integer
+function japi.DZ_StringFindLastOf(s, whichString, off, caseSensitive)
+    return japi.Exec("DzStringFindLastOf", s, whichString, off, caseSensitive)
+end
+
+--- 从后往前查找字符串中不包含指定字符串任意字符的所在位置
+---@param s string 字符串
+---@param whichString string 指定字符串
+---@param off number integer 从第几个位开始
+---@param caseSensitive boolean 是否区分大小写
+---@return number integer
+function japi.DZ_StringFindLastNotOf(s, whichString, off, caseSensitive)
+    return japi.Exec("DzStringFindLastNotOf", s, whichString, off, caseSensitive)
+end
+
+--- 删除字符串左边的空格
+---@param s string 字符串
+---@return string
+function japi.DZ_StringTrimLeft(s)
+    return japi.Exec("DzStringTrimLeft", s)
+end
+
+--- 删除字符串右边的空格
+---@param s string 字符串
+---@return string
+function japi.DZ_StringTrimRight(s)
+    return japi.Exec("DzStringTrimRight", s)
+end
+
+--- 删除字符串两边的空格
+---@param s string
+---@return string
+function japi.DZ_StringTrim(s)
+    return japi.Exec("DzStringTrim", s)
+end
+
+--- 反转字符串
+---@param s string 字符串
+---@return string
+function japi.DZ_StringReverse(s)
+    return japi.Exec("DzStringReverse", s)
+end
+
+--- 替换字符串
+---@param s string 字符串
+---@param whichString string 目标字符串
+---@param replaceWith string 替换的字符串
+---@param caseSensitive boolean 是否区分大小写
+---@return string
+function japi.DZ_StringReplace(s, whichString, replaceWith, caseSensitive)
+    return japi.Exec("DzStringReplace", s, whichString, replaceWith, caseSensitive)
+end
+
+--- 插入字符串
+---@param s string 字符串
+---@param whichPosition number integer 位置
+---@param whichString string 插入的字符串
+---@return string
+function japi.DZ_StringInsert(s, whichPosition, whichString)
+    return japi.Exec("DzStringInsert", s, whichPosition, whichString)
+end
+
+--- 整数的2进制的位值
+---@param i number integer 某个整数
+---@param byteIndex number integer 第byteIndex位的值
+---@return number integer
+function japi.DZ_BitGet(i, byteIndex)
+    return japi.Exec("DzBitGet", i, byteIndex)
+end
+
+--- 设置整数的2进制的位值
+---@param i number integer 某个整数
+---@param byteIndex number integer 第byteIndex位的值
+---@param byteValue number integer 值
+---@return number integer
+function japi.DZ_BitSet(i, byteIndex, byteValue)
+    return japi.Exec("DzBitSet", i, byteIndex, byteValue)
+end
+
+--- 整数的256进制的位值
+---@param i number integer 某个整数
+---@param byteIndex number integer 第byteIndex位的值
+---@return number integer
+function japi.DZ_BitGetByte(i, byteIndex)
+    return japi.Exec("DzBitGetByte", i, byteIndex)
+end
+
+--- 设置整数的256进制的位值
+---@param i number integer 某个整数
+---@param byteIndex number integer 第byteIndex位的值
+---@param byteValue number integer 值
+---@return number integer
+function japi.DZ_BitSetByte(i, byteIndex, byteValue)
+    return japi.Exec("DzBitSetByte", i, byteIndex, byteValue)
+end
+
+--- 按位取反
+---@param i number integer 某个整数
+---@return number integer
+function japi.DZ_BitNot(i)
+    return japi.Exec("DzBitNot", i)
+end
+
+--- 按位与
+---@param a number integer 整数a
+---@param b number integer 整数b
+---@return number integer
+function japi.DZ_BitAnd(a, b)
+    return japi.Exec("DzBitAnd", a, b)
+end
+
+--- 按位或
+---@param a number integer 整数a
+---@param b number integer 整数b
+---@return number integer
+function japi.DZ_BitOr(a, b)
+    return japi.Exec("DzBitOr", a, b)
+end
+
+--- 按位异或
+---@param a number integer 整数a
+---@param b number integer 整数b
+---@return number integer
+function japi.DZ_BitXor(a, b)
+    return japi.Exec("DzBitXor", a, b)
+end
+
+--- 按位左移
+---@param i number integer 某个整数
+---@param bitsToShift number integer 左移多少位
+---@return number integer
+function japi.DZ_BitShiftLeft(i, bitsToShift)
+    return japi.Exec("DzBitShiftLeft", i, bitsToShift)
+end
+
+--- 按位右移
+---@param i number integer 某个整数
+---@param bitsToShift number integer 右移多少位
+---@return number integer
+function japi.DZ_BitShiftRight(i, bitsToShift)
+    return japi.Exec("DzBitShiftRight", i, bitsToShift)
+end
+
+--- 4字节组合为整数
+--- 这里组合是256进制，组合的结果其实是DCBA
+---@param a number integer
+---@param b number integer
+---@param c number integer
+---@param d number integer
+---@return number integer
+function japi.DZ_BitToInt(a, b, c, d)
+    return japi.Exec("DzBitToInt", a, b, c, d)
+end
+
+--- 打开Excel文件
+--- 会返回一个工作表
+---@param filePath string 文件路径
+---@return number integer
+function japi.DZ_XlsxOpen(filePath)
+    return japi.Exec("DzXlsxOpen", filePath)
+end
+
+--- 关闭工作表
+---@param docHandle number integer ExcelHandle
+---@return boolean
+function japi.DZ_XlsxClose(docHandle)
+    return japi.Exec("DzXlsxClose", docHandle)
+end
+
+--- 工作表的总行数
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@return number integer
+function japi.DZ_XlsxWorksheetGetRowCount(docHandle, sheetName)
+    return japi.Exec("DzXlsxWorksheetGetRowCount", docHandle, sheetName)
+end
+
+--- 工作表的总列数
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@return number integer
+function japi.DZ_XlsxWorksheetGetColumnCount(docHandle, sheetName)
+    return japi.Exec("DzXlsxWorksheetGetColumnCount", docHandle, sheetName)
+end
+
+--- 单元格的数据类型
+--- 返回的数据类型为整数：0=None,1=String,2=Integer,3=Boolean,4=Real
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@param row number integer 哪行
+---@param column number integer 哪列
+---@return number integer
+function japi.DZ_XlsxWorksheetGetCellType(docHandle, sheetName, row, column)
+    return japi.Exec("DzXlsxWorksheetGetCellType", docHandle, sheetName, row, column)
+end
+
+--- 获取工作表单元格(row,column)的字符串数据
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@param row number integer 哪行
+---@param column number integer 哪列
+---@return string
+function japi.DZ_XlsxWorksheetGetCellString(docHandle, sheetName, row, column)
+    return japi.Exec("DzXlsxWorksheetGetCellString", docHandle, sheetName, row, column)
+end
+
+--- 获取工作表单元格(row,column)的整数数据
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@param row number integer 哪行
+---@param column number integer 哪列
+---@return number integer
+function japi.DZ_XlsxWorksheetGetCellInteger(docHandle, sheetName, row, column)
+    return japi.Exec("DzXlsxWorksheetGetCellInteger", docHandle, sheetName, row, column)
+end
+
+--- 获取工作表单元格(row,column)的布尔值数据
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@param row number integer 哪行
+---@param column number integer 哪列
+---@return boolean
+function japi.DZ_XlsxWorksheetGetCellBoolean(docHandle, sheetName, row, column)
+    return japi.Exec("DzXlsxWorksheetGetCellBoolean", docHandle, sheetName, row, column)
+end
+
+--- 获取工作表单元格(row,column)的实数数据
+---@param docHandle number integer
+---@param sheetName string 工作表名称
+---@param row number integer 哪行
+---@param column number integer 哪列
+---@return number
+function japi.DZ_XlsxWorksheetGetCellFloat(docHandle, sheetName, row, column)
+    return japi.Exec("DzXlsxWorksheetGetCellFloat", docHandle, sheetName, row, column)
+end
+
 --- 加载Toc文件列表
 ---@return string
 function japi.DZ_GetLocale()
@@ -1608,6 +2439,24 @@ function japi.DZ_ModelRemoveFromCache(path)
     japi.Exec("DzModelRemoveFromCache", path)
 end
 
+--- 打印调试信息到平台日志
+--- 用于调试，打印信息到平台日志文件
+---@param msg string
+---@return void
+function japi.DZ_WriteLog(msg)
+    japi.Exec("DzWriteLog", msg)
+end
+
+--- 判断指定年份是否为闰年
+--- 闰年判断规则：
+--- 1. 普通闰年：能被4整除但不能被100整除的年份
+--- 2. 世纪闰年：能被400整除的年份
+---@param year number 待判断的年份（整数）
+---@return boolean
+function japi.DZ_IsLeapYear(year)
+    return (year % 4 == 0 and year % 100 ~= 0) or (year % 400 == 0)
+end
+
 --- 异步执行函数
 --- 执行脱离代码段之内
 ---@param funcName string
@@ -1617,7 +2466,7 @@ function japi.DZ_ExecuteFunc(funcName)
 end
 
 --- 取 RGBA 色值
---- 将RGBA转换为色值，返回一个整数，用于设置DZ其他接口如Frame、Effect的颜色
+--- 将RGBA转换为色值，返回一个整数，用于设置DZ其他接口如Frame、Item、Effect的颜色
 ---@param r number 红0-255
 ---@param g number 绿0-255
 ---@param b number 蓝0-255
@@ -1625,37 +2474,6 @@ end
 ---@return number integer
 function japi.DZ_GetColor(r, g, b, a)
     return japi.Exec("DzGetColor", a, r, g, b)
-end
-
---- 获取商店目标
---- 获取指定商店选中指定玩家的哪个单位
----@param whichStore number 商店单位拥有出售物品选择英雄的单位
----@param whichPlayer number 玩家
----@return number 目标单位
-function japi.DZ_GetActivePatron(whichStore, whichPlayer)
-    return japi.Exec("DzGetActivePatron", whichStore, whichPlayer)
-end
-
---- 获取玩家选中的第n个单位
---- 异步返回玩家选中的单位
----@param index number integer
----@return number 选中单位
-function japi.DZ_GetLocalSelectUnit(index)
-    return japi.Exec("DzGetLocalSelectUnit", index)
-end
-
---- 获取玩家选中的单位数量
---- 异步获取玩家选中的单位数量，返回整数
----@return number integer
-function japi.DZ_GetLocalSelectUnitCount()
-    return japi.Exec("DzGetLocalSelectUnitCount")
-end
-
---- 获取当前选择的单位
---- 异步获取当前预览窗口显示的单位
----@return number integer
-function japi.DZ_GetSelectedLeaderUnit()
-    return japi.Exec("DzGetSelectedLeaderUnit")
 end
 
 --- 获取聊天窗是否打开
@@ -1705,76 +2523,6 @@ end
 ---@return void
 function japi.DZ_OpenQQGroupUrl(url)
     japi.Exec("DzOpenQQGroupUrl", url)
-end
-
---- 监听建筑选位置
----@param func function
----@return void
-function japi.DZ_RegisterOnBuildLocal(func)
-    japi.Exec("DzRegisterOnBuildLocal", func)
-end
-
---- 获取建造的命令id
---- 用于监听建筑选位置后
----@return number
-function japi.DZ_GetOnBuildOrderId()
-    return japi.Exec("DzGetOnBuildOrderId")
-end
-
---- 获取建造的命令类型
---- 用于监听建筑选位置后
----@return number
-function japi.DZ_GetOnBuildOrderType()
-    return japi.Exec("DzGetOnBuildOrderType")
-end
-
---- 获取预建造对象
---- 用于监听建筑选位置后
----@return number
-function japi.DZ_GetOnBuildAgent()
-    return japi.Exec("DzGetOnBuildAgent")
-end
-
---- 监听技能预选目标
----@param func function
----@return void
-function japi.DZ_RegisterOnTargetLocal(func)
-    japi.Exec("DzRegisterOnTargetLocal", func)
-end
-
---- 获取监听到的技能
---- 用于监听技能预选后
----@return number
-function japi.DZ_GetOnTargetAbilityId()
-    return japi.Exec("DzGetOnTargetAbilId")
-end
-
---- 获取监听到技能预选命令
---- 用于监听技能预选后
----@return number
-function japi.DZ_GetOnTargetOrderId()
-    return japi.Exec("DzGetOnTargetOrderId")
-end
-
---- 获取监听到技能预选命令类型
---- 用于监听技能预选后
----@return number
-function japi.DZ_GetOnTargetOrderType()
-    return japi.Exec("DzGetOnTargetOrderType")
-end
-
---- 获取监听到技能预选目标
---- 用于监听技能预选后
----@return number
-function japi.DZ_GetOnTargetAgent()
-    return japi.Exec("DzGetOnTargetAgent")
-end
-
---- 获取监听到技能预选目标
---- 用于监听技能预选后
----@return number
-function japi.DZ_GetOnTargetInstantTarget()
-    return japi.Exec("DzGetOnTargetInstantTarget")
 end
 
 --- 同步游戏数据
@@ -2065,7 +2813,7 @@ end
 ---@param value string
 ---@return void
 function japi.DZ_Map_Ladder_SubmitPlayerExtraExp(whichPlayer, value)
-    japi.DZ_Map_Ladder_SetStat(whichPlayer, "ExtraExp", math.floor(value))
+    japi.DZ_Map_Ladder_SetStat(whichPlayer, "ExtraExp", tostring(math.floor(value)))
 end
 
 --- 天梯-统计数据
@@ -2575,6 +3323,50 @@ end
 ---@return number int
 function japi.DZ_Map_GameResult_CommitData(whichPlayer, key, value)
     return japi.DZ_RequestExtraIntegerData(69, whichPlayer, key, tostring(value), false, 0, 0, 0)
+end
+
+--- 上报本局游戏玩家称号
+--- 上报本局游戏玩家所获得的称号，请注意**称号Key**不能和[上报本局游戏玩家数据]的**数据项Key**重复
+---@param whichPlayer number
+---@param value string 称号名称
+---@return void
+function japi.DZ_Map_GameResult_CommitTitle(whichPlayer, value)
+    japi.DZ_Map_GameResult_CommitData(whichPlayer, value, "1")
+end
+
+--- 上报本局游戏玩家排名
+--- 对于乱斗模式的地图，上报每一名玩家的名次
+---@param whichPlayer number
+---@param value number integer 排名
+---@return void
+function japi.DZ_Map_GameResult_CommitPlayerRank(whichPlayer, value)
+    japi.DZ_Map_GameResult_CommitData(whichPlayer, "RankIndex", tostring(value))
+end
+
+--- 上报本局游戏模式
+--- 上报本局游戏所选择的地图模式名称
+---@param value string 模式名称
+---@return void
+function japi.DZ_Map_GameResult_CommitGameMode(value)
+    japi.DZ_Map_GameResult_CommitData(PlayerLocal():handle(), "InnerGameMode", value)
+end
+
+--- 上报本局游戏结果
+--- 上报本局游戏玩家游戏结果（胜负），提交后会立即结束游戏
+---@param whichPlayer number
+---@param winorfail number integer 胜负参考值：0,WESTRING_FAILUREOPTION_FAILED|1,WESTRING_PEVENT_VICTORY
+---@return void
+function japi.DZ_Map_GameResult_CommitGameResult(whichPlayer, winorfail)
+    japi.DZ_Map_GameResult_CommitData(whichPlayer, "GameResult", tostring(winorfail))
+end
+
+--- 上报本局游戏结果（不结束游戏）
+--- 上报本局游戏玩家游戏结果（胜负），提交后不会立即结束游戏，适用于游戏正常结束后还有奖励关的地图
+---@param whichPlayer number
+---@param winorfail number integer 胜负参考值：0,WESTRING_FAILUREOPTION_FAILED|1,WESTRING_PEVENT_VICTORY
+---@return void
+function japi.DZ_Map_GameResult_CommitGameResultNoEnd(whichPlayer, winorfail)
+    japi.DZ_Map_GameResult_CommitData(whichPlayer, "GameResultNoEnd", tostring(winorfail))
 end
 
 --- 玩家本局游戏距上一局游戏的时间差

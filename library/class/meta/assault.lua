@@ -36,7 +36,7 @@ end
 
 --- 获取伤害类型
 ---@see injury#damageType
----@return table
+---@return MappingValue
 function _index:damageType()
     return self._damageType
 end
@@ -126,7 +126,7 @@ end
 --- lightning 电链模式
 --- 单位[nil 没有攻击模式]会被视为近战（不需要特定伤害类型攻击时则不需要设置攻击模式）
 --- 单位[mode=='instant' and range<=200 攻击范围200以下的立即]也会被视为近战（需要特定伤害类型攻击时则用这个）
----@alias AssaultPotions0 {mode:'instant'|'missile'|'lightning',priority:number,damageType:table,damageTypeLevel:number}
+---@alias AssaultPotions0 {mode:'instant'|'missile'|'lightning',priority:number,damageType:MappingValue,damageTypeLevel:number}
 ---@alias AssaultPotions2 {model:string|table,scatter:number,radius:number,reflex:number}
 ---@alias AssaultPotionsM {scale:number,speed:number,height:number,acceleration:number,twist:boolean,gatling:number,homing:boolean}
 ---@alias AssaultPotionsL {focus:number}

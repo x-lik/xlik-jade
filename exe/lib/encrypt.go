@@ -119,8 +119,10 @@ func (app *App) encryptRules(content string) string {
 		replLua("embeds/lua/engine/blizzard.lua", map[string]string{`repl`: "^(\\w+) = "})
 		replLua("embeds/lua/engine/engine.lua", map[string]string{`repl`: "^(J\\.\\w+) = "})
 		_analysis[`del`] = append(_analysis[`del`], `J = {}`)
-		replLua("embeds/lua/engine/typeof.lua", map[string]string{`repl`: "^function (typeof)\\("})
 		replLua("embeds/lua/engine/pairx.lua", map[string]string{`repl`: "^function (pairx)\\("})
+		replLua("embeds/lua/engine/promise.lua", map[string]string{`repl`: "^function (promise)\\("})
+		replLua("embeds/lua/engine/mapping.lua", map[string]string{`repl`: "^function (\\w+)\\("})
+		replLua("embeds/lua/engine/typeof.lua", map[string]string{`repl`: "^function (typeof)\\("})
 		replLua("embeds/lua/slk/assets.lua", map[string]string{`repl`: "^function (\\w+)\\("})
 		replLua("embeds/lua/slk/slk.lua", map[string]string{`repl`: "^function (\\w+)\\("})
 		// 读取encrypt配置数据

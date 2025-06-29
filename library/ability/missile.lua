@@ -30,10 +30,17 @@ local _call = function(isComplete, options, vec)
                 end
             })
             if (class.isObject(nextUnit, UnitClass)) then
-                ability.missile(setmetatable({ reflex = options.reflex - 1, sourceVec = vec, targetUnit = nextUnit }, { __index = options }))
+                options.targetVec = nil
+                local mt = getmetatable(options)
+                ability.missile(setmetatable({
+                    reflex = options.reflex - 1,
+                    sourceVec = vec,
+                    targetUnit = nextUnit
+                }, { __index = mt and mt.__index or options }))
             else
                 local reflexOffset = options.reflexOffset or 300
                 local rx, ry = vector2.polar(vec[1], vec[2], reflexOffset, math.rand(0, 359))
+                local mt = getmetatable(options)
                 ability.missile(setmetatable({
                     height = (options.height or 0) / 2,
                     sourceVec = vec,
@@ -42,16 +49,26 @@ local _call = function(isComplete, options, vec)
                     onEnd = function(options2, vec2)
                         if (class.isObject(options2.targetUnit, UnitClass)) then
                             options2.targetVec = nil
-                            ability.missile(setmetatable({ reflex = options2.reflex - 1, sourceVec = vec2 }, { __index = options2 }))
+                            local mt2 = getmetatable(options2)
+                            ability.missile(setmetatable({
+                                reflex = options2.reflex - 1,
+                                sourceVec = vec2
+                            }, { __index = mt2 and mt2.__index or options2 }))
                         end
                     end
-                }, { __index = options }))
+                }, { __index = mt and mt.__index or options }))
             end
         else
             --- 目标为坐标时的弹射，根据reflexOffset随机发射
             local reflexOffset = options.reflexOffset or 300
             local rx, ry = vector2.polar(vec[1], vec[2], reflexOffset, math.rand(0, 359))
-            ability.missile(setmetatable({ height = (options.height or 0) * 0.8, reflex = options.reflex - 1, sourceVec = vec, targetVec = { rx, ry } }, { __index = options }))
+            local mt = getmetatable(options)
+            ability.missile(setmetatable({
+                height = (options.height or 0) * 0.8,
+                reflex = options.reflex - 1,
+                sourceVec = vec,
+                targetVec = { rx, ry }
+            }, { __index = mt and mt.__index or options }))
         end
     end
 end
