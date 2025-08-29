@@ -236,7 +236,7 @@ end
 
 --- 获取当前玩家在平台的身份类型（主播/职业选手）
 ---@param whichPlayer number
----@param id number integer 3=主播，4=职业选手
+---@param id number integer 3=大神主播，4=职业选手 5=主播 8=新人主播 9=闪耀主播
 ---@return boolean
 function japi.KK_IsPlayerIdentityType(whichPlayer, id)
     return japi.DZ_RequestExtraBooleanData(92, whichPlayer, nil, nil, false, id, 0, 0)

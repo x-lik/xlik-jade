@@ -11,7 +11,7 @@
         damageType = MappingValue, --[可选]伤害类型，默认injury.damageType.common （详情查看injury.damageType）
         damageTypeLevel = number, --[可选]伤害类级别（影响元素附着或自定义效果），默认0
         breakArmor = MappingValue[], --[可选]破防类型，默认{}（详情查看injury.breakArmor）
-        extra = table, --[可选]自定义额外数据
+        extra = table, --[可选]自定义额外数据，框架自带的key将以“下划线”开头命名
     }
 ]]
 ---@see injury#damageType

@@ -14,8 +14,9 @@ function _index:destruct()
     if (nil ~= l and l > time._inc) then
         local kl = time._kernel
         local id = self._id
-        if (nil ~= kl[l] and nil ~= kl[l][id]) then
-            kl[l][id] = nil
+        kl[l]:keyExists(id)
+        if (nil ~= kl[l] and kl[l]:keyExists(id)) then
+            kl[l]:set(id, nil)
         end
     end
 end
@@ -34,8 +35,8 @@ function _index:remain(second)
         local kl = time._kernel
         local id = self._id
         local l = self._fin
-        if (nil ~= kl[l] and nil ~= kl[l][id]) then
-            kl[l][id] = nil
+        if (nil ~= kl[l] and kl[l]:keyExists(id)) then
+            kl[l]:set(id, nil)
             self:run(math.min(self._period, math.max(0, second)))
         end
     else
@@ -58,9 +59,10 @@ function _index:period(second)
         self._period = second
         local l = self._fin
         if (l > 0) then
-            if (self._remain > self._period) then
+            local remain = self:remain()
+            if (remain > self._period) then
                 local kl = time._kernel
-                kl[l][self._id] = nil
+                kl[l]:set(self._id, nil)
                 self:run(self._period)
             end
         end
@@ -95,7 +97,7 @@ function _index:pause()
     local l = self._fin
     if (l > time._inc) then
         local kl = time._kernel
-        kl[l][self._id] = nil
+        kl[l]:set(self._id, nil)
     end
     self._pause = (l - time._inc) / 100
     self._fin = -1
@@ -120,7 +122,7 @@ function Timer(interval, period, call)
     must(type(interval) == "boolean", "interval@boolean")
     must(type(period) == "number", "period@number")
     must(type(call) == "function", "call@function")
-    local t = oMeta({ _interval = interval, _period = period, _remain = period, _call = call }, _index)
+    local t = oMeta({ _interval = interval, _period = period, _call = call }, _index)
     -- ID
     class.id(t, false)
     t:run()

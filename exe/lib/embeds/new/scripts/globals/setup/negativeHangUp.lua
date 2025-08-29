@@ -9,7 +9,7 @@ if (false == LK_DEBUG) then
             Player(idx):quit("消极挂机")
         end)
         async.loc(function()
-            local cx, cy = camera.x(), camera.y()
+            local cx, cy = camera.tx(), camera.ty()
             local click = false
             local clickResume = function()
                 click = true
@@ -22,7 +22,7 @@ if (false == LK_DEBUG) then
                     class.destroy(curTimer)
                     return
                 end
-                local cx2, cy2 = camera.x(), camera.y()
+                local cx2, cy2 = camera.tx(), camera.ty()
                 if (true ~= click and cx == cx2 and cy == cy2) then
                     class.destroy(curTimer)
                     sync.send("negativeHangUp", { PlayerLocal():index() })

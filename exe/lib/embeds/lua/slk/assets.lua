@@ -146,7 +146,7 @@ function assets_pset(kind, ...)
     end
     local params = { ... }
     if (kind == "font") then
-        data = params[1]
+        _assets[kind] = params[1]
     elseif (kind == "image" or kind == "model") then
         data[params[1]] = params[2]
     elseif (kind == "bgm") then

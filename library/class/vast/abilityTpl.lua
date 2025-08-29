@@ -109,6 +109,9 @@ end
 ---@param variety string|nil 看 ability.target
 ---@return self|string
 function _index:targetType(variety)
+    if (nil ~= variety) then
+        must(ability.isValidTargetType(variety),"variety@ability.targetType")
+    end
     return self:modify("targetType", variety)
 end
 

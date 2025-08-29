@@ -141,10 +141,26 @@ function keyboard.press(ketString)
 end
 
 --- [异步]键盘正在按下
----@param ketString string
+---@param ketNumber number
 ---@return boolean
-function keyboard.isPressing(ketString)
-    return japi.DZ_IsKeyDown(ketString)
+function keyboard.isPressing(ketNumber)
+    return japi.DZ_IsKeyDown(ketNumber)
+end
+
+--- [异步]组合键检测
+---@param mainKeyNumber number
+---@param modifierKeyNumbers number[]
+---@return boolean
+function keyboard.isComboPressing(mainKeyNumber, modifierKeyNumbers)
+    if false == japi.DZ_IsKeyDown(mainKeyNumber) then
+        return false
+    end
+    for _, kn in ipairs(modifierKeyNumbers) do
+        if false == japi.DZ_IsKeyDown(kn) then
+            return false
+        end
+    end
+    return true
 end
 
 --- [异步]当键盘异下

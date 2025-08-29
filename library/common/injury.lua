@@ -57,8 +57,9 @@ end
 --- [受伤过程]抵达
 ---@param sourceUnit Unit
 ---@param targetUnit Unit
+---@param extraData table 额外数据
 ---@return void
-function injury.arrive(sourceUnit, targetUnit)
+function injury.arrive(sourceUnit, targetUnit, extraData)
     sync.must()
     if (false == class.isObject(sourceUnit, UnitClass) or false == class.isObject(targetUnit, UnitClass)) then
         return
@@ -79,6 +80,7 @@ function injury.arrive(sourceUnit, targetUnit)
             damageSrc = injury.damageSrc.attack,
             damageType = as:damageType(),
             damageTypeLevel = as:damageTypeLevel(),
+            extra = extraData,
         })
     end
 end
@@ -86,8 +88,9 @@ end
 --- [受伤过程]攻击
 ---@param sourceUnit Unit
 ---@param targetUnit Unit
+---@param extraData table 额外数据
 ---@return void
-function injury.attack(sourceUnit, targetUnit)
+function injury.attack(sourceUnit, targetUnit, extraData)
     sync.must()
     if (false == class.isObject(sourceUnit, UnitClass) or false == class.isObject(targetUnit, UnitClass)) then
         return
@@ -98,7 +101,7 @@ function injury.attack(sourceUnit, targetUnit)
     local as = sourceUnit:assault()
     local mode = as:mode()
     if (mode == "instant") then
-        injury.arrive(sourceUnit, targetUnit)
+        injury.arrive(sourceUnit, targetUnit, extraData)
     elseif (mode == "lightning") then
         local lDur = 0.3
         local lDelay = lDur * 0.6
@@ -112,7 +115,7 @@ function injury.attack(sourceUnit, targetUnit)
         for _ = 1, focus do
             lightning.create(as:model(), x1, y1, z1, x2, y2, z2, lDur)
             time.setTimeout(lDelay, function()
-                injury.arrive(sourceUnit, targetUnit)
+                injury.arrive(sourceUnit, targetUnit, extraData)
             end)
         end
         if (as:scatter() > 0 and as:radius() > 0) then
@@ -132,7 +135,7 @@ function injury.attack(sourceUnit, targetUnit)
                 x1, y1 = vector2.polar(x1, y1, sourceUnit:weaponLength(), vector2.angle(x1, y1, x2, y2))
                 lightning.create(as:model(), x1, y1, z1, x2, y2, z2, lDur)
                 time.setTimeout(lDelay, function()
-                    injury.arrive(sourceUnit, enumUnit)
+                    injury.arrive(sourceUnit, enumUnit, extraData)
                 end)
             end)
         end
@@ -153,7 +156,7 @@ function injury.attack(sourceUnit, targetUnit)
             reflex = as:reflex(),
             onEnd = function(opt, vec)
                 if (vector2.distance(vec[1], vec[2], opt.targetUnit:x(), opt.targetUnit:y()) <= 100) then
-                    injury.arrive(opt.sourceUnit, opt.targetUnit)
+                    injury.arrive(opt.sourceUnit, opt.targetUnit, extraData)
                     return true
                 end
                 return false

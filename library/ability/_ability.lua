@@ -4,15 +4,23 @@
 ability = ability or {}
 
 -- 技能目标类型数据
+local m_tt = Mapping("abilityTargetType")
 ability.targetType = {
-    pas = { value = "p", label = "被动" },
-    none = { value = "n", label = "无目标" },
-    unit = { value = "u", label = "单位目标" },
-    loc = { value = "l", label = "点目标" },
-    circle = { value = "c", label = "圆形范围目标" },
-    square = { value = "s", label = "方形范围目标" },
-    build = { value = "b", label = "建造" },
+    pas = m_tt:set("p", "被动"),
+    none = m_tt:set("n", "无目标"),
+    unit = m_tt:set("u", "单位目标"),
+    loc = m_tt:set("l", "点目标"),
+    circle = m_tt:set("c", "圆形范围目标"),
+    square = m_tt:set("s", "方形范围目标"),
+    build = m_tt:set("b", "建造"),
 }
+
+--- 检测是否属于有效的技能目标类型
+---@param value table ability.targetType.*
+---@return boolean
+function ability.isValidTargetType(value)
+    return isMapping(value, m_tt._kind)
+end
 
 --- [实际]计算整合数值型
 --- 根据base、vary计算出技能该等级时对应的数据
